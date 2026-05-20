@@ -1,0 +1,200 @@
+/* ═══════════════════════════════════════════════════
+   SECTIONS.CSS — Footer + Responsive
+═══════════════════════════════════════════════════ */
+
+/* ══════════════════════════
+   FOOTER
+══════════════════════════ */
+footer {
+  background: #050404;
+  border-top: 1px solid rgba(212, 168, 67, 0.1);
+}
+
+.footer-hero {
+  padding: 160px 80px;
+  position: relative;
+  overflow: hidden;
+}
+
+.footer-skyline {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 280px;
+  opacity: 0.08;
+}
+
+.footer-content { position: relative; z-index: 1; }
+
+.footer-big-text {
+  font-family: var(--font-impact);
+  font-size: clamp(60px, 10vw, 140px);
+  line-height: 0.9;
+  margin-bottom: 80px;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 60px;
+  padding: 60px 80px;
+  border-top: 1px solid rgba(212, 168, 67, 0.1);
+}
+
+.footer-logo {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--cream);
+  margin-bottom: 20px;
+  letter-spacing: 2px;
+}
+
+.footer-logo span { color: var(--red); }
+
+.footer-tagline {
+  font-size: 14px;
+  color: rgba(250, 246, 239, 0.4);
+  line-height: 1.8;
+  max-width: 280px;
+}
+
+.footer-col-title {
+  font-size: 11px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 24px;
+}
+
+.footer-links         { list-style: none; }
+.footer-links li      { margin-bottom: 12px; }
+
+.footer-links a {
+  font-size: 14px;
+  color: rgba(250, 246, 239, 0.5);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.footer-links a:hover { color: var(--cream); }
+
+.footer-bottom {
+  padding: 24px 80px;
+  border-top: 1px solid rgba(212, 168, 67, 0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-copy {
+  font-size: 12px;
+  color: rgba(250, 246, 239, 0.3);
+  letter-spacing: 1px;
+}
+
+.social-links { display: flex; gap: 20px; }
+
+.social-link {
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(212, 168, 67, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(250, 246, 239, 0.4);
+  text-decoration: none;
+  font-size: 13px;
+  transition: all 0.3s;
+}
+
+.social-link:hover { border-color: var(--gold); color: var(--gold); }
+
+/* ══════════════════════════
+   RESPONSIVE BREAKPOINTS
+══════════════════════════ */
+@media (max-width: 1024px) {
+  /* Hero */
+  .hero-content,
+  .hero-bottom       { padding: 0 40px; }
+  .hero-bottom       { left: 40px; right: 40px; }
+
+  /* Intro */
+  #intro             { padding: 100px 40px; }
+  .intro-inner       { grid-template-columns: 1fr; gap: 60px; }
+  .intro-visual      { height: 400px; }
+  .intro-stat-float  { left: 0; }
+
+  /* Saigon */
+  #saigon            { padding: 100px 0; }
+  .saigon-header     { padding: 0 40px; flex-direction: column; align-items: flex-start; gap: 24px; }
+  .saigon-scroll-container { padding: 0 40px; }
+  .saigon-timeline   { padding: 60px 40px 0; }
+
+  /* Regions */
+  #regions           { padding: 100px 40px; }
+  .regions-grid      { grid-template-columns: 1fr; }
+  .region-panel      { height: 400px; }
+
+  /* Food */
+  #food              { padding: 100px 40px; }
+  .food-grid         { grid-template-columns: 1fr; }
+  .food-card.featured { grid-column: 1; }
+
+  /* People */
+  #people            { padding: 100px 40px; }
+  .people-masonry    { grid-template-columns: repeat(2, 1fr); }
+
+  /* Gallery */
+  #gallery           { padding: 100px 40px; }
+  .gallery-masonry   { columns: 2; }
+
+  /* Map */
+  #map-section       { padding: 100px 40px; }
+  .map-container     { grid-template-columns: 1fr; }
+  .map-visual        { height: 400px; }
+
+  /* Quote */
+  #quote-section     { padding: 120px 40px; }
+
+  /* Footer */
+  .footer-hero       { padding: 80px 40px; }
+  .footer-grid       { grid-template-columns: 1fr 1fr; gap: 40px; padding: 40px; }
+  .footer-bottom     { padding: 24px 40px; }
+}
+
+@media (max-width: 640px) {
+  /* Hero */
+  .hero-content      { padding: 0 24px; }
+  .hero-bottom       { display: none; }
+  .hero-indicators   { display: none; }
+
+  /* Sections */
+  #intro,
+  #saigon,
+  #regions,
+  #food,
+  #people,
+  #gallery,
+  #map-section       { padding: 80px 24px; }
+
+  .saigon-header,
+  .saigon-scroll-container,
+  .saigon-timeline   { padding-left: 24px; padding-right: 24px; }
+
+  /* People */
+  .people-masonry    { grid-template-columns: 1fr; }
+  .people-card.wide  { grid-column: 1; }
+
+  /* Gallery */
+  .gallery-masonry   { columns: 1; }
+
+  /* Quote */
+  #quote-section     { padding: 100px 24px; }
+
+  /* Footer */
+  .footer-hero       { padding: 60px 24px; }
+  .footer-grid       { grid-template-columns: 1fr; padding: 32px 24px; }
+  .footer-bottom     { padding: 20px 24px; flex-direction: column; gap: 16px; text-align: center; }
+}

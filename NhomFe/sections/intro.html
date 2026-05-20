@@ -1,0 +1,93 @@
+<!--
+  sections/intro.html
+  ───────────────────
+  Intro section — Giới thiệu Việt Nam
+-->
+<section id="intro">
+  <div class="intro-inner">
+
+    <!-- Left: Visual / Map card -->
+    <div class="intro-visual gsap-reveal-left">
+      <div class="intro-card-main">
+        <div class="intro-card-overlay"></div>
+
+        <!-- Vietnam silhouette SVG -->
+        <svg class="vn-map-svg" viewBox="0 0 200 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M120,10 C140,15 155,25 158,40 C162,55 150,70 155,85 C160,100 170,110 165,125
+                   C158,140 145,150 150,165 C155,180 165,190 160,210 C155,230 140,240 135,260
+                   C130,280 140,295 135,315 C128,335 110,345 105,365 C100,385 110,400 108,420
+                   C106,440 95,455 88,470 C82,485 75,495 70,500 C65,498 58,492 55,480
+                   C50,465 58,450 55,430 C50,410 38,400 40,380 C42,360 55,348 50,328
+                   C45,308 30,298 32,278 C34,258 50,248 48,228 C46,208 30,198 35,178
+                   C40,158 58,150 55,132 C52,114 38,105 42,88 C46,71 62,65 65,48
+                   C68,31 55,20 60,10 C70,2 85,-2 95,2 C105,6 110,8 120,10 Z"
+            fill="rgba(212,168,67,0.15)"
+            stroke="rgba(212,168,67,0.3)"
+            stroke-width="1"/>
+        </svg>
+
+        <!-- Animated map dots -->
+        <div class="map-dots">
+          <div class="map-dot dot-hanoi"></div>
+          <div class="map-dot dot-hcm"></div>
+          <div class="map-dot dot-danang"></div>
+          <div class="map-dot dot-halong"></div>
+          <div class="map-dot dot-hoi"></div>
+        </div>
+
+        <!-- City labels -->
+        <span style="position:absolute;top:16%;left:50%;font-size:10px;letter-spacing:2px;color:rgba(212,168,67,0.8);transform:translateX(-50%);">HÀ NỘI</span>
+        <span style="position:absolute;top:46%;left:46%;font-size:10px;letter-spacing:2px;color:rgba(212,168,67,0.6);transform:translateX(-50%);">ĐÀ NẴNG</span>
+        <span style="position:absolute;bottom:20%;left:44%;font-size:10px;letter-spacing:2px;color:rgba(200,16,46,0.9);transform:translateX(-50%);">HỒ CHÍ MINH</span>
+      </div>
+
+      <!-- Floating stat -->
+      <div class="intro-stat-float gsap-scale">
+        <div class="n">96M</div>
+        <div class="l">Dân Số</div>
+      </div>
+
+      <!-- Accent card -->
+      <div class="intro-card-small">
+        <div class="intro-card-small-inner">
+          <div class="num">54</div>
+          <div class="label">Dân Tộc Anh Em</div>
+        </div>
+      </div>
+
+      <!-- Rotating ring -->
+      <div class="intro-shape"></div>
+    </div>
+
+    <!-- Right: Text content -->
+    <div class="intro-text">
+      <div class="section-tag gsap-reveal">Đất Nước Hình Chữ S</div>
+
+      <h2 class="section-title gsap-reveal">
+        Nơi <em>Hội Tụ</em><br>Ngàn Nền Văn Hóa
+      </h2>
+
+      <p class="intro-lead gsap-reveal" style="margin-top:32px;">
+        Vietnam — a land where the past breathes through ancient temples,
+        and the future blazes across neon-lit skylines.
+      </p>
+
+      <p class="intro-body gsap-reveal">
+        Trải dài hơn 3.000 km từ Bắc xuống Nam, Việt Nam là nơi giao thoa của 54 dân tộc
+        anh em với những nét văn hóa phong phú và đặc sắc. Ba miền Bắc – Trung – Nam mỗi
+        vùng mang một bản sắc riêng biệt, từ vẻ trầm mặc nghìn năm văn hiến của Hà Nội,
+        nét cổ kính của Cố đô Huế, đến nhịp sống sôi động bất tận của Sài Gòn.
+      </p>
+
+      <div class="intro-pills gsap-reveal">
+        <span class="pill">Ẩm Thực</span>
+        <span class="pill">Lịch Sử</span>
+        <span class="pill">Thiên Nhiên</span>
+        <span class="pill">Con Người</span>
+        <span class="pill">Văn Hóa</span>
+        <span class="pill">Hiện Đại</span>
+      </div>
+    </div>
+
+  </div>
+</section>
