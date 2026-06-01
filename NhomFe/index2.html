@@ -1,0 +1,1406 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HÀ NỘI — NGÀN NĂM VĂN HIẾN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100;0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<style>
+:root{
+  --ivory:#F5F0E8;--cream:#EDE8DC;--parch:#E2DAC8;--warm:#C8B89A;
+  --ink:#18130E;--ink2:#2E261C;--muted:#7A6E5A;
+  --red:#B83228;--red2:#D94030;
+  --gold:#C49A14;--gold2:#E8B820;
+  --sage:#3D6045;--sky:#4A7A92;
+  --border:rgba(24,19,14,.1);--glass:rgba(245,240,232,.72);
+  --ff-d:'Syne',sans-serif;--ff-s:'Fraunces',serif;--ff-m:'DM Mono',monospace;
+  --ease-expo:cubic-bezier(.19,1,.22,1);--ease-back:cubic-bezier(.34,1.56,.64,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:auto}
+body{background:var(--ivory);color:var(--ink);font-family:var(--ff-m);overflow-x:hidden;cursor:none}
+a{text-decoration:none;color:inherit}
+ul{list-style:none}
+
+/* CURTAIN */
+#curtain{position:fixed;inset:0;z-index:10000;background:var(--ink);transform-origin:top;transform:scaleY(0);pointer-events:none}
+#curtain-txt{position:fixed;top:50%;left:50%;z-index:10001;transform:translate(-50%,-50%);font-family:var(--ff-d);font-size:clamp(40px,8vw,100px);font-weight:800;color:var(--ivory);letter-spacing:-2px;opacity:0;pointer-events:none}
+
+/* LOADER */
+#loader{position:fixed;inset:0;z-index:9999;background:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;overflow:hidden}
+.ldr-word{overflow:hidden;font-family:var(--ff-d);font-size:clamp(56px,10vw,140px);font-weight:800;color:var(--ivory);letter-spacing:-3px;line-height:.9;display:flex}
+.ldr-word span{display:inline-block;transform:translateY(110%)}
+.ldr-line{width:200px;height:1px;background:rgba(245,240,232,.1);position:relative;overflow:hidden}
+.ldr-fill{height:100%;background:linear-gradient(90deg,var(--red),var(--gold));width:0;box-shadow:0 0 12px rgba(228,184,32,.5)}
+.ldr-pct{font-family:var(--ff-m);font-size:10px;letter-spacing:4px;color:rgba(245,240,232,.25)}
+.ldr-geo{position:absolute;inset:0;pointer-events:none}
+.ldr-geo span{position:absolute;border:1px solid rgba(245,240,232,.04);border-radius:50%;transform:translate(-50%,-50%);animation:ldrPulse 4s ease-in-out infinite}
+.ldr-geo span:nth-child(1){width:200px;height:200px;top:50%;left:50%;animation-delay:0s}
+.ldr-geo span:nth-child(2){width:400px;height:400px;top:50%;left:50%;animation-delay:.5s}
+.ldr-geo span:nth-child(3){width:600px;height:600px;top:50%;left:50%;animation-delay:1s}
+.ldr-geo span:nth-child(4){width:800px;height:800px;top:50%;left:50%;animation-delay:1.5s}
+@keyframes ldrPulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* CURSOR */
+#cursor{position:fixed;pointer-events:none;z-index:9990;top:0;left:0}
+.cur-inner{width:10px;height:10px;border-radius:50%;background:var(--red);transform:translate(-50%,-50%);transition:width .3s var(--ease-back),height .3s var(--ease-back),background .3s}
+.cur-outer{position:absolute;top:0;left:0;width:40px;height:40px;border-radius:50%;border:1.5px solid rgba(24,19,14,.4);transform:translate(-50%,-50%);transition:all .25s var(--ease-expo);mix-blend-mode:multiply}
+.cur-label{position:absolute;top:0;left:28px;font-family:var(--ff-m);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--ink);white-space:nowrap;transform:translateY(-50%);opacity:0;transition:opacity .3s}
+body.cur-hover .cur-inner{width:6px;height:6px;background:var(--red2)}
+body.cur-hover .cur-outer{width:56px;height:56px;border-color:var(--red);opacity:.7}
+body.cur-img .cur-inner{background:var(--gold);width:80px;height:80px;opacity:.12}
+body.cur-img .cur-outer{width:80px;height:80px;border-color:var(--gold);opacity:0}
+
+/* PROGRESS */
+#spbar{position:fixed;top:0;left:0;height:2px;z-index:9000;background:linear-gradient(90deg,var(--red),var(--gold));width:0%;box-shadow:0 0 8px rgba(184,50,40,.4)}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:800;display:flex;align-items:center;justify-content:space-between;padding:0 64px;height:76px;transition:all .5s var(--ease-expo)}
+nav.scrolled{background:var(--glass);backdrop-filter:blur(24px) saturate(1.4);-webkit-backdrop-filter:blur(24px) saturate(1.4);border-bottom:1px solid var(--border);box-shadow:0 2px 40px rgba(24,19,14,.05)}
+.nav-logo{font-family:var(--ff-d);font-size:20px;font-weight:800;letter-spacing:-1px;color:var(--ink);display:flex;align-items:center;gap:8px}
+.nav-logo-dot{width:8px;height:8px;border-radius:50%;background:var(--red);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(184,50,40,.4)}50%{box-shadow:0 0 0 8px rgba(184,50,40,0)}}
+.nav-links{display:flex;gap:40px}
+.nav-links a{font-family:var(--ff-m);font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);position:relative;transition:color .25s}
+.nav-links a::after{content:'';position:absolute;bottom:-3px;left:0;right:0;height:1px;background:var(--red);transform:scaleX(0);transform-origin:right;transition:transform .4s var(--ease-expo)}
+.nav-links a:hover{color:var(--ink)}
+.nav-links a:hover::after{transform:scaleX(1);transform-origin:left}
+.nav-cta{font-family:var(--ff-d);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:10px 24px;background:var(--ink);color:var(--ivory);transition:all .3s var(--ease-expo);position:relative;overflow:hidden}
+.nav-cta::before{content:'';position:absolute;inset:0;background:var(--red);transform:translateX(-101%);transition:transform .4s var(--ease-expo)}
+.nav-cta:hover::before{transform:translateX(0)}
+.nav-cta span{position:relative;z-index:1}
+
+/* HERO */
+#hero{position:relative;height:100vh;min-height:700px;overflow:hidden;background:var(--ink)}
+.hero-img{position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1509030450996-dd1a26dda07a?w=1920&q=85') center/cover no-repeat;transform-origin:center;will-change:transform}
+.hero-img-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(24,19,14,.6) 0%,rgba(24,19,14,.2) 40%,rgba(24,19,14,.8) 100%)}
+.hero-grain{position:absolute;inset:0;pointer-events:none;z-index:3;opacity:.3;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E")}
+#glCanvas{position:absolute;inset:0;z-index:4;pointer-events:none;opacity:.65}
+.hero-inner{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;justify-content:flex-end;padding:0 64px 80px}
+.hero-tag{font-family:var(--ff-m);font-size:10px;letter-spacing:5px;text-transform:uppercase;color:rgba(245,240,232,.5);display:flex;align-items:center;gap:14px;margin-bottom:20px;overflow:hidden}
+.hero-tag-line{width:32px;height:1px;background:var(--gold)}
+.hero-headline{overflow:hidden}
+.hero-line{display:block;font-family:var(--ff-s);font-size:clamp(64px,12vw,180px);line-height:.88;font-weight:900;color:var(--ivory);transform:translateY(110%);will-change:transform}
+.hero-line.italic{font-style:italic;color:var(--gold2)}
+.hero-line.outline{-webkit-text-stroke:2px rgba(245,240,232,.45);color:transparent}
+.hero-sub{font-family:var(--ff-m);font-size:14px;color:rgba(245,240,232,.45);letter-spacing:1px;line-height:1.8;max-width:440px;margin-top:24px;opacity:0}
+.hero-badge{position:absolute;z-index:11;background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(245,240,232,.2);padding:16px 20px;transition:transform .6s var(--ease-expo)}
+.hero-badge-1{top:140px;right:64px}
+.hero-badge-2{top:280px;right:64px;transform:rotate(2deg)}
+.hb-label{font-family:var(--ff-m);font-size:8px;letter-spacing:3px;text-transform:uppercase;color:rgba(245,240,232,.4)}
+.hb-val{font-family:var(--ff-d);font-size:24px;font-weight:800;color:var(--ivory);letter-spacing:-1px;margin-top:4px}
+.hero-scroll{position:absolute;bottom:80px;right:64px;z-index:11;display:flex;flex-direction:column;align-items:center;gap:12px;opacity:0}
+.hero-scroll span{font-family:var(--ff-m);font-size:8px;letter-spacing:3px;text-transform:uppercase;color:rgba(245,240,232,.4);writing-mode:vertical-rl}
+.scroll-track{width:1px;height:72px;background:rgba(245,240,232,.12);position:relative;overflow:hidden}
+.scroll-thumb{position:absolute;top:-100%;left:0;width:100%;height:50%;background:linear-gradient(to bottom,transparent,var(--gold));animation:scrollDown 2s ease-in-out infinite}
+@keyframes scrollDown{0%{top:-100%}100%{top:200%}}
+
+/* TICKER */
+.ticker-strip{position:relative;z-index:2;overflow:hidden;padding:14px 0;background:var(--ink);border-top:1px solid rgba(245,240,232,.05);border-bottom:1px solid rgba(245,240,232,.05)}
+.ticker-track{display:flex;white-space:nowrap;animation:ticker 22s linear infinite}
+.ticker-track.slow{animation-duration:30s}
+.ticker-track.rev{animation-direction:reverse}
+.ti{font-family:var(--ff-d);font-size:12px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(245,240,232,.08);padding:0 32px;flex-shrink:0}
+.ti.hi{color:rgba(200,154,20,.45)}
+.ticker-strip.light{background:var(--cream)}
+.ticker-strip.light .ti{color:rgba(24,19,14,.08)}
+.ticker-strip.light .ti.hi{color:rgba(184,50,40,.35)}
+@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* SECTIONS */
+section{position:relative;z-index:2}
+.section-tag{font-family:var(--ff-m);font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--red);display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.section-tag::before{content:'';width:28px;height:1.5px;background:var(--red)}
+.section-h{font-family:var(--ff-s);font-size:clamp(40px,6vw,80px);font-weight:900;line-height:.92;color:var(--ink);letter-spacing:-2px}
+.section-h em{font-style:italic;color:var(--red)}
+
+/* INTRO */
+#intro{height:300vh}
+.intro-pin{height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:0 64px;gap:80px;background:var(--ivory)}
+.intro-img-wrap{position:relative;overflow:hidden;aspect-ratio:4/5;will-change:transform}
+.intro-img-wrap img{width:100%;height:100%;object-fit:cover;transform-origin:center;will-change:transform;display:block}
+.intro-img-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(24,19,14,.5) 0%,transparent 55%)}
+.intro-img-caption{position:absolute;bottom:24px;left:24px;font-family:var(--ff-m);font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(245,240,232,.6)}
+.img-reveal-box{position:absolute;inset:0;background:var(--ivory);transform-origin:left;z-index:2}
+.intro-lead{font-family:var(--ff-s);font-size:clamp(18px,2.2vw,26px);font-style:italic;color:var(--muted);line-height:1.75;margin-top:24px}
+.intro-body{font-family:var(--ff-m);font-size:13px;color:var(--muted);line-height:1.95;margin-top:20px}
+.intro-stats{display:flex;gap:0;margin-top:44px;border-top:1px solid var(--border)}
+.ist{flex:1;padding:24px 0 0;border-right:1px solid var(--border);padding-right:32px;margin-right:32px}
+.ist:last-child{border-right:none;margin-right:0;padding-right:0}
+.ist-n{font-family:var(--ff-d);font-size:42px;font-weight:800;color:var(--ink);letter-spacing:-2px;line-height:1}
+.ist-l{font-family:var(--ff-m);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:6px}
+.tag-cloud{display:flex;flex-wrap:wrap;gap:8px;margin-top:32px}
+.tc-tag{font-family:var(--ff-m);font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:8px 14px;border:1px solid var(--border);color:var(--muted);background:var(--cream);transition:all .3s var(--ease-expo);cursor:none}
+.tc-tag:hover{border-color:var(--red);color:var(--red);background:rgba(184,50,40,.04);transform:translateY(-2px)}
+
+/* PLACES BENTO */
+#places{padding:140px 64px;background:var(--ink)}
+.places-head{margin-bottom:72px;display:flex;justify-content:space-between;align-items:flex-end}
+.places-head-r{font-family:var(--ff-m);font-size:11px;color:rgba(245,240,232,.35);max-width:280px;line-height:1.8;text-align:right}
+.bento{display:grid;grid-template-columns:repeat(12,1fr);grid-template-rows:auto;gap:3px}
+.bento-card{position:relative;overflow:hidden;cursor:none;background:var(--ink2);transition:box-shadow .4s}
+.bento-card::before{content:'';position:absolute;inset:0;z-index:5;background:linear-gradient(135deg,rgba(255,255,255,.06) 0%,transparent 60%);opacity:0;transition:opacity .4s}
+.bento-card:hover::before{opacity:1}
+.bento-card::after{content:'';position:absolute;inset:-1px;z-index:6;pointer-events:none;box-shadow:inset 0 0 0 1px transparent;transition:box-shadow .4s}
+.bento-card:hover::after{box-shadow:inset 0 0 0 1px rgba(228,184,32,.4),0 0 40px rgba(228,184,32,.1),0 0 80px rgba(228,184,32,.05)}
+.bc-lg{grid-column:span 5;grid-row:span 2;min-height:500px}
+.bc-md{grid-column:span 4;min-height:300px}
+.bc-sm{grid-column:span 3;min-height:240px}
+.bc-wide{grid-column:span 7;min-height:280px}
+.bc-tall{grid-column:span 3;grid-row:span 2;min-height:500px}
+.bc-img{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform 8s var(--ease-expo);will-change:transform}
+.bento-card:hover .bc-img{transform:scale(1.06)}
+.bc-dim{position:absolute;inset:0;background:linear-gradient(to top,rgba(24,19,14,.96) 0%,rgba(24,19,14,.1) 60%);transition:opacity .4s}
+.bento-card:hover .bc-dim{opacity:.7}
+.bc-body{position:absolute;bottom:0;left:0;right:0;padding:28px 24px;z-index:4;transition:transform .4s var(--ease-expo)}
+.bento-card:hover .bc-body{transform:translateY(-4px)}
+.bc-idx{font-family:var(--ff-d);font-size:52px;font-weight:800;color:rgba(245,240,232,.06);line-height:1;margin-bottom:6px}
+.bc-cat{font-family:var(--ff-m);font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+.bc-name{font-family:var(--ff-s);font-size:clamp(18px,2.5vw,30px);font-weight:700;color:var(--ivory);line-height:1.15}
+.bc-desc{font-family:var(--ff-m);font-size:11px;color:rgba(245,240,232,.45);line-height:1.7;margin-top:10px;max-height:0;overflow:hidden;transition:max-height .5s var(--ease-expo)}
+.bento-card:hover .bc-desc{max-height:100px}
+
+/* 3D FLIP CARD for special places */
+.flip-section{padding:100px 64px;background:var(--cream)}
+.flip-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:64px}
+.flip-card-wrap{perspective:1000px;height:380px;cursor:none}
+.flip-card{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .8s var(--ease-expo)}
+.flip-card-wrap:hover .flip-card{transform:rotateY(180deg)}
+.flip-front,.flip-back{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden}
+.flip-back{transform:rotateY(180deg);background:var(--ink);padding:40px 32px;display:flex;flex-direction:column;justify-content:center}
+.flip-front img{width:100%;height:100%;object-fit:cover;display:block}
+.flip-front-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(24,19,14,.85) 0%,transparent 50%)}
+.flip-front-body{position:absolute;bottom:0;left:0;right:0;padding:28px 24px}
+.flip-name{font-family:var(--ff-s);font-size:26px;font-weight:700;color:var(--ivory);line-height:1.2}
+.flip-cat{font-family:var(--ff-m);font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+.flip-hint{font-family:var(--ff-m);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(245,240,232,.3);margin-top:12px}
+.flip-back-title{font-family:var(--ff-s);font-size:28px;font-weight:700;color:var(--ivory);margin-bottom:16px;line-height:1.2}
+.flip-back-body{font-family:var(--ff-m);font-size:12px;color:rgba(245,240,232,.55);line-height:1.85}
+.flip-back-tag{display:inline-block;font-family:var(--ff-m);font-size:8px;letter-spacing:2px;text-transform:uppercase;padding:6px 12px;border:1px solid rgba(200,154,20,.3);color:var(--gold);margin-top:24px}
+.flip-back-stat{margin-top:20px;display:flex;gap:24px}
+.fbs-n{font-family:var(--ff-d);font-size:28px;font-weight:800;color:var(--ivory);letter-spacing:-1px;line-height:1}
+.fbs-l{font-family:var(--ff-m);font-size:8px;letter-spacing:2px;text-transform:uppercase;color:rgba(245,240,232,.3);margin-top:4px}
+
+/* STATEMENT */
+#statement{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:160px 64px;background:var(--ivory);overflow:hidden;position:relative}
+.stmt-bg{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-12deg);font-family:var(--ff-d);font-size:clamp(160px,28vw,400px);font-weight:800;color:transparent;-webkit-text-stroke:1px rgba(24,19,14,.04);pointer-events:none;user-select:none;white-space:nowrap;letter-spacing:-8px}
+.stmt-inner{max-width:900px;position:relative;z-index:2}
+.stmt-quote{font-family:var(--ff-s);font-size:clamp(32px,5vw,68px);font-weight:400;font-style:italic;color:var(--ink);line-height:1.25}
+.stmt-quote strong{color:var(--red);font-style:normal;font-weight:900}
+.stmt-author{font-family:var(--ff-m);font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--muted);margin-top:36px;display:flex;align-items:center;gap:16px}
+.stmt-author::before{content:'';width:40px;height:1px;background:var(--muted)}
+.stmt-circle{position:absolute;right:80px;top:50%;transform:translateY(-50%);width:300px;height:300px;border-radius:50%;border:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;animation:rotateSlow 30s linear infinite}
+.stmt-circle::before{content:'';position:absolute;inset:20px;border-radius:50%;border:1px solid var(--border)}
+.stmt-circle-inner{text-align:center;font-family:var(--ff-d);font-size:60px;font-weight:800;color:var(--ink);letter-spacing:-2px;line-height:1}
+.stmt-circle-label{font-family:var(--ff-m);font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-top:8px}
+@keyframes rotateSlow{to{transform:translateY(-50%) rotate(360deg)}}
+
+/* HISTORY */
+#history{background:var(--cream);padding:140px 64px}
+.hist-grid{display:grid;grid-template-columns:1fr 1.6fr;gap:100px;margin-top:80px}
+.hist-sticky{position:sticky;top:120px;align-self:start}
+.hist-photo{aspect-ratio:3/4;overflow:hidden;position:relative;border:1px solid var(--border)}
+.hist-photo img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 8s var(--ease-expo)}
+.hist-photo:hover img{transform:scale(1.04)}
+.hist-photo-cap{position:absolute;bottom:0;left:0;right:0;padding:24px 20px;background:linear-gradient(to top,rgba(24,19,14,.7) 0%,transparent 100%);font-family:var(--ff-m);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(245,240,232,.6)}
+.hist-items{display:flex;flex-direction:column}
+.hist-item{padding:40px 0;border-top:1px solid var(--border);display:grid;grid-template-columns:96px 1fr;gap:36px;transition:opacity .5s;opacity:.4;padding-left:24px}
+.hist-item.active{opacity:1}
+.hist-item:hover{opacity:.8}
+.hi-yr{font-family:var(--ff-d);font-size:30px;font-weight:800;color:var(--red);line-height:1}
+.hi-ev{font-family:var(--ff-s);font-size:20px;font-weight:700;color:var(--ink);line-height:1.3}
+.hi-de{font-family:var(--ff-m);font-size:12px;color:var(--muted);line-height:1.8;margin-top:8px}
+
+/* PARALLAX SCENE */
+#scene{position:relative;height:100vh;overflow:hidden}
+.scene-bg{position:absolute;inset:-20%;background:url('https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=1920&q=85') center/cover no-repeat;will-change:transform}
+.scene-overlay{position:absolute;inset:0;z-index:2;background:linear-gradient(to bottom,rgba(24,19,14,.3) 0%,rgba(24,19,14,.1) 30%,rgba(24,19,14,.7) 100%)}
+.scene-content{position:absolute;bottom:0;left:0;right:0;z-index:10;padding:64px;display:flex;flex-direction:column;gap:16px}
+.scene-eyebrow{font-family:var(--ff-m);font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--gold2)}
+.scene-title{font-family:var(--ff-s);font-size:clamp(80px,13vw,180px);font-weight:900;color:var(--ivory);line-height:.88;letter-spacing:-4px}
+.scene-sub{font-family:var(--ff-m);font-size:13px;color:rgba(245,240,232,.55);max-width:420px;line-height:1.75}
+
+/* FOOD */
+#food{padding:140px 64px;background:var(--ivory)}
+.food-layout{display:grid;grid-template-columns:repeat(12,1fr);gap:3px;margin-top:80px}
+.food-hero{grid-column:span 7;position:relative;overflow:hidden;min-height:580px;cursor:none}
+.food-hero img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 8s var(--ease-expo)}
+.food-hero:hover img{transform:scale(1.04)}
+.food-hero-cap{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(24,19,14,.93) 0%,transparent 60%);padding:40px 36px}
+.food-hero-name{font-family:var(--ff-s);font-size:clamp(28px,4vw,52px);font-weight:900;color:var(--ivory);line-height:1.1}
+.food-hero-desc{font-family:var(--ff-m);font-size:11px;color:rgba(245,240,232,.5);line-height:1.8;margin-top:12px;max-width:420px}
+.food-grid-right{grid-column:span 5;display:grid;grid-template-columns:1fr 1fr;gap:3px}
+.food-card{position:relative;overflow:hidden;min-height:190px;cursor:none}
+.food-card img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .8s var(--ease-expo)}
+.food-card:hover img{transform:scale(1.08)}
+.food-card-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(24,19,14,.9) 0%,transparent 55%)}
+.food-card-body{position:absolute;bottom:0;left:0;right:0;padding:16px 16px 18px}
+.fc-name{font-family:var(--ff-s);font-size:18px;color:var(--ivory);line-height:1.15}
+.fc-tag{font-family:var(--ff-m);font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+
+/* FOOD DEEP SECTION */
+.food-deep{padding:100px 64px;background:var(--ink)}
+.food-deep-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;margin-top:64px}
+.fdc{position:relative;overflow:hidden;min-height:420px;cursor:none}
+.fdc img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 8s var(--ease-expo)}
+.fdc:hover img{transform:scale(1.06)}
+.fdc-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(24,19,14,.95) 0%,rgba(24,19,14,.1) 55%)}
+.fdc-body{position:absolute;bottom:0;left:0;right:0;padding:32px 28px}
+.fdc-num{font-family:var(--ff-d);font-size:48px;font-weight:800;color:rgba(245,240,232,.06);line-height:1;margin-bottom:8px}
+.fdc-name{font-family:var(--ff-s);font-size:24px;font-weight:700;color:var(--ivory);line-height:1.2}
+.fdc-sub{font-family:var(--ff-m);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+.fdc-desc{font-family:var(--ff-m);font-size:11px;color:rgba(245,240,232,.45);line-height:1.75;margin-top:10px;max-height:0;overflow:hidden;transition:max-height .5s var(--ease-expo)}
+.fdc:hover .fdc-desc{max-height:120px}
+.fdc-price{font-family:var(--ff-d);font-size:14px;font-weight:700;color:var(--gold2);margin-top:12px;opacity:0;transition:opacity .4s}
+.fdc:hover .fdc-price{opacity:1}
+
+/* STREETS */
+#streets{padding:140px 64px;background:var(--cream)}
+.streets-intro{display:grid;grid-template-columns:1fr 1fr;gap:80px;margin-bottom:100px;align-items:end}
+.streets-body{font-family:var(--ff-s);font-size:19px;font-style:italic;color:var(--muted);line-height:1.8;padding-top:8px}
+.streets-masonry{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.st-item{position:relative;overflow:hidden;cursor:none;transform-style:preserve-3d;perspective:800px}
+.st-item:nth-child(2){margin-top:60px}
+.st-item:nth-child(4){margin-top:-40px}
+.st-item:nth-child(5){margin-top:40px}
+.st-item img{width:100%;display:block;aspect-ratio:3/4;object-fit:cover;transition:transform .8s var(--ease-expo)}
+.st-item:hover img{transform:scale(1.05)}
+.st-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(24,19,14,.92) 0%,transparent 55%);transition:opacity .4s}
+.st-item:hover .st-overlay{opacity:.7}
+.st-body{position:absolute;bottom:0;left:0;right:0;padding:24px 20px}
+.st-cat{font-family:var(--ff-m);font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.st-name{font-family:var(--ff-s);font-size:22px;color:var(--ivory);line-height:1.2}
+.st-desc{font-family:var(--ff-m);font-size:11px;color:rgba(245,240,232,.45);line-height:1.7;margin-top:8px;max-height:0;overflow:hidden;transition:max-height .4s}
+.st-item:hover .st-desc{max-height:72px}
+.st-item::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:5;box-shadow:inset 0 0 0 1.5px transparent;transition:box-shadow .4s}
+.st-item:hover::after{box-shadow:inset 0 0 0 1.5px rgba(200,154,20,.3),0 20px 60px rgba(24,19,14,.2)}
+
+/* LANDMARKS 3D CAROUSEL */
+.landmarks-section{padding:120px 64px;background:var(--ink);overflow:hidden}
+.landmarks-track-wrap{position:relative;height:500px;perspective:1200px;margin-top:64px}
+.landmarks-track{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .8s var(--ease-expo)}
+.lm-card{position:absolute;width:340px;height:460px;left:50%;top:50%;background:var(--ink2);overflow:hidden;cursor:none;transition:all .6s var(--ease-expo);transform-style:preserve-3d}
+.lm-card img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 1s var(--ease-expo)}
+.lm-card:hover img{transform:scale(1.05)}
+.lm-dim{position:absolute;inset:0;background:linear-gradient(to top,rgba(24,19,14,.96) 0%,rgba(24,19,14,.1) 60%);transition:opacity .4s}
+.lm-body{position:absolute;bottom:0;left:0;right:0;padding:32px 28px;z-index:4}
+.lm-num{font-family:var(--ff-d);font-size:80px;font-weight:800;color:rgba(245,240,232,.05);line-height:1;position:absolute;top:20px;right:20px}
+.lm-cat{font-family:var(--ff-m);font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.lm-name{font-family:var(--ff-s);font-size:26px;font-weight:700;color:var(--ivory);line-height:1.2}
+.lm-fact{font-family:var(--ff-m);font-size:11px;color:rgba(245,240,232,.45);line-height:1.7;margin-top:10px}
+.lm-nav{display:flex;justify-content:center;gap:12px;margin-top:32px}
+.lm-btn{font-family:var(--ff-m);font-size:9px;letter-spacing:3px;text-transform:uppercase;padding:12px 32px;background:transparent;border:1px solid rgba(245,240,232,.15);color:rgba(245,240,232,.4);cursor:none;transition:all .3s var(--ease-expo)}
+.lm-btn:hover{border-color:var(--gold);color:var(--gold)}
+.lm-dots{display:flex;gap:8px;align-items:center;margin-left:24px}
+.lm-dot{width:6px;height:6px;border-radius:50%;background:rgba(245,240,232,.15);transition:all .3s;cursor:none}
+.lm-dot.active{background:var(--gold);transform:scale(1.3)}
+
+/* STATS */
+#stats{padding:0;background:var(--ink);display:grid;grid-template-columns:repeat(4,1fr)}
+.stat-bl{padding:72px 48px;border-right:1px solid rgba(245,240,232,.06);transition:background .4s;position:relative;overflow:hidden}
+.stat-bl:last-child{border-right:none}
+.stat-bl::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(200,154,20,.08) 0%,transparent 70%);opacity:0;transition:opacity .4s}
+.stat-bl:hover::before{opacity:1}
+.sb-n{font-family:var(--ff-d);font-size:clamp(44px,5vw,72px);font-weight:800;color:var(--ivory);line-height:1;letter-spacing:-2px}
+.sb-unit{color:var(--red);font-size:.65em}
+.sb-l{font-family:var(--ff-m);font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(245,240,232,.25);margin:12px 0 16px}
+.sb-d{font-family:var(--ff-m);font-size:11px;color:rgba(245,240,232,.3);line-height:1.7}
+
+/* GALLERY */
+#gallery{padding:140px 64px;background:var(--cream)}
+.gal-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:64px}
+.gal-sub{font-family:var(--ff-m);font-size:11px;color:var(--muted);max-width:300px;line-height:1.75;text-align:right}
+.gal-grid{display:grid;grid-template-columns:repeat(12,1fr);grid-auto-rows:80px;gap:3px}
+.gi{position:relative;overflow:hidden;cursor:none;transition:transform .4s var(--ease-expo),box-shadow .4s}
+.gi:hover{transform:translateY(-8px);z-index:2;box-shadow:0 24px 80px rgba(24,19,14,.18)}
+.gi img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .8s var(--ease-expo)}
+.gi:hover img{transform:scale(1.08)}
+.gi-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(24,19,14,.85) 0%,transparent 55%);opacity:0;transition:opacity .4s}
+.gi:hover .gi-ov{opacity:1}
+.gi-lbl{position:absolute;bottom:0;left:0;right:0;padding:16px 14px;font-family:var(--ff-s);font-size:17px;color:var(--ivory);transform:translateY(8px);opacity:0;transition:all .35s var(--ease-expo)}
+.gi:hover .gi-lbl{transform:none;opacity:1}
+.gi-1{grid-column:span 5;grid-row:span 5}
+.gi-2{grid-column:span 4;grid-row:span 3}
+.gi-3{grid-column:span 3;grid-row:span 3}
+.gi-4{grid-column:span 4;grid-row:span 4}
+.gi-5{grid-column:span 3;grid-row:span 2}
+.gi-6{grid-column:span 5;grid-row:span 4}
+.gi-7{grid-column:span 3;grid-row:span 2}
+.gi-8{grid-column:span 4;grid-row:span 3}
+
+/* EXPERIENCE SCROLL */
+.experience-section{padding:120px 64px;background:var(--ivory)}
+.exp-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-top:80px}
+.exp-item{position:relative;overflow:hidden;min-height:500px;cursor:none}
+.exp-item img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 8s var(--ease-expo)}
+.exp-item:hover img{transform:scale(1.04)}
+.exp-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(24,19,14,.92) 0%,rgba(24,19,14,.1) 55%)}
+.exp-body{position:absolute;bottom:0;left:0;right:0;padding:48px 44px}
+.exp-num{font-family:var(--ff-d);font-size:72px;font-weight:800;color:rgba(245,240,232,.06);line-height:1;margin-bottom:8px}
+.exp-cat{font-family:var(--ff-m);font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.exp-name{font-family:var(--ff-s);font-size:clamp(28px,3.5vw,48px);font-weight:900;color:var(--ivory);line-height:1.1}
+.exp-desc{font-family:var(--ff-m);font-size:12px;color:rgba(245,240,232,.5);line-height:1.8;margin-top:16px;max-width:380px}
+.exp-cta{display:inline-block;font-family:var(--ff-m);font-size:9px;letter-spacing:3px;text-transform:uppercase;padding:12px 28px;border:1px solid rgba(245,240,232,.2);color:rgba(245,240,232,.5);margin-top:24px;transition:all .3s}
+.exp-item:hover .exp-cta{border-color:var(--gold);color:var(--gold)}
+
+/* CTA */
+#cta{padding:200px 64px;background:var(--ink);position:relative;overflow:hidden}
+.cta-bg-img{position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1598873535498-ac65e2de9e2d?w=1920&q=80') center/cover no-repeat;opacity:.1}
+.cta-inner{position:relative;z-index:2;max-width:960px}
+.cta-eyebrow{font-family:var(--ff-m);font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:28px;display:flex;align-items:center;gap:14px}
+.cta-eyebrow::before{content:'';width:28px;height:1.5px;background:var(--gold)}
+.cta-h{font-family:var(--ff-s);font-size:clamp(60px,10vw,140px);font-weight:900;color:var(--ivory);line-height:.9;letter-spacing:-3px;margin-bottom:40px}
+.cta-h em{font-style:italic;color:var(--gold2)}
+.cta-btns{display:flex;gap:16px;flex-wrap:wrap}
+.btn-prim{font-family:var(--ff-d);font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:18px 48px;background:var(--ivory);color:var(--ink);transition:all .4s var(--ease-expo);position:relative;overflow:hidden;cursor:none}
+.btn-prim::before{content:'';position:absolute;inset:0;background:var(--gold2);transform:translateX(-101%);transition:transform .4s var(--ease-expo)}
+.btn-prim:hover::before{transform:translateX(0)}
+.btn-prim:hover{color:var(--ink)}
+.btn-prim span{position:relative;z-index:1}
+.btn-sec{font-family:var(--ff-d);font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:18px 48px;background:transparent;color:rgba(245,240,232,.5);border:1.5px solid rgba(245,240,232,.18);transition:all .3s;cursor:none}
+.btn-sec:hover{border-color:rgba(245,240,232,.5);color:var(--ivory)}
+
+/* FOOTER */
+footer{background:var(--ink);color:var(--ivory)}
+.footer-main{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:60px;padding:100px 64px 80px;border-bottom:1px solid rgba(245,240,232,.06)}
+.footer-brand{font-family:var(--ff-s);font-size:56px;font-weight:900;font-style:italic;letter-spacing:-2px;color:var(--ivory);margin-bottom:20px;line-height:.9}
+.footer-brand span{color:var(--red)}
+.footer-tagline{font-family:var(--ff-m);font-size:12px;color:rgba(245,240,232,.3);line-height:1.85;max-width:300px}
+.f-col-title{font-family:var(--ff-m);font-size:8px;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold);margin-bottom:24px}
+.f-links li{margin-bottom:14px}
+.f-links a{font-family:var(--ff-m);font-size:12px;color:rgba(245,240,232,.3);transition:color .25s}
+.f-links a:hover{color:var(--ivory)}
+.footer-bot{padding:28px 64px;display:flex;justify-content:space-between;align-items:center}
+.f-copy{font-family:var(--ff-m);font-size:10px;color:rgba(245,240,232,.18)}
+.f-socials{display:flex;gap:28px}
+.f-socials a{font-family:var(--ff-m);font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(245,240,232,.22);transition:color .25s}
+.f-socials a:hover{color:var(--gold)}
+
+/* TOOLTIP */
+.glass-tip{position:fixed;z-index:8000;pointer-events:none;background:rgba(245,240,232,.82);backdrop-filter:blur(20px) saturate(1.4);-webkit-backdrop-filter:blur(20px) saturate(1.4);border:1px solid rgba(24,19,14,.08);padding:14px 18px;font-family:var(--ff-m);font-size:10px;color:var(--ink);box-shadow:0 8px 32px rgba(24,19,14,.1);opacity:0;transform:translateY(8px);transition:all .25s var(--ease-expo);max-width:200px;line-height:1.6}
+.glass-tip.show{opacity:1;transform:translateY(0)}
+
+/* REVEAL LINE */
+.reveal-line{overflow:hidden}
+.reveal-line span{display:inline-block;transform:translateY(105%);will-change:transform}
+
+/* RESPONSIVE */
+@media(max-width:1100px){
+  nav{padding:0 28px}
+  .nav-links{display:none}
+  #hero .hero-inner,.intro-pin,#places,#food,.food-deep,#streets,#stats,#gallery,#cta,.footer-main,.footer-bot,.flip-section,.landmarks-section,.experience-section{padding-left:28px;padding-right:28px}
+  .hero-badge{display:none}
+  .intro-pin{grid-template-columns:1fr;gap:48px;padding:60px 28px}
+  .bento{grid-template-columns:repeat(6,1fr)}
+  .bc-lg{grid-column:span 6;grid-row:span 1;min-height:360px}
+  .bc-md{grid-column:span 3;min-height:240px}
+  .bc-sm{grid-column:span 3}
+  .bc-wide{grid-column:span 6;min-height:240px}
+  .bc-tall{grid-column:span 3;grid-row:span 1}
+  .hist-grid{grid-template-columns:1fr}
+  .hist-sticky{position:static}
+  .streets-intro{grid-template-columns:1fr;gap:32px}
+  .streets-masonry{grid-template-columns:1fr 1fr}
+  .streets-masonry .st-item:nth-child(n){margin-top:0}
+  #stats{grid-template-columns:repeat(2,1fr)}
+  .food-layout{grid-template-columns:1fr}
+  .food-hero{grid-column:span 12}
+  .food-grid-right{grid-column:span 12;grid-template-columns:repeat(2,1fr)}
+  .food-deep-grid{grid-template-columns:1fr 1fr}
+  .gal-grid{grid-template-columns:repeat(6,1fr)}
+  .gi-1{grid-column:span 4;grid-row:span 4}
+  .gi-2,.gi-6{grid-column:span 3;grid-row:span 3}
+  .gi-3,.gi-7{grid-column:span 2;grid-row:span 2}
+  .gi-4,.gi-8{grid-column:span 3;grid-row:span 3}
+  .gi-5{grid-column:span 2;grid-row:span 2}
+  .stmt-circle{display:none}
+  .footer-main{grid-template-columns:1fr 1fr;padding:60px 28px 48px}
+  .footer-bot{padding:20px 28px;flex-direction:column;gap:16px;text-align:center}
+  .flip-grid{grid-template-columns:1fr 1fr}
+  .exp-grid{grid-template-columns:1fr}
+  #places,#food,.food-deep,#streets,#gallery,#cta,#history,#stats{padding-top:90px;padding-bottom:90px}
+}
+@media(max-width:640px){
+  .streets-masonry{grid-template-columns:1fr}
+  #stats{grid-template-columns:1fr}
+  .stat-bl{border-right:none;border-bottom:1px solid rgba(245,240,232,.06)}
+  .footer-main{grid-template-columns:1fr}
+  .flip-grid{grid-template-columns:1fr}
+  .food-deep-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div id="curtain"></div>
+<div id="curtain-txt">HÀ NỘI</div>
+
+<div id="loader">
+  <div class="ldr-geo">
+    <span></span><span></span><span></span><span></span>
+  </div>
+  <div class="ldr-word" id="ldrW1"><span>H</span><span>À</span></div>
+  <div class="ldr-word" id="ldrW2"><span>N</span><span>Ộ</span><span>I</span></div>
+  <div class="ldr-line"><div class="ldr-fill" id="ldrF"></div></div>
+  <div class="ldr-pct" id="ldrP">0%</div>
+</div>
+
+<div id="cursor">
+  <div class="cur-inner"></div>
+  <div class="cur-outer"></div>
+  <div class="cur-label" id="curLbl"></div>
+</div>
+
+<div class="glass-tip" id="glassTip"></div>
+<div id="spbar"></div>
+
+<nav id="nav">
+  <div class="nav-logo"><div class="nav-logo-dot"></div>HÀ NỘI</div>
+  <ul class="nav-links">
+    <li><a href="#places">Địa Danh</a></li>
+    <li><a href="#history">Lịch Sử</a></li>
+    <li><a href="#food">Ẩm Thực</a></li>
+    <li><a href="#streets">Phố Cổ</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+  </ul>
+  <a href="#places" class="nav-cta" data-cursor="Khám phá"><span>Khám Phá →</span></a>
+</nav>
+
+<!-- HERO: Ảnh thật Hà Nội bình minh từ Unsplash -->
+<section id="hero">
+  <div class="hero-img" id="heroImg"></div>
+  <div class="hero-img-overlay"></div>
+  <div class="hero-grain"></div>
+  <canvas id="glCanvas"></canvas>
+  <div class="hero-badge hero-badge-1">
+    <div class="hb-label">Tọa độ</div>
+    <div class="hb-val">21°N 105°E</div>
+  </div>
+  <div class="hero-badge hero-badge-2">
+    <div class="hb-label">Thành lập</div>
+    <div class="hb-val">1010</div>
+  </div>
+  <div class="hero-inner">
+    <div class="hero-tag" id="heroTag">
+      <div class="hero-tag-line"></div>
+      Thủ đô Việt Nam · Thăng Long · Đông Đô
+    </div>
+    <div class="hero-headline">
+      <span class="hero-line" id="hl1">THÀNH</span>
+      <span class="hero-line italic" id="hl2">Phố</span>
+      <span class="hero-line outline" id="hl3">Nghìn Năm</span>
+    </div>
+    <p class="hero-sub" id="heroSub">
+      Nơi mỗi con phố kể một câu chuyện — sương mù Hồ Tây,<br>
+      tiếng rao buổi sáng và hương cà phê trứng còn ấm.
+    </p>
+  </div>
+  <div class="hero-scroll" id="heroScroll">
+    <div class="scroll-track"><div class="scroll-thumb"></div></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- TICKER 1 -->
+<div class="ticker-strip">
+  <div class="ticker-track">
+    <span class="ti hi">HÀ NỘI</span><span class="ti">HỒ HOÀN KIẾM</span><span class="ti">PHỐ CỔ 36 PHƯỜNG</span><span class="ti hi">1010</span><span class="ti">VĂN MIẾU</span><span class="ti">HỒ TÂY</span><span class="ti">CẦU LONG BIÊN</span><span class="ti hi">THĂNG LONG</span><span class="ti">BA ĐÌNH</span><span class="ti">BÚN CHẢ</span><span class="ti hi">CÀ PHÊ TRỨNG</span><span class="ti">PHỞ BÒ</span><span class="ti">HOÀNG THÀNH</span><span class="ti hi">THÁP RÙA</span><span class="ti">CHÙA TRẤN QUỐC</span><span class="ti hi">ĂN VẶT</span>
+    <span class="ti hi">HÀ NỘI</span><span class="ti">HỒ HOÀN KIẾM</span><span class="ti">PHỐ CỔ 36 PHƯỜNG</span><span class="ti hi">1010</span><span class="ti">VĂN MIẾU</span><span class="ti">HỒ TÂY</span><span class="ti">CẦU LONG BIÊN</span><span class="ti hi">THĂNG LONG</span><span class="ti">BA ĐÌNH</span><span class="ti">BÚN CHẢ</span><span class="ti hi">CÀ PHÊ TRỨNG</span><span class="ti">PHỞ BÒ</span><span class="ti">HOÀNG THÀNH</span><span class="ti hi">THÁP RÙA</span><span class="ti">CHÙA TRẤN QUỐC</span><span class="ti hi">ĂN VẶT</span>
+  </div>
+</div>
+
+<!-- INTRO -->
+<section id="intro">
+  <div class="intro-pin" id="introPin">
+    <div class="intro-img-wrap" id="introImgWrap">
+      <div class="img-reveal-box" id="imgReveal"></div>
+      <!-- Ảnh thật Hồ Hoàn Kiếm từ Unsplash: photo by Giang Nguyen -->
+      <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=85" alt="Hồ Hoàn Kiếm Hà Nội" loading="lazy">
+      <div class="intro-img-overlay"></div>
+      <div class="intro-img-caption">Hồ Hoàn Kiếm — Trái Tim Hà Nội</div>
+    </div>
+    <div class="intro-text">
+      <div class="section-tag">01 / 07 · Giới Thiệu</div>
+      <h2 class="section-h">THÀNH PHỐ<br><em>Nghìn Năm</em></h2>
+      <p class="intro-lead">Hà Nội — nơi mỗi viên gạch phố cổ đều giữ trong mình một câu chuyện, mỗi hồ nước đều phản chiếu bóng ngàn năm văn hiến.</p>
+      <p class="intro-body">Được thành lập năm 1010 khi vua Lý Thái Tổ dời đô từ Hoa Lư, đặt tên Thăng Long — "Rồng Bay Lên" — Hà Nội đã trải qua hơn nghìn năm thịnh suy. Từ kinh đô Lý, Trần, Lê đến Thủ đô nước Việt Nam độc lập ngày nay, thành phố vẫn giữ nguyên hồn cốt với những hồ nước xanh trong, con phố cổ nhộn nhịp và văn hóa ẩm thực phong phú không nơi nào có được.</p>
+      <div class="intro-stats">
+        <div class="ist"><div class="ist-n" data-to="1010">0</div><div class="ist-l">Năm Lịch Sử</div></div>
+        <div class="ist"><div class="ist-n" data-to="8">0</div><div class="ist-l">Triệu Dân</div></div>
+        <div class="ist"><div class="ist-n" data-to="36">0</div><div class="ist-l">Phố Cổ</div></div>
+      </div>
+      <div class="tag-cloud">
+        <span class="tc-tag">Phở Bắc</span><span class="tc-tag">Phố Cổ</span>
+        <span class="tc-tag">Hồ Tây</span><span class="tc-tag">Văn Miếu</span>
+        <span class="tc-tag">Cà Phê Trứng</span><span class="tc-tag">Sương Mù</span>
+        <span class="tc-tag">Chùa Trấn Quốc</span><span class="tc-tag">Long Biên</span>
+        <span class="tc-tag">Hoàng Thành</span><span class="tc-tag">Bún Chả</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER 2 -->
+<div class="ticker-strip light">
+  <div class="ticker-track rev slow">
+    <span class="ti hi">THĂNG LONG</span><span class="ti">ĐÔNG ĐÔ</span><span class="ti">ĐÔNG KINH</span><span class="ti hi">HÀ NỘI</span><span class="ti">LÝ THÁI TỔ</span><span class="ti">NĂM 1010</span><span class="ti hi">KINH ĐÔ</span><span class="ti">VĂN HIẾN</span><span class="ti">SÔI ĐỘNG</span><span class="ti hi">DI SẢN</span><span class="ti">HOÀNG THÀNH THĂNG LONG</span><span class="ti hi">THÁP RÙA</span>
+    <span class="ti hi">THĂNG LONG</span><span class="ti">ĐÔNG ĐÔ</span><span class="ti">ĐÔNG KINH</span><span class="ti hi">HÀ NỘI</span><span class="ti">LÝ THÁI TỔ</span><span class="ti">NĂM 1010</span><span class="ti hi">KINH ĐÔ</span><span class="ti">VĂN HIẾN</span><span class="ti">SÔI ĐỘNG</span><span class="ti hi">DI SẢN</span><span class="ti">HOÀNG THÀNH THĂNG LONG</span><span class="ti hi">THÁP RÙA</span>
+  </div>
+</div>
+
+<!-- PLACES BENTO -->
+<section id="places">
+  <div class="places-head">
+    <div>
+      <div class="section-tag" style="color:var(--gold)">02 / 07 · Địa Danh</div>
+      <h2 class="section-h" style="color:var(--ivory)">ĐỊA DANH<br><em style="color:var(--gold2)">Nổi Bật</em></h2>
+    </div>
+    <p class="places-head-r">Hover để khám phá từng địa danh.<br>Mỗi nơi — một linh hồn Hà Nội.</p>
+  </div>
+  <div class="bento">
+    <!-- Ảnh thật Hồ Hoàn Kiếm - Cầu Thê Húc đỏ -->
+    <div class="bento-card bc-lg" data-tip="Tháp Rùa cổ kính, cầu Thê Húc đỏ son">
+      <div class="bc-img" style="background-image:url('https://images.unsplash.com/photo-1598873535498-ac65e2de9e2d?w=900&q=85')"></div>
+      <div class="bc-dim"></div>
+      <div class="bc-body">
+        <div class="bc-idx">01</div>
+        <div class="bc-cat">Trái Tim Hà Nội</div>
+        <div class="bc-name">Hồ Hoàn Kiếm</div>
+        <div class="bc-desc">Hồ gươm xanh ngọc — nơi vua Lê Lợi trả kiếm thần cho Rùa Vàng sau khi đánh đuổi giặc Minh. Biểu tượng thiêng liêng ngàn năm của Thủ đô.</div>
+      </div>
+    </div>
+    <!-- Văn Miếu - ảnh thật -->
+    <div class="bento-card bc-md" data-tip="Trường đại học đầu tiên Việt Nam — 1070">
+      <div class="bc-img" style="background-image:url('https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=800&q=85')"></div>
+      <div class="bc-dim"></div>
+      <div class="bc-body">
+        <div class="bc-idx">02</div>
+        <div class="bc-cat">Học Vấn · 1070</div>
+        <div class="bc-name">Văn Miếu — Quốc Tử Giám</div>
+        <div class="bc-desc">Trường đại học đầu tiên Việt Nam, đào tạo nhân tài 700 năm. Khuê Văn Các in trên tờ 100.000 đồng.</div>
+      </div>
+    </div>
+    <!-- Cầu Long Biên - ảnh thật từ Unsplash (photo Hoach Le Dinh) -->
+    <div class="bento-card bc-sm" data-tip="Cầu thép Pháp 1902 — nhân chứng lịch sử">
+      <div class="bc-img" style="background-image:url('https://images.unsplash.com/photo-1458013356865-f7ea608ed9a6?w=700&q=85')"></div>
+      <div class="bc-dim"></div>
+      <div class="bc-body">
+        <div class="bc-idx">03</div>
+        <div class="bc-cat">1902 · Di Sản</div>
+        <div class="bc-name">Cầu Long Biên</div>
+        <div class="bc-desc">Cây cầu thép xuyên thế kỷ bắc qua Sông Hồng — nhân chứng của hai cuộc kháng chiến vĩ đại.</div>
+      </div>
+    </div>
+    <!-- Ba Đình -->
+    <div class="bento-card bc-wide" data-tip="Quảng trường lịch sử — 2/9/1945">
+      <div class="bc-img" style="background-image:url('https://images.unsplash.com/photo-1569963393737-0c0eac7d8d08?w=1000&q=85')"></div>
+      <div class="bc-dim"></div>
+      <div class="bc-body">
+        <div class="bc-idx">04</div>
+        <div class="bc-cat">Lịch Sử · 1945</div>
+        <div class="bc-name">Quảng Trường Ba Đình</div>
+        <div class="bc-desc">Nơi Chủ tịch Hồ Chí Minh đọc Tuyên ngôn Độc lập ngày 2/9/1945 — trái tim lịch sử dân tộc Việt Nam.</div>
+      </div>
+    </div>
+    <!-- Hồ Tây & Chùa Trấn Quốc -->
+    <div class="bento-card bc-tall" data-tip="500 hecta sương mù và tiếng chuông chùa">
+      <div class="bc-img" style="background-image:url('https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=700&q=85');background-position:center top"></div>
+      <div class="bc-dim"></div>
+      <div class="bc-body">
+        <div class="bc-idx">05</div>
+        <div class="bc-cat">500 Hecta · Hồ Tây</div>
+        <div class="bc-name">Hồ Tây & Chùa Trấn Quốc</div>
+        <div class="bc-desc">Buổi sáng sương mù, tiếng chuông ngân xa — khoảnh khắc Hà Nội đẹp nhất trong ngày. Chùa Trấn Quốc 1500 tuổi.</div>
+      </div>
+    </div>
+    <!-- Phố Cổ -->
+    <div class="bento-card bc-md" data-tip="Đèn lồng lung linh, mỗi phố một nghề">
+      <div class="bc-img" style="background-image:url('https://images.unsplash.com/photo-1567016432779-094069958ea5?w=800&q=85')"></div>
+      <div class="bc-dim"></div>
+      <div class="bc-body">
+        <div class="bc-idx">06</div>
+        <div class="bc-cat">Nghìn Tuổi</div>
+        <div class="bc-name">Phố Cổ 36 Phường</div>
+        <div class="bc-desc">Mỗi phố một nghề truyền thống — Hàng Bạc, Hàng Mã, Hàng Gai. Đèn lồng lung linh soi bóng sương đêm.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3D FLIP CARDS SECTION -->
+<section class="flip-section">
+  <div class="section-tag">Địa Điểm Đặc Biệt</div>
+  <h2 class="section-h">DI TÍCH<br><em>Lịch Sử</em></h2>
+  <div class="flip-grid">
+    <!-- Hoàng Thành Thăng Long - flip card -->
+    <div class="flip-card-wrap">
+      <div class="flip-card">
+        <div class="flip-front">
+          <!-- Ảnh thật Hoàng Thành Thăng Long -->
+          <img src="https://images.unsplash.com/photo-1549366021-9f761d040a94?w=700&q=85" alt="Hoàng Thành Thăng Long">
+          <div class="flip-front-overlay"></div>
+          <div class="flip-front-body">
+            <div class="flip-cat">Di Sản UNESCO · 2010</div>
+            <div class="flip-name">Hoàng Thành Thăng Long</div>
+            <div class="flip-hint">↻ Hover để xem thêm</div>
+          </div>
+        </div>
+        <div class="flip-back">
+          <div class="flip-back-title">Hoàng Thành Thăng Long</div>
+          <div class="flip-back-body">Được xây dựng từ thế kỷ 7, Hoàng Thành Thăng Long là trung tâm quyền lực của các triều đại phong kiến Việt Nam trong hơn 13 thế kỷ. Di sản thế giới UNESCO từ năm 2010, nơi lưu giữ hàng nghìn hiện vật khảo cổ quý giá.</div>
+          <div class="flip-back-stat">
+            <div><div class="fbs-n">13</div><div class="fbs-l">Thế Kỷ</div></div>
+            <div><div class="fbs-n">18</div><div class="fbs-l">Hecta</div></div>
+          </div>
+          <div class="flip-back-tag">Di Sản Thế Giới UNESCO</div>
+        </div>
+      </div>
+    </div>
+    <!-- Tháp Rùa -->
+    <div class="flip-card-wrap">
+      <div class="flip-card">
+        <div class="flip-front">
+          <img src="https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=700&q=85" alt="Tháp Rùa Hồ Hoàn Kiếm">
+          <div class="flip-front-overlay"></div>
+          <div class="flip-front-body">
+            <div class="flip-cat">Biểu Tượng · Hà Nội</div>
+            <div class="flip-name">Tháp Rùa</div>
+            <div class="flip-hint">↻ Hover để xem thêm</div>
+          </div>
+        </div>
+        <div class="flip-back">
+          <div class="flip-back-title">Tháp Rùa — Huyền Thoại</div>
+          <div class="flip-back-body">Nằm trên một đảo nhỏ giữa lòng Hồ Hoàn Kiếm, Tháp Rùa được xây dựng cuối thế kỷ 19. Tháp gắn liền với truyền thuyết Rùa Vàng nhận lại kiếm thần từ vua Lê Lợi sau chiến thắng giặc Minh năm 1428. Hình ảnh biểu tượng nhất của Hà Nội.</div>
+          <div class="flip-back-stat">
+            <div><div class="fbs-n">1882</div><div class="fbs-l">Năm Xây</div></div>
+            <div><div class="fbs-n">5</div><div class="fbs-l">Tầng</div></div>
+          </div>
+          <div class="flip-back-tag">Biểu Tượng Thủ Đô</div>
+        </div>
+      </div>
+    </div>
+    <!-- Chùa Một Cột -->
+    <div class="flip-card-wrap">
+      <div class="flip-card">
+        <div class="flip-front">
+          <img src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=700&q=85" alt="Chùa Một Cột Hà Nội">
+          <div class="flip-front-overlay"></div>
+          <div class="flip-front-body">
+            <div class="flip-cat">Phật Giáo · 1049</div>
+            <div class="flip-name">Chùa Một Cột</div>
+            <div class="flip-hint">↻ Hover để xem thêm</div>
+          </div>
+        </div>
+        <div class="flip-back">
+          <div class="flip-back-title">Chùa Một Cột</div>
+          <div class="flip-back-body">Xây dựng năm 1049 dưới triều Lý Thái Tông, chùa được thiết kế hình bông sen nở, tượng trưng cho sự thuần khiết trong Phật giáo. Được mệnh danh là "đài sen nổi trên mặt hồ" — kiến trúc độc đáo không đâu có trên thế giới.</div>
+          <div class="flip-back-stat">
+            <div><div class="fbs-n">975</div><div class="fbs-l">Năm Tuổi</div></div>
+            <div><div class="fbs-n">1</div><div class="fbs-l">Cột Đỡ</div></div>
+          </div>
+          <div class="flip-back-tag">Kiến Trúc Độc Nhất TG</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATEMENT -->
+<section id="statement">
+  <div class="stmt-bg">HÀ NỘI</div>
+  <div class="stmt-inner">
+    <div class="section-tag">Cảm Nhận · Emotion</div>
+    <blockquote class="stmt-quote">
+      "Hà Nội không vội được đâu —<br>
+      nhưng một khi đã <strong>yêu</strong>,<br>
+      không bao giờ muốn rời đi."
+    </blockquote>
+    <div class="stmt-author">Người Hà Nội xưa</div>
+  </div>
+  <div class="stmt-circle">
+    <div class="stmt-circle-inner" data-to="1010">0</div>
+    <div class="stmt-circle-label">Năm Lịch Sử</div>
+  </div>
+</section>
+
+<!-- HISTORY -->
+<section id="history">
+  <div class="section-tag">03 / 07 · Lịch Sử</div>
+  <h2 class="section-h">NGHÌN NĂM<br><em>Thăng Long</em></h2>
+  <div class="hist-grid">
+    <div class="hist-sticky" id="histSticky">
+      <div class="hist-photo" id="histPhoto">
+        <img src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=600&q=85" alt="Văn Miếu" id="histImg" loading="lazy">
+        <div class="hist-photo-cap" id="histCap">Văn Miếu — Quốc Tử Giám</div>
+      </div>
+    </div>
+    <div class="hist-items" id="histList">
+      <div class="hist-item active" data-year="1010"
+        data-img="https://images.unsplash.com/photo-1598873535498-ac65e2de9e2d?w=600&q=85"
+        data-cap="Hồ Hoàn Kiếm — Trung tâm Hà Nội">
+        <div class="hi-yr">1010</div>
+        <div><div class="hi-ev">Thành lập Thăng Long</div><div class="hi-de">Vua Lý Thái Tổ dời đô từ Hoa Lư về Đại La, đặt tên Thăng Long — "Rồng Bay Lên". Truyền thuyết kể khi thuyền ngự đến Đại La, một con rồng vàng bay lên từ sông, điềm lành cho vương triều mới.</div></div>
+      </div>
+      <div class="hist-item" data-year="1070"
+        data-img="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=600&q=85"
+        data-cap="Văn Miếu — Biểu tượng học vấn nghìn năm">
+        <div class="hi-yr">1070</div>
+        <div><div class="hi-ev">Xây Văn Miếu</div><div class="hi-de">Vua Lý Thánh Tông cho xây Văn Miếu thờ Khổng Tử. Năm 1076, con ông lập Quốc Tử Giám — trường đại học đầu tiên Việt Nam, đào tạo nhân tài cho đất nước 700 năm liên tục.</div></div>
+      </div>
+      <div class="hist-item" data-year="1288"
+        data-img="https://images.unsplash.com/photo-1569963393737-0c0eac7d8d08?w=600&q=85"
+        data-cap="Ba Đình — Nơi lịch sử được viết nên">
+        <div class="hi-yr">1288</div>
+        <div><div class="hi-ev">Chiến thắng Bạch Đằng</div><div class="hi-de">Hưng Đạo Vương Trần Quốc Tuấn đánh tan quân Nguyên Mông lần thứ ba. Thăng Long thoát khỏi ách xâm lược, mở ra thời đại hoàng kim của triều Trần với nền văn học — nghệ thuật rực rỡ.</div></div>
+      </div>
+      <div class="hist-item" data-year="1428"
+        data-img="https://images.unsplash.com/photo-1598873535498-ac65e2de9e2d?w=600&q=85"
+        data-cap="Hồ Hoàn Kiếm — Nơi vua Lê trả kiếm">
+        <div class="hi-yr">1428</div>
+        <div><div class="hi-ev">Triều Lê — Hoàng Kim</div><div class="hi-de">Lê Lợi đánh đuổi quân Minh sau 10 năm kháng chiến. Ông trả kiếm thần cho Rùa Vàng tại hồ — từ đó gọi là Hồ Hoàn Kiếm. Đông Kinh phát triển rực rỡ nhất lịch sử phong kiến Việt Nam.</div></div>
+      </div>
+      <div class="hist-item" data-year="1831"
+        data-img="https://images.unsplash.com/photo-1567016432779-094069958ea5?w=600&q=85"
+        data-cap="Phố Cổ Hà Nội — 36 Phường nghề thủ công">
+        <div class="hi-yr">1831</div>
+        <div><div class="hi-ev">Đổi tên thành Hà Nội</div><div class="hi-de">Vua Minh Mạng đổi tên Thăng Long thành Hà Nội — "Thành phố trong sông". Phố Cổ 36 phường hình thành hoàn chỉnh với mỗi phố mang tên một nghề thủ công truyền thống.</div></div>
+      </div>
+      <div class="hist-item" data-year="1902"
+        data-img="https://images.unsplash.com/photo-1458013356865-f7ea608ed9a6?w=600&q=85"
+        data-cap="Cầu Long Biên — Di sản kiến trúc Pháp thuộc">
+        <div class="hi-yr">1902</div>
+        <div><div class="hi-ev">Cầu Long Biên hoàn thành</div><div class="hi-de">Cây cầu thép dài 1.682m do Gustave Eiffel thiết kế hoàn thành sau 4 năm xây dựng. Hà Nội trở thành thủ đô Đông Dương với kiến trúc Pháp in đậm khắp phố phường.</div></div>
+      </div>
+      <div class="hist-item" data-year="1945"
+        data-img="https://images.unsplash.com/photo-1509030450996-dd1a26dda07a?w=600&q=85"
+        data-cap="Hà Nội — Thủ đô Việt Nam Tự Do">
+        <div class="hi-yr">1945</div>
+        <div><div class="hi-ev">Tuyên ngôn Độc lập</div><div class="hi-de">Ngày 2/9 tại Ba Đình, Chủ tịch Hồ Chí Minh đọc Tuyên ngôn Độc lập trước 500.000 người. Hà Nội trở thành Thủ đô nước Việt Nam Dân chủ Cộng hòa — một kỷ nguyên mới bắt đầu.</div></div>
+      </div>
+      <div class="hist-item" data-year="1972"
+        data-img="https://images.unsplash.com/photo-1560185009-dddeb820b00e?w=600&q=85"
+        data-cap="Cầu Long Biên — Nhân chứng B-52">
+        <div class="hi-yr">1972</div>
+        <div><div class="hi-ev">Hà Nội — Điện Biên Phủ trên không</div><div class="hi-de">Trong 12 ngày đêm tháng 12/1972, quân và dân Hà Nội bắn hạ 34 máy bay B-52 Mỹ. Chiến thắng vang dội buộc Mỹ ký Hiệp định Paris, rút quân khỏi Việt Nam.</div></div>
+      </div>
+      <div class="hist-item" data-year="2010"
+        data-img="https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=600&q=85"
+        data-cap="1000 năm Thăng Long — Đại lễ thế kỷ">
+        <div class="hi-yr">2010</div>
+        <div><div class="hi-ev">1000 năm Thăng Long</div><div class="hi-de">Đại lễ 1000 năm Thăng Long–Hà Nội — sự kiện văn hóa lịch sử lớn nhất thế kỷ 21 của Việt Nam. Hoàng Thành Thăng Long được UNESCO công nhận Di sản Văn hóa Thế giới.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PARALLAX SCENE: Hồ Tây -->
+<section id="scene">
+  <div class="scene-bg" id="sceneBg"></div>
+  <div class="scene-overlay"></div>
+  <div class="scene-content">
+    <div class="scene-eyebrow">Hồ Tây · Chùa Trấn Quốc · 500 Hecta</div>
+    <div class="scene-title">HỒ<br>TÂY</div>
+    <p class="scene-sub">Buổi sáng sương phủ mặt hồ, tiếng chuông ngân xa từ Chùa Trấn Quốc 1500 tuổi — khoảnh khắc Hà Nội đẹp nhất trong ngày.</p>
+  </div>
+</section>
+
+<!-- FOOD SECTION -->
+<section id="food">
+  <div class="section-tag">04 / 07 · Ẩm Thực</div>
+  <h2 class="section-h">ẨM THỰC<br><em>Đặc Sắc</em></h2>
+  <div class="food-layout">
+    <div class="food-hero">
+      <!-- Ảnh thật bát phở từ Unsplash -->
+      <img src="https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?w=900&q=85" alt="Phở Hà Nội" loading="lazy">
+      <div class="food-hero-cap">
+        <div class="food-hero-name">Phở Bò Hà Nội</div>
+        <div class="food-hero-desc">Nước dùng trong vắt hầm xương bò từ đêm, bánh phở mỏng như lụa, thịt bò chín mềm hay tái hồng. Phở Hà Nội tinh tế — không rau giá, không tương đen, chỉ hành lá, húng thơm và chút tương ớt đỏ.</div>
+      </div>
+    </div>
+    <div class="food-grid-right">
+      <div class="food-card">
+        <!-- Ảnh thật bún chả -->
+        <img src="https://images.unsplash.com/photo-1596797038530-2c107229654b?w=600&q=85" alt="Bún chả" loading="lazy">
+        <div class="food-card-overlay"></div>
+        <div class="food-card-body"><div class="fc-tag">Món nướng</div><div class="fc-name">Bún Chả</div></div>
+      </div>
+      <div class="food-card">
+        <!-- Ảnh cà phê -->
+        <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=600&q=85" alt="Cà phê trứng" loading="lazy">
+        <div class="food-card-overlay"></div>
+        <div class="food-card-body"><div class="fc-tag">Đặc sản 1946</div><div class="fc-name">Cà Phê Trứng</div></div>
+      </div>
+      <div class="food-card">
+        <img src="https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=600&q=85" alt="Bánh cuốn" loading="lazy">
+        <div class="food-card-overlay"></div>
+        <div class="food-card-body"><div class="fc-tag">Ăn sáng</div><div class="fc-name">Bánh Cuốn</div></div>
+      </div>
+      <div class="food-card">
+        <img src="https://images.unsplash.com/photo-1563245372-f21724e3856d?w=600&q=85" alt="Chả cá" loading="lazy">
+        <div class="food-card-overlay"></div>
+        <div class="food-card-body"><div class="fc-tag">Huyền thoại</div><div class="fc-name">Chả Cá Lã Vọng</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOD DEEP DIVE -->
+<section class="food-deep">
+  <div class="section-tag" style="color:var(--gold)">Ẩm Thực Sâu Hơn</div>
+  <h2 class="section-h" style="color:var(--ivory)">7 MÓN<br><em style="color:var(--gold2)">Không Thể Bỏ Qua</em></h2>
+  <div class="food-deep-grid">
+    <div class="fdc">
+      <img src="https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?w=700&q=85" alt="Phở" loading="lazy">
+      <div class="fdc-overlay"></div>
+      <div class="fdc-body">
+        <div class="fdc-num">01</div>
+        <div class="fdc-sub">Quốc Hồn Ẩm Thực</div>
+        <div class="fdc-name">Phở Bò</div>
+        <div class="fdc-desc">Sinh ra ở Hà Nội đầu thế kỷ 20, phở là "quốc hồn" ẩm thực Việt. Nước dùng hầm 6-12 tiếng từ xương ống và thảo mộc — quế, hồi, gừng nướng. Một bát phở là cả một nghệ thuật.</div>
+        <div class="fdc-price">30.000–80.000 VND</div>
+      </div>
+    </div>
+    <div class="fdc">
+      <img src="https://images.unsplash.com/photo-1596797038530-2c107229654b?w=700&q=85" alt="Bún chả" loading="lazy">
+      <div class="fdc-overlay"></div>
+      <div class="fdc-body">
+        <div class="fdc-num">02</div>
+        <div class="fdc-sub">Đặc Sản Bắc Bộ</div>
+        <div class="fdc-name">Bún Chả</div>
+        <div class="fdc-desc">Thịt heo nướng than hoa thơm lừng, chả viên béo ngậy, chấm nước mắm chua ngọt pha giấm. Ăn cùng bún tươi và rổ rau thơm xanh mướt. Tổng thống Obama từng ăn cùng Anthony Bourdain tại Hà Nội.</div>
+        <div class="fdc-price">35.000–60.000 VND</div>
+      </div>
+    </div>
+    <div class="fdc">
+      <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=700&q=85" alt="Cà phê trứng" loading="lazy">
+      <div class="fdc-overlay"></div>
+      <div class="fdc-body">
+        <div class="fdc-num">03</div>
+        <div class="fdc-sub">Sáng Tạo 1946</div>
+        <div class="fdc-name">Cà Phê Trứng</div>
+        <div class="fdc-desc">Phát minh năm 1946 bởi ông Nguyễn Văn Giảng — lòng đỏ trứng gà đánh bông kem mịn phủ lên cà phê đen nóng. Vị ngọt béo tan dần trong đắng của cà phê — trải nghiệm không đâu có ngoài Hà Nội.</div>
+        <div class="fdc-price">25.000–45.000 VND</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STREETS SECTION -->
+<section id="streets">
+  <div class="streets-intro">
+    <div>
+      <div class="section-tag">05 / 07 · Phố Cổ</div>
+      <h2 class="section-h">36 PHỐ<br><em>Phường</em></h2>
+    </div>
+    <p class="streets-body">Mỗi con phố mang tên một nghề thủ công — Hàng Bạc kim hoàn lấp lánh, Hàng Mã đỏ rực ngày lễ, Hàng Gai lụa tơ mềm mại. Dạo bước phố cổ là đi qua nghìn năm thủ công nghiệp Thăng Long.</p>
+  </div>
+  <div class="streets-masonry">
+    <div class="st-item" data-tilt>
+      <img src="https://images.unsplash.com/photo-1567016432779-094069958ea5?w=600&q=85" alt="Hàng Mã" loading="lazy">
+      <div class="st-overlay"></div>
+      <div class="st-body"><div class="st-cat">Đồ Mã · Lễ Tết</div><div class="st-name">Hàng Mã</div><div class="st-desc">Phố đỏ rực màu giấy lễ, đèn lồng rực rỡ, đồ trang trí Tết — sầm uất nhất mỗi dịp lễ hội và Tết Nguyên Đán.</div></div>
+    </div>
+    <div class="st-item" data-tilt>
+      <img src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=600&q=85" alt="Hàng Gai" loading="lazy">
+      <div class="st-overlay"></div>
+      <div class="st-body"><div class="st-cat">Tơ Lụa · Thêu</div><div class="st-name">Hàng Gai</div><div class="st-desc">Phố lụa tơ tằm mềm mại từ làng Vạn Phúc, tranh thêu tay tinh xảo — nơi du khách tìm mua quà lưu niệm đặc sắc nhất.</div></div>
+    </div>
+    <div class="st-item" data-tilt>
+      <img src="https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=600&q=85" alt="Hàng Đào" loading="lazy">
+      <div class="st-overlay"></div>
+      <div class="st-body"><div class="st-cat">Vải · Thời Trang</div><div class="st-name">Hàng Đào</div><div class="st-desc">Phố nhuộm vải hồng đào — từng là trung tâm vải tơ lụa nhộn nhịp bậc nhất kinh thành Thăng Long từ thế kỷ 15.</div></div>
+    </div>
+    <div class="st-item" data-tilt>
+      <!-- Ảnh phố cổ Hà Nội từ Unsplash -->
+      <img src="https://images.unsplash.com/photo-1560185009-dddeb820b00e?w=600&q=85" alt="Hàng Bạc" loading="lazy">
+      <div class="st-overlay"></div>
+      <div class="st-body"><div class="st-cat">Kim Hoàn · Bạc</div><div class="st-name">Hàng Bạc</div><div class="st-desc">Phố chế tác và đổi bạc từ thế kỷ 15 — thợ bạc tài hoa từ làng Châu Khê, Định Công và Đồng Xâm về đây lập nghiệp.</div></div>
+    </div>
+    <div class="st-item" data-tilt>
+      <img src="https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?w=600&q=85" alt="Hàng Ngang" loading="lazy">
+      <div class="st-overlay"></div>
+      <div class="st-body"><div class="st-cat">Vải · Hàng Hoá</div><div class="st-name">Hàng Ngang</div><div class="st-desc">Phố thương mại sầm uất nhất khu phố cổ từ thế kỷ 18. Nơi Chủ tịch Hồ Chí Minh viết Tuyên ngôn Độc lập năm 1945.</div></div>
+    </div>
+    <div class="st-item" data-tilt>
+      <img src="https://images.unsplash.com/photo-1509030450996-dd1a26dda07a?w=600&q=85" alt="Hàng Thiếc" loading="lazy">
+      <div class="st-overlay"></div>
+      <div class="st-body"><div class="st-cat">Đồ Đồng · Thiếc</div><div class="st-name">Hàng Thiếc</div><div class="st-desc">Tiếng gõ đồng thiếc vang xa — nghề chạm trổ kim loại truyền đời, làm thùng, chậu và đồ dùng gia đình bằng thiếc thủ công.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- LANDMARKS 3D CAROUSEL -->
+<section class="landmarks-section">
+  <div class="section-tag" style="color:var(--gold)">06 / 07 · Trải Nghiệm</div>
+  <h2 class="section-h" style="color:var(--ivory)">TRẢI NGHIỆM<br><em style="color:var(--gold2)">Không Thể Quên</em></h2>
+  <div class="landmarks-track-wrap" id="lmWrap">
+    <div class="landmarks-track" id="lmTrack"></div>
+  </div>
+  <div class="lm-nav">
+    <button class="lm-btn" id="lmPrev">← Trước</button>
+    <div class="lm-dots" id="lmDots"></div>
+    <button class="lm-btn" id="lmNext">Tiếp →</button>
+  </div>
+</section>
+
+<!-- STATS -->
+<section id="stats">
+  <div class="stat-bl"><div class="sb-n" data-to="1010">0</div><div class="sb-l">Năm Lịch Sử</div><div class="sb-d">Một trong những thủ đô lâu đời nhất Đông Nam Á, thành lập năm 1010 dưới triều Lý.</div></div>
+  <div class="stat-bl"><div class="sb-n">8<span class="sb-unit">M</span></div><div class="sb-l">Dân Số</div><div class="sb-d">Đô thị lớn thứ nhì Việt Nam, tốc độ đô thị hóa nhanh nhất khu vực Đông Nam Á.</div></div>
+  <div class="stat-bl"><div class="sb-n" data-to="36">0</div><div class="sb-l">Phố Cổ</div><div class="sb-d">36 phố phường thủ công truyền thống, mỗi phố mang tên một nghề độc đáo.</div></div>
+  <div class="stat-bl"><div class="sb-n">50<span class="sb-unit">M+</span></div><div class="sb-l">Khách/Năm</div><div class="sb-d">Top điểm đến châu Á về ẩm thực đường phố và văn hóa bản địa phong phú.</div></div>
+</section>
+
+<!-- EXPERIENCE SECTION — 2 large cards -->
+<section class="experience-section">
+  <div class="section-tag">Góc Nhìn Đặc Biệt</div>
+  <h2 class="section-h">KHOẢNH KHẮC<br><em>Đáng Nhớ</em></h2>
+  <div class="exp-grid">
+    <div class="exp-item">
+      <img src="https://images.unsplash.com/photo-1509030450996-dd1a26dda07a?w=900&q=85" alt="Bình minh Hà Nội" loading="lazy">
+      <div class="exp-overlay"></div>
+      <div class="exp-body">
+        <div class="exp-num">01</div>
+        <div class="exp-cat">5:30 Sáng · Hàng Ngày</div>
+        <div class="exp-name">Bình Minh Phố Cổ</div>
+        <div class="exp-desc">Khi Hà Nội còn ngủ say, những người bán hàng rong đã bắt đầu hành trình. Tiếng rao "bánh mì nóng giòn", mùi cà phê rang thơm từ góc phố — Hà Nội buổi sáng có vẻ đẹp không đâu có.</div>
+        <div class="exp-cta">Trải nghiệm →</div>
+      </div>
+    </div>
+    <div class="exp-item">
+      <img src="https://images.unsplash.com/photo-1458013356865-f7ea608ed9a6?w=900&q=85" alt="Cầu Long Biên hoàng hôn" loading="lazy">
+      <div class="exp-overlay"></div>
+      <div class="exp-body">
+        <div class="exp-num">02</div>
+        <div class="exp-cat">Hoàng Hôn · Cầu Long Biên</div>
+        <div class="exp-name">Đi Bộ Trên Lịch Sử</div>
+        <div class="exp-desc">Dạo bộ trên cầu Long Biên lúc hoàng hôn — nhìn Sông Hồng đỏ nặng phù sa chảy bên dưới, ngắm đoàn tàu qua cầu. Mỗi thanh thép là một trang sử của Hà Nội anh hùng.</div>
+        <div class="exp-cta">Khám phá →</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="gal-head">
+    <div>
+      <div class="section-tag">07 / 07 · Gallery</div>
+      <h2 class="section-h">GALLERY<br><em>Ký Ức</em></h2>
+    </div>
+    <p class="gal-sub">Mỗi khung hình — một góc Hà Nội bạn sẽ nhớ mãi.</p>
+  </div>
+  <div class="gal-grid">
+    <!-- Ảnh thật được chọn đúng theo nội dung -->
+    <!-- Hồ Hoàn Kiếm -->
+    <div class="gi gi-1"><img src="https://images.unsplash.com/photo-1598873535498-ac65e2de9e2d?w=800&q=85" alt="Hồ Hoàn Kiếm" loading="lazy"><div class="gi-ov"></div><div class="gi-lbl">Hồ Hoàn Kiếm</div></div>
+    <!-- Bình minh Hà Nội -->
+    <div class="gi gi-2"><img src="https://images.unsplash.com/photo-1509030450996-dd1a26dda07a?w=700&q=85" alt="Bình Minh Hà Nội" loading="lazy"><div class="gi-ov"></div><div class="gi-lbl">Bình Minh Hà Nội</div></div>
+    <!-- Văn Miếu -->
+    <div class="gi gi-3"><img src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=600&q=85" alt="Văn Miếu" loading="lazy"><div class="gi-ov"></div><div class="gi-lbl">Văn Miếu</div></div>
+    <!-- Ba Đình -->
+    <div class="gi gi-4"><img src="https://images.unsplash.com/photo-1569963393737-0c0eac7d8d08?w=700&q=85" alt="Ba Đình" loading="lazy"><div class="gi-ov"></div><div class="gi-lbl">Ba Đình Lịch Sử</div></div>
+    <!-- Phở Hà Nội -->
+    <div class="gi gi-5"><img src="https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?w=600&q=85" alt="Phở Hà Nội" loading="lazy"><div class="gi-ov"></div><div class="gi-lbl">Phở Hà Nội</div></div>
+    <!-- Hồ Tây sương mù -->
+    <div class="gi gi-6"><img src="https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=800&q=85" alt="Hồ Tây Sương Mù" loading="lazy"><div class="gi-ov"></div><div class="gi-lbl">Hồ Tây Sương Mù</div></div>
+    <!-- Phố Cổ đêm -->
+    <div class="gi gi-7"><img src="https://images.unsplash.com/photo-1567016432779-094069958ea5?w=600&q=85" alt="Phố Cổ Đêm" loading="lazy"><div class="gi-ov"></div><div class="gi-lbl">Phố Cổ Đêm</div></div>
+    <!-- Cầu Long Biên — ảnh thật -->
+    <div class="gi gi-8"><img src="https://images.unsplash.com/photo-1458013356865-f7ea608ed9a6?w=700&q=85" alt="Cầu Long Biên" loading="lazy"><div class="gi-ov"></div><div class="gi-lbl">Cầu Long Biên</div></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="cta-bg-img"></div>
+  <div class="cta-inner">
+    <div class="cta-eyebrow">Hà Nội Đang Chờ Bạn</div>
+    <div class="cta-h">KHÁM<br><em>PHÁ</em><br>HÀ NỘI</div>
+    <div class="cta-btns">
+      <button class="btn-prim" onclick="document.getElementById('places').scrollIntoView({behavior:'smooth'})"><span>Bắt Đầu Hành Trình →</span></button>
+      <button class="btn-sec" onclick="document.getElementById('food').scrollIntoView({behavior:'smooth'})">Khám Phá Ẩm Thực</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-main">
+    <div>
+      <div class="footer-brand">Hà<span>Nội</span></div>
+      <p class="footer-tagline">Nghìn năm văn hiến — nơi sương mù Hồ Tây, đèn lồng Phố Cổ và tiếng rao đêm tạo nên một thành phố không giống bất kỳ đâu trên thế giới.</p>
+    </div>
+    <div><div class="f-col-title">Khám Phá</div><ul class="f-links"><li><a href="#places">Hồ Hoàn Kiếm</a></li><li><a href="#scene">Hồ Tây</a></li><li><a href="#streets">Phố Cổ</a></li><li><a href="#places">Văn Miếu</a></li><li><a href="#places">Cầu Long Biên</a></li><li><a href="#history">Hoàng Thành</a></li></ul></div>
+    <div><div class="f-col-title">Ẩm Thực</div><ul class="f-links"><li><a href="#food">Phở Bò Hà Nội</a></li><li><a href="#food">Bún Chả</a></li><li><a href="#food">Cà Phê Trứng</a></li><li><a href="#food">Bánh Cuốn</a></li><li><a href="#food">Chả Cá Lã Vọng</a></li><li><a href="#food">Bún Ốc Hàng Chai</a></li></ul></div>
+    <div><div class="f-col-title">Thông Tin</div><ul class="f-links"><li><a href="#">Di Chuyển</a></li><li><a href="#">Thời Tiết Tốt Nhất</a></li><li><a href="#">Lưu Trú</a></li><li><a href="#">Lễ Hội</a></li><li><a href="#">Bản Đồ Phố Cổ</a></li><li><a href="#">Liên Hệ</a></li></ul></div>
+  </div>
+  <div class="footer-bot">
+    <div class="f-copy">© 2025 Hà Nội · Ngàn Năm Văn Hiến · Thủ đô Việt Nam 🇻🇳</div>
+    <div class="f-socials"><a href="#">Instagram</a><a href="#">Facebook</a><a href="#">YouTube</a><a href="#">TikTok</a></div>
+  </div>
+</footer>
+
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+/* ── LOADER ── */
+const ldrSpans = document.querySelectorAll('.ldr-word span');
+gsap.set(ldrSpans,{yPercent:110,opacity:0});
+gsap.to(ldrSpans,{yPercent:0,opacity:1,duration:.9,stagger:.07,ease:'power4.out',delay:.15});
+let pct=0;
+const ldrInt=setInterval(()=>{
+  pct=Math.min(pct+Math.random()*14,100);
+  document.getElementById('ldrF').style.width=pct+'%';
+  document.getElementById('ldrP').textContent=Math.floor(pct)+'%';
+  if(pct>=100){
+    clearInterval(ldrInt);
+    setTimeout(()=>{
+      gsap.to(ldrSpans,{yPercent:-110,opacity:0,duration:.5,stagger:.04,ease:'power3.in'});
+      gsap.to('#loader',{opacity:0,duration:.6,delay:.3,onComplete:()=>{
+        document.getElementById('loader').style.display='none';
+        initPage();
+      }});
+    },200);
+  }
+},55);
+
+/* ── PAGE INIT ── */
+function initPage(){
+  const tl=gsap.timeline();
+  tl.to('#hl1',{yPercent:0,duration:1.1,ease:'power4.out'},0)
+    .to('#hl2',{yPercent:0,duration:1.1,ease:'power4.out'},.15)
+    .to('#hl3',{yPercent:0,duration:1.1,ease:'power4.out'},.3)
+    .to('#heroTag',{opacity:1,y:0,duration:.8,ease:'power3.out'},.5)
+    .to('#heroSub',{opacity:1,y:0,duration:.8,ease:'power3.out'},.65)
+    .to('#heroScroll',{opacity:1,y:0,duration:.8,ease:'power3.out'},.8)
+    .from('.hero-badge',{opacity:0,y:20,duration:.7,stagger:.15,ease:'power3.out'},.4);
+}
+gsap.set(['#hl1','#hl2','#hl3'],{yPercent:110});
+gsap.set(['#heroTag','#heroSub'],{opacity:0,y:20});
+gsap.set('#heroScroll',{opacity:0,y:20});
+
+/* ── CURSOR ── */
+const curEl=document.getElementById('cursor');
+const curInner=curEl.querySelector('.cur-inner');
+const curOuter=curEl.querySelector('.cur-outer');
+const curLbl=document.getElementById('curLbl');
+let curX=0,curY=0,lagX=0,lagY=0;
+document.addEventListener('mousemove',e=>{curX=e.clientX;curY=e.clientY});
+(function animCur(){
+  curEl.style.left=curX+'px';curEl.style.top=curY+'px';
+  lagX+=(curX-lagX)*.11;lagY+=(curY-lagY)*.11;
+  curOuter.style.left=(lagX-curX)+'px';curOuter.style.top=(lagY-curY)+'px';
+  requestAnimationFrame(animCur);
+})();
+document.querySelectorAll('a,button,.bento-card,.st-item,.gi,.food-card,.food-hero,.fdc,.tc-tag,.flip-card-wrap,.exp-item,.lm-btn').forEach(el=>{
+  const label=el.dataset.cursor||el.dataset.tip||'';
+  el.addEventListener('mouseenter',()=>{document.body.classList.add('cur-hover');if(label){curLbl.textContent=label;curLbl.style.opacity='1'}});
+  el.addEventListener('mouseleave',()=>{document.body.classList.remove('cur-hover');curLbl.style.opacity='0'});
+});
+document.querySelectorAll('img').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('cur-img'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('cur-img'));
+});
+
+/* ── SCROLL PROGRESS ── */
+window.addEventListener('scroll',()=>{
+  const p=window.scrollY/(document.body.scrollHeight-window.innerHeight)*100;
+  document.getElementById('spbar').style.width=p+'%';
+  document.getElementById('nav').classList.toggle('scrolled',window.scrollY>60);
+},{passive:true});
+
+/* ── THREE.JS PARTICLES ── */
+const gl=document.getElementById('glCanvas');
+const renderer=new THREE.WebGLRenderer({canvas:gl,alpha:true,antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setSize(innerWidth,innerHeight);
+const scene3=new THREE.Scene();
+const cam3=new THREE.PerspectiveCamera(60,innerWidth/innerHeight,.1,1000);
+cam3.position.z=32;
+const N=1600,pos=new Float32Array(N*3),vel=new Float32Array(N*3),phase=new Float32Array(N);
+for(let i=0;i<N;i++){
+  const i3=i*3;
+  pos[i3]=(Math.random()-.5)*90;pos[i3+1]=(Math.random()-.5)*70;pos[i3+2]=(Math.random()-.5)*50;
+  vel[i3]=(Math.random()-.5)*.007;vel[i3+1]=(Math.random()-.5)*.005;vel[i3+2]=(Math.random()-.5)*.003;
+  phase[i]=Math.random()*Math.PI*2;
+}
+const geom=new THREE.BufferGeometry();
+geom.setAttribute('position',new THREE.BufferAttribute(pos,3));
+const mat=new THREE.PointsMaterial({color:0xC8960C,size:.16,transparent:true,opacity:.45,depthWrite:false,blending:THREE.AdditiveBlending,sizeAttenuation:true});
+const pts=new THREE.Points(geom,mat);
+scene3.add(pts);
+const N2=600,pos2=new Float32Array(N2*3);
+for(let i=0;i<N2;i++){const i3=i*3;pos2[i3]=(Math.random()-.5)*110;pos2[i3+1]=(Math.random()-.5)*90;pos2[i3+2]=(Math.random()-.5)*60;}
+const geom2=new THREE.BufferGeometry();
+geom2.setAttribute('position',new THREE.BufferAttribute(pos2,3));
+scene3.add(new THREE.Points(geom2,new THREE.PointsMaterial({color:0xB83228,size:.08,transparent:true,opacity:.25,depthWrite:false,blending:THREE.AdditiveBlending})));
+let mx3=0,my3=0;
+document.addEventListener('mousemove',e=>{mx3=(e.clientX/innerWidth-.5)*2;my3=(e.clientY/innerHeight-.5)*2});
+const clk=new THREE.Clock();
+(function render3(){
+  requestAnimationFrame(render3);
+  const t=clk.getElapsedTime();
+  const pa=geom.attributes.position.array;
+  for(let i=0;i<N;i++){
+    const i3=i*3;
+    pa[i3]+=vel[i3]+Math.sin(t*.28+phase[i])*.003;
+    pa[i3+1]+=vel[i3+1]+Math.cos(t*.22+phase[i])*.002;
+    pa[i3+2]+=vel[i3+2];
+    if(pa[i3]>45)pa[i3]=-45;if(pa[i3]<-45)pa[i3]=45;
+    if(pa[i3+1]>35)pa[i3+1]=-35;if(pa[i3+1]<-35)pa[i3+1]=35;
+    if(pa[i3+2]>25)pa[i3+2]=-25;if(pa[i3+2]<-25)pa[i3+2]=25;
+  }
+  geom.attributes.position.needsUpdate=true;
+  cam3.position.x+=(mx3*5-cam3.position.x)*.04;
+  cam3.position.y+=(-my3*3-cam3.position.y)*.04;
+  cam3.lookAt(0,0,0);
+  pts.rotation.y=t*.022;pts.rotation.x=t*.01;
+  renderer.render(scene3,cam3);
+})();
+window.addEventListener('resize',()=>{cam3.aspect=innerWidth/innerHeight;cam3.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+
+/* ── HERO PARALLAX ── */
+gsap.to('#heroImg',{yPercent:30,ease:'none',scrollTrigger:{trigger:'#hero',start:'top top',end:'bottom top',scrub:true}});
+gsap.to('.hero-headline',{y:-60,ease:'none',scrollTrigger:{trigger:'#hero',start:'top top',end:'bottom top',scrub:1.5}});
+gsap.to('.hero-inner > *:not(.hero-headline)',{y:-40,opacity:0,ease:'none',scrollTrigger:{trigger:'#hero',start:'20% top',end:'80% top',scrub:1}});
+gsap.to('.hero-badge-1',{y:-50,ease:'none',scrollTrigger:{trigger:'#hero',start:'top top',end:'bottom top',scrub:2}});
+gsap.to('.hero-badge-2',{y:-80,ease:'none',scrollTrigger:{trigger:'#hero',start:'top top',end:'bottom top',scrub:2.5}});
+
+/* ── IMAGE REVEAL ── */
+gsap.to('#imgReveal',{scaleX:0,duration:1.2,ease:'power4.inOut',scrollTrigger:{trigger:'#intro',start:'top 70%',once:true}});
+
+/* ── SCROLL ANIMATIONS ── */
+gsap.utils.toArray('.section-h').forEach(el=>{gsap.from(el,{y:60,opacity:0,duration:1,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 85%'}})});
+gsap.utils.toArray('.section-tag').forEach(el=>{gsap.from(el,{x:-30,opacity:0,duration:.8,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 88%'}})});
+gsap.utils.toArray('.bento-card').forEach((el,i)=>{gsap.from(el,{y:80,opacity:0,duration:.9,ease:'power3.out',delay:i*.06,scrollTrigger:{trigger:'.bento',start:'top 80%'}})});
+gsap.utils.toArray('.flip-card-wrap').forEach((el,i)=>{gsap.from(el,{y:80,opacity:0,rotateX:15,duration:1,ease:'power3.out',delay:i*.12,scrollTrigger:{trigger:'.flip-grid',start:'top 80%'}})});
+gsap.utils.toArray('.st-item').forEach((el,i)=>{gsap.from(el,{y:70,opacity:0,duration:.9,ease:'power3.out',delay:i*.08,scrollTrigger:{trigger:'#streets',start:'top 80%'}})});
+gsap.utils.toArray('.gi').forEach((el,i)=>{gsap.from(el,{y:50,opacity:0,duration:.8,ease:'power3.out',delay:i*.05,scrollTrigger:{trigger:'#gallery',start:'top 80%'}})});
+gsap.utils.toArray('.stat-bl').forEach((el,i)=>{gsap.from(el,{y:50,opacity:0,duration:.7,ease:'power3.out',delay:i*.1,scrollTrigger:{trigger:'#stats',start:'top 85%'}})});
+gsap.from('.food-hero',{x:-60,opacity:0,duration:1,ease:'power3.out',scrollTrigger:{trigger:'#food',start:'top 80%'}});
+gsap.from('.food-grid-right',{x:60,opacity:0,duration:1,ease:'power3.out',delay:.15,scrollTrigger:{trigger:'#food',start:'top 80%'}});
+gsap.utils.toArray('.fdc').forEach((el,i)=>{gsap.from(el,{y:60,opacity:0,duration:.9,ease:'power3.out',delay:i*.1,scrollTrigger:{trigger:'.food-deep-grid',start:'top 80%'}})});
+gsap.from('.stmt-quote',{y:50,opacity:0,duration:1.2,ease:'power3.out',scrollTrigger:{trigger:'#statement',start:'top 75%'}});
+gsap.from('.stmt-circle',{scale:.8,opacity:0,duration:1,ease:'back.out(1.5)',scrollTrigger:{trigger:'#statement',start:'top 75%'}});
+gsap.from('.intro-lead',{y:30,opacity:0,duration:.9,ease:'power3.out',scrollTrigger:{trigger:'.intro-lead',start:'top 85%'}});
+gsap.from('.intro-body',{y:30,opacity:0,duration:.9,ease:'power3.out',delay:.1,scrollTrigger:{trigger:'.intro-body',start:'top 85%'}});
+gsap.from('.intro-stats',{y:30,opacity:0,duration:.9,ease:'power3.out',delay:.2,scrollTrigger:{trigger:'.intro-stats',start:'top 88%'}});
+gsap.utils.toArray('.tc-tag').forEach((el,i)=>{gsap.from(el,{y:20,opacity:0,duration:.5,ease:'power3.out',delay:i*.04,scrollTrigger:{trigger:'.tag-cloud',start:'top 90%'}})});
+gsap.from('.cta-h',{y:60,opacity:0,duration:1.1,ease:'power3.out',scrollTrigger:{trigger:'#cta',start:'top 75%'}});
+gsap.from('.cta-btns',{y:30,opacity:0,duration:.8,ease:'power3.out',delay:.3,scrollTrigger:{trigger:'#cta',start:'top 75%'}});
+gsap.from('.footer-brand',{y:40,opacity:0,duration:.9,ease:'power3.out',scrollTrigger:{trigger:'footer',start:'top 85%'}});
+gsap.utils.toArray('.exp-item').forEach((el,i)=>{gsap.from(el,{y:60,opacity:0,duration:1,ease:'power3.out',delay:i*.15,scrollTrigger:{trigger:'.exp-grid',start:'top 80%'}})});
+
+/* ── COUNTERS ── */
+function countEl(el,to){
+  let s=null;
+  (function run(ts){
+    if(!s)s=ts;
+    const p=Math.min((ts-s)/2200,1);
+    const e=1-Math.pow(1-p,3);
+    el.textContent=Math.floor(e*to);
+    if(p<1)requestAnimationFrame(run);
+  })(performance.now());
+}
+ScrollTrigger.create({trigger:'#intro',start:'top 75%',once:true,onEnter:()=>{document.querySelectorAll('.ist-n[data-to]').forEach(el=>countEl(el,+el.dataset.to))}});
+ScrollTrigger.create({trigger:'#statement',start:'top 75%',once:true,onEnter:()=>{document.querySelectorAll('.stmt-circle-inner[data-to]').forEach(el=>countEl(el,+el.dataset.to))}});
+ScrollTrigger.create({trigger:'#stats',start:'top 80%',once:true,onEnter:()=>{document.querySelectorAll('.sb-n[data-to]').forEach(el=>countEl(el,+el.dataset.to))}});
+
+/* ── HISTORY IMAGE SWAP ── */
+const histItems3=document.querySelectorAll('.hist-item');
+const histImg3=document.getElementById('histImg');
+const histCap3=document.getElementById('histCap');
+const histIO=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      histItems3.forEach(i=>i.classList.remove('active'));
+      e.target.classList.add('active');
+      const img=e.target.dataset.img,cap=e.target.dataset.cap;
+      if(img){gsap.to(histImg3,{opacity:0,duration:.25,onComplete:()=>{histImg3.src=img;histCap3.textContent=cap||'';gsap.to(histImg3,{opacity:1,duration:.4})}})}
+    }
+  });
+},{threshold:.5,rootMargin:'-20% 0px -40% 0px'});
+histItems3.forEach(el=>histIO.observe(el));
+
+/* ── PARALLAX SCENE ── */
+gsap.to('#sceneBg',{yPercent:25,ease:'none',scrollTrigger:{trigger:'#scene',start:'top bottom',end:'bottom top',scrub:true}});
+
+/* ── 3D TILT ── */
+document.querySelectorAll('.bento-card,.st-item,.gi,.food-hero,.food-card,.fdc,.exp-item').forEach(card=>{
+  card.addEventListener('mousemove',e=>{
+    const r=card.getBoundingClientRect();
+    const x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
+    gsap.to(card,{rotateY:x*14,rotateX:-y*12,scale:1.02,duration:.15,ease:'power1.out',transformPerspective:900,transformOrigin:'center center'});
+    const body=card.querySelector('.bc-body,.st-body,.gi-lbl,.food-hero-cap,.food-card-body,.fdc-body,.exp-body');
+    if(body)gsap.to(body,{x:x*10,y:y*7,duration:.15});
+  });
+  card.addEventListener('mouseleave',()=>{
+    gsap.to(card,{rotateY:0,rotateX:0,scale:1,duration:.7,ease:'elastic.out(1,.4)'});
+    const body=card.querySelector('.bc-body,.st-body,.gi-lbl,.food-hero-cap,.food-card-body,.fdc-body,.exp-body');
+    if(body)gsap.to(body,{x:0,y:0,duration:.7,ease:'elastic.out(1,.4)'});
+  });
+});
+
+/* ── MAGNETIC BUTTONS ── */
+document.querySelectorAll('.btn-prim,.btn-sec,.nav-cta,.tc-tag,.lm-btn').forEach(btn=>{
+  btn.addEventListener('mousemove',e=>{
+    const r=btn.getBoundingClientRect();
+    const x=(e.clientX-r.left-r.width/2)*.3,y=(e.clientY-r.top-r.height/2)*.3;
+    gsap.to(btn,{x,y,duration:.4,ease:'power3.out'});
+  });
+  btn.addEventListener('mouseleave',()=>{gsap.to(btn,{x:0,y:0,duration:.7,ease:'elastic.out(1,.5)'})});
+});
+
+/* ── GLASS TOOLTIP ── */
+const tip=document.getElementById('glassTip');
+document.querySelectorAll('[data-tip]').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{tip.textContent=el.dataset.tip;tip.classList.add('show')});
+  el.addEventListener('mousemove',e=>{tip.style.left=(e.clientX+16)+'px';tip.style.top=(e.clientY-20)+'px'});
+  el.addEventListener('mouseleave',()=>tip.classList.remove('show'));
+});
+
+/* ── PAGE TRANSITION ── */
+const curtain=document.getElementById('curtain');
+const curtainTxt=document.getElementById('curtain-txt');
+document.querySelectorAll('a[href^="#"]').forEach(link=>{
+  link.addEventListener('click',e=>{
+    const target=document.querySelector(link.getAttribute('href'));
+    if(!target)return;
+    e.preventDefault();
+    gsap.timeline()
+      .set(curtainTxt,{textContent:link.textContent.trim().toUpperCase().slice(0,12)})
+      .to(curtain,{scaleY:1,duration:.55,ease:'power4.inOut',transformOrigin:'bottom'})
+      .to(curtainTxt,{opacity:1,y:0,duration:.3},.15)
+      .call(()=>{target.scrollIntoView()})
+      .to(curtainTxt,{opacity:0,duration:.25},.65)
+      .to(curtain,{scaleY:0,duration:.55,ease:'power4.inOut',transformOrigin:'top'},.7);
+  });
+});
+
+/* ── BENTO NEON ── */
+document.querySelectorAll('.bento-card').forEach(card=>{
+  card.addEventListener('mousemove',e=>{
+    const r=card.getBoundingClientRect();
+    const x=((e.clientX-r.left)/r.width*100).toFixed(1),y=((e.clientY-r.top)/r.height*100).toFixed(1);
+    card.style.background=`radial-gradient(circle at ${x}% ${y}%,rgba(200,154,20,.14) 0%,transparent 55%),var(--ink2)`;
+  });
+  card.addEventListener('mouseleave',()=>{card.style.background='var(--ink2)'});
+});
+
+/* ── 3D LANDMARKS CAROUSEL ── */
+const lmData=[
+  {
+    name:'Hồ Hoàn Kiếm',cat:'Biểu Tượng Thủ Đô',
+    img:'https://images.unsplash.com/photo-1598873535498-ac65e2de9e2d?w=700&q=85',
+    fact:'Nơi vua Lê Lợi trả kiếm thần cho Rùa Vàng năm 1428 sau chiến thắng giặc Minh. Tháp Rùa xây năm 1882 nằm giữa hồ là biểu tượng thiêng liêng nhất của Hà Nội.'
+  },
+  {
+    name:'Cầu Long Biên',cat:'Di Sản 1902',
+    img:'https://images.unsplash.com/photo-1458013356865-f7ea608ed9a6?w=700&q=85',
+    fact:'Cây cầu thép dài 1.682m bắc qua Sông Hồng, hoàn thành năm 1902. Thiết kế bởi công ty Daydé & Pillé — một trong những kỳ công kỹ thuật đẹp nhất Đông Nam Á thời Pháp thuộc.'
+  },
+  {
+    name:'Văn Miếu',cat:'Học Vấn · 1070',
+    img:'https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=700&q=85',
+    fact:'Xây năm 1070, Văn Miếu là trường đại học đầu tiên Việt Nam. Khuê Văn Các — kiến trúc điển hình nhất — in trên tờ 100.000 đồng. 82 tấm bia đá khắc tên 1.307 Tiến sĩ.'
+  },
+  {
+    name:'Hoàng Thành Thăng Long',cat:'UNESCO · 2010',
+    img:'https://images.unsplash.com/photo-1549366021-9f761d040a94?w=700&q=85',
+    fact:'Trung tâm quyền lực 13 thế kỷ của phong kiến Việt Nam. Di sản thế giới UNESCO năm 2010. Hàng nghìn hiện vật khảo cổ quý giá từ thế kỷ 7–20 được tìm thấy tại đây.'
+  },
+  {
+    name:'Hồ Tây',cat:'500 Hecta · Sương Mù',
+    img:'https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=700&q=85',
+    fact:'Hồ nước ngọt lớn nhất Hà Nội rộng 500 hecta. Chùa Trấn Quốc 1.500 tuổi nằm trên hòn đảo nhỏ. Buổi sáng sương mù trên Hồ Tây là cảnh đẹp biểu tượng của Hà Nội.'
+  },
+  {
+    name:'Quảng Trường Ba Đình',cat:'Lịch Sử · 1945',
+    img:'https://images.unsplash.com/photo-1569963393737-0c0eac7d8d08?w=700&q=85',
+    fact:'Nơi Chủ tịch Hồ Chí Minh đọc Tuyên ngôn Độc lập ngày 2/9/1945 trước 500.000 người. Lăng Bác và Cột cờ Hà Nội đứng trang nghiêm tại quảng trường lịch sử này.'
+  },
+];
+let lmIdx=0;
+const lmTrack=document.getElementById('lmTrack');
+const lmDots=document.getElementById('lmDots');
+
+// Build cards
+lmData.forEach((d,i)=>{
+  const el=document.createElement('div');
+  el.className='lm-card';
+  el.innerHTML=`<img src="${d.img}" alt="${d.name}" loading="lazy"><div class="lm-dim"></div><div class="lm-num">${String(i+1).padStart(2,'0')}</div><div class="lm-body"><div class="lm-cat">${d.cat}</div><div class="lm-name">${d.name}</div><div class="lm-fact">${d.fact}</div></div>`;
+  lmTrack.appendChild(el);
+  const dot=document.createElement('div');
+  dot.className='lm-dot'+(i===0?' active':'');
+  dot.onclick=()=>setLm(i);
+  lmDots.appendChild(dot);
+});
+
+function positionLmCards(){
+  const cards=document.querySelectorAll('.lm-card');
+  cards.forEach((el,i)=>{
+    const offset=i-lmIdx;
+    const absOff=Math.abs(offset);
+    const x=offset*360;
+    const z=-absOff*150;
+    const ry=offset*-20;
+    const op=Math.max(0,1-absOff*.4);
+    const sc=1-absOff*.08;
+    gsap.to(el,{
+      x:x-(170),y:-(230),z:z,rotateY:ry,
+      opacity:op,scale:sc,
+      zIndex:100-absOff,
+      duration:.7,ease:'power3.inOut'
+    });
+  });
+}
+function setLm(idx){
+  lmIdx=idx;
+  document.querySelectorAll('.lm-dot').forEach((d,i)=>d.classList.toggle('active',i===idx));
+  positionLmCards();
+}
+document.getElementById('lmPrev').onclick=()=>setLm((lmIdx-1+lmData.length)%lmData.length);
+document.getElementById('lmNext').onclick=()=>setLm((lmIdx+1)%lmData.length);
+ScrollTrigger.create({trigger:'.landmarks-section',start:'top 80%',once:true,onEnter:()=>positionLmCards()});
+
+/* ── CURSOR INVERSION ── */
+['#places','.food-deep','#stats','#cta','footer','.landmarks-section'].forEach(sel=>{
+  const el=document.querySelector(sel);
+  if(!el)return;
+  ScrollTrigger.create({
+    trigger:el,start:'top center',end:'bottom center',
+    onEnter:()=>{curInner.style.background='var(--ivory)';curOuter.style.borderColor='rgba(245,240,232,.5)'},
+    onLeave:()=>{curInner.style.background='var(--red)';curOuter.style.borderColor='rgba(24,19,14,.4)'},
+    onEnterBack:()=>{curInner.style.background='var(--ivory)';curOuter.style.borderColor='rgba(245,240,232,.5)'},
+    onLeaveBack:()=>{curInner.style.background='var(--red)';curOuter.style.borderColor='rgba(24,19,14,.4)'},
+  });
+});
+
+/* ── HERO COLOR SHIFT ── */
+gsap.to('#hl2',{color:'var(--red)',ease:'none',scrollTrigger:{trigger:'#intro',start:'top 70%',end:'top 30%',scrub:true}});
+
+/* ── STREETS TILT ── */
+document.querySelectorAll('[data-tilt]').forEach(card=>{
+  card.addEventListener('mousemove',e=>{
+    const r=card.getBoundingClientRect();
+    const x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
+    gsap.to(card,{rotateY:x*10,rotateX:-y*8,duration:.2,ease:'power1.out',transformPerspective:800});
+  });
+  card.addEventListener('mouseleave',()=>gsap.to(card,{rotateY:0,rotateX:0,duration:.8,ease:'elastic.out(1,.4)'}));
+});
+
+/* ── HORIZONTAL PARALLAX for stats ── */
+gsap.utils.toArray('.stat-bl').forEach((el,i)=>{
+  gsap.to(el,{y:i%2===0?-20:20,ease:'none',scrollTrigger:{trigger:'#stats',start:'top bottom',end:'bottom top',scrub:1}});
+});
+
+console.log('%cHÀ NỘI — Ngàn Năm Văn Hiến 🇻🇳','font-size:22px;font-weight:bold;color:#C49A14;background:#18130E;padding:12px 20px');
+</script>
+</body>
+</html>

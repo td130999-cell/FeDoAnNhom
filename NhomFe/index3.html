@@ -1,0 +1,1547 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HÀ NỘI — NGÀN NĂM VĂN HIẾN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,700&family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<style>
+/* ═══ TOKENS ═══ */
+:root{
+  --ivory:#F5F0E8;--cream:#EDE8DC;--parch:#E2DAC8;
+  --ink:#18130E;--ink2:#2E261C;--ink3:#3A3020;
+  --muted:#7A6E5A;--red:#B83228;--red2:#D94030;
+  --gold:#C49A14;--gold2:#E8B820;--gold3:#F5CC40;
+  --border:rgba(24,19,14,.1);--border2:rgba(24,19,14,.06);
+  --glass:rgba(245,240,232,.75);--glass2:rgba(245,240,232,.55);
+  --ff-d:'Syne',sans-serif;--ff-s:'Fraunces',serif;--ff-m:'DM Mono',monospace;
+  --ease-expo:cubic-bezier(.19,1,.22,1);--ease-back:cubic-bezier(.34,1.56,.64,1);
+  --ease-smooth:cubic-bezier(.4,0,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:auto}
+body{background:var(--ivory);color:var(--ink);font-family:var(--ff-m);overflow-x:hidden;cursor:none}
+body.is-smooth-scrolling{overscroll-behavior:none}
+a{text-decoration:none;color:inherit}ul{list-style:none}
+img{display:block;width:100%;height:100%;object-fit:cover}
+
+/* ── PAGE CURTAIN ── */
+#curtain{position:fixed;inset:0;z-index:10000;background:var(--ink);transform-origin:top;transform:scaleY(0);pointer-events:none}
+#curtain-txt{position:fixed;top:50%;left:50%;z-index:10001;transform:translate(-50%,-50%);font-family:var(--ff-d);font-size:clamp(36px,7vw,90px);font-weight:800;color:var(--ivory);letter-spacing:-2px;opacity:0;pointer-events:none;text-align:center}
+
+/* ── LOADER ── */
+#loader{position:fixed;inset:0;z-index:9999;background:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;overflow:hidden}
+.ldr-rings{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.ldr-rings span{position:absolute;border-radius:50%;border:1px solid rgba(200,154,20,.08);animation:ringPulse 3s ease-in-out infinite}
+.ldr-rings span:nth-child(1){width:140px;height:140px;animation-delay:0s}
+.ldr-rings span:nth-child(2){width:280px;height:280px;animation-delay:.3s}
+.ldr-rings span:nth-child(3){width:450px;height:450px;animation-delay:.6s}
+.ldr-rings span:nth-child(4){width:640px;height:640px;animation-delay:.9s}
+.ldr-rings span:nth-child(5){width:850px;height:850px;animation-delay:1.2s}
+@keyframes ringPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.2;transform:scale(1.02)}}
+.ldr-word{overflow:hidden;font-family:var(--ff-d);font-size:clamp(52px,10vw,130px);font-weight:800;color:var(--ivory);letter-spacing:-3px;line-height:.88;display:flex;position:relative;z-index:1}
+.ldr-word span{display:inline-block;transform:translateY(110%)}
+.ldr-bar{width:180px;height:1px;background:rgba(245,240,232,.08);position:relative;overflow:hidden;z-index:1}
+.ldr-fill{height:100%;background:linear-gradient(90deg,var(--red),var(--gold));width:0;box-shadow:0 0 16px rgba(228,184,32,.5)}
+.ldr-pct{font-family:var(--ff-m);font-size:9px;letter-spacing:5px;color:rgba(245,240,232,.2);z-index:1}
+
+/* ── CURSOR ── */
+#cursor{position:fixed;pointer-events:none;z-index:9990;top:0;left:0}
+.cur-inner{width:10px;height:10px;border-radius:50%;background:var(--red);transform:translate(-50%,-50%);transition:width .3s var(--ease-back),height .3s var(--ease-back),background .3s}
+.cur-outer{position:absolute;top:0;left:0;width:40px;height:40px;border-radius:50%;border:1.5px solid rgba(24,19,14,.35);transform:translate(-50%,-50%);transition:all .22s var(--ease-expo);mix-blend-mode:multiply}
+.cur-label{position:absolute;top:0;left:28px;font-family:var(--ff-m);font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--ink);white-space:nowrap;transform:translateY(-50%);opacity:0;transition:opacity .3s}
+body.cur-hover .cur-inner{width:5px;height:5px;background:var(--red2)}
+body.cur-hover .cur-outer{width:52px;height:52px;border-color:var(--red);opacity:.65}
+body.cur-img .cur-inner{background:var(--gold);width:72px;height:72px;opacity:.1}
+body.cur-img .cur-outer{opacity:0}
+body.cur-inv .cur-inner{background:var(--ivory)}
+body.cur-inv .cur-outer{border-color:rgba(245,240,232,.4)}
+
+/* ── PROGRESS ── */
+#spbar{position:fixed;top:0;left:0;height:2px;z-index:9000;background:linear-gradient(90deg,var(--red),var(--gold));width:0%;box-shadow:0 0 10px rgba(184,50,40,.5)}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:800;display:flex;align-items:center;justify-content:space-between;padding:0 60px;height:72px;transition:all .5s var(--ease-expo)}
+nav.scrolled{background:var(--glass);backdrop-filter:blur(28px) saturate(1.5);-webkit-backdrop-filter:blur(28px) saturate(1.5);border-bottom:1px solid var(--border);box-shadow:0 1px 32px rgba(24,19,14,.06)}
+.nav-logo{font-family:var(--ff-d);font-size:18px;font-weight:800;letter-spacing:-1px;color:var(--ink);display:flex;align-items:center;gap:8px}
+.nav-dot{width:7px;height:7px;border-radius:50%;background:var(--red);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(184,50,40,.4)}50%{box-shadow:0 0 0 7px rgba(184,50,40,0)}}
+.nav-links{display:flex;gap:36px}
+.nav-links a{font-family:var(--ff-m);font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);position:relative;transition:color .25s}
+.nav-links a::after{content:'';position:absolute;bottom:-3px;left:0;right:0;height:1px;background:var(--red);transform:scaleX(0);transform-origin:right;transition:transform .4s var(--ease-expo)}
+.nav-links a:hover{color:var(--ink)}
+.nav-links a:hover::after{transform:scaleX(1);transform-origin:left}
+.nav-cta{font-family:var(--ff-d);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:9px 22px;background:var(--ink);color:var(--ivory);position:relative;overflow:hidden;transition:all .3s var(--ease-expo)}
+.nav-cta::before{content:'';position:absolute;inset:0;background:var(--red);transform:translateX(-101%);transition:transform .4s var(--ease-expo)}
+.nav-cta:hover::before{transform:translateX(0)}
+.nav-cta span{position:relative;z-index:1}
+
+/* ── HERO ── */
+#hero{position:relative;height:100vh;min-height:680px;overflow:hidden;background:var(--ink)}
+.hero-bg{position:absolute;inset:0;
+  background:url('https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=1920&q=85') center/cover no-repeat;
+  will-change:transform}
+.hero-ov{position:absolute;inset:0;background:linear-gradient(165deg,rgba(24,19,14,.72) 0%,rgba(24,19,14,.25) 45%,rgba(24,19,14,.85) 100%)}
+.hero-grain{position:absolute;inset:0;pointer-events:none;z-index:3;opacity:.28;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E")}
+#glCanvas{position:absolute;inset:0;z-index:4;pointer-events:none;opacity:.6}
+.hero-inner{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;justify-content:flex-end;padding:0 60px 80px}
+.hero-tag{font-family:var(--ff-m);font-size:9px;letter-spacing:5px;text-transform:uppercase;color:rgba(245,240,232,.45);display:flex;align-items:center;gap:12px;margin-bottom:18px;overflow:hidden}
+.hero-tag-line{width:28px;height:1px;background:var(--gold)}
+.hero-hl{overflow:hidden}
+.hero-line{display:block;font-family:var(--ff-s);font-size:clamp(60px,11.5vw,175px);line-height:.87;font-weight:900;color:var(--ivory);transform:translateY(110%);will-change:transform}
+.hero-line.it{font-style:italic;color:var(--gold2)}
+.hero-line.ou{-webkit-text-stroke:2px rgba(245,240,232,.4);color:transparent}
+.hero-sub{font-family:var(--ff-m);font-size:13px;color:rgba(245,240,232,.42);letter-spacing:.5px;line-height:1.85;max-width:420px;margin-top:22px;opacity:0}
+/* badges */
+.h-badge{position:absolute;z-index:11;background:var(--glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(245,240,232,.18);padding:14px 18px}
+.hb1{top:136px;right:60px}.hb2{top:264px;right:60px;transform:rotate(1.5deg)}
+.hb-lbl{font-family:var(--ff-m);font-size:7px;letter-spacing:3px;text-transform:uppercase;color:rgba(245,240,232,.35)}
+.hb-val{font-family:var(--ff-d);font-size:22px;font-weight:800;color:var(--ivory);letter-spacing:-1px;margin-top:4px}
+/* hero scroll */
+.h-scroll{position:absolute;bottom:80px;right:60px;z-index:11;display:flex;flex-direction:column;align-items:center;gap:10px;opacity:0}
+.h-scroll span{font-family:var(--ff-m);font-size:7px;letter-spacing:3px;text-transform:uppercase;color:rgba(245,240,232,.35);writing-mode:vertical-rl}
+.sc-track{width:1px;height:64px;background:rgba(245,240,232,.1);position:relative;overflow:hidden}
+.sc-fill{position:absolute;top:-100%;left:0;width:100%;height:48%;background:linear-gradient(to bottom,transparent,var(--gold));animation:scDown 2s ease-in-out infinite}
+@keyframes scDown{0%{top:-100%}100%{top:200%}}
+
+/* ── TICKER ── */
+.ticker{overflow:hidden;padding:13px 0;background:var(--ink);border-top:1px solid rgba(245,240,232,.04);border-bottom:1px solid rgba(245,240,232,.04)}
+.tk-track{display:flex;white-space:nowrap;animation:tkr 22s linear infinite}
+.tk-track.rev{animation-direction:reverse;animation-duration:30s}
+.ti{font-family:var(--ff-d);font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(245,240,232,.07);padding:0 30px;flex-shrink:0}
+.ti.hi{color:rgba(200,154,20,.4)}
+.ticker.light{background:var(--cream)}
+.ticker.light .ti{color:rgba(24,19,14,.07)}
+.ticker.light .ti.hi{color:rgba(184,50,40,.3)}
+@keyframes tkr{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* ── SHARED SECTION ── */
+section{position:relative;z-index:2}
+.stag{font-family:var(--ff-m);font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--red);display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.stag::before{content:'';width:24px;height:1.5px;background:var(--red)}
+.sh{font-family:var(--ff-s);font-size:clamp(38px,5.5vw,76px);font-weight:900;line-height:.92;color:var(--ink);letter-spacing:-2px}
+.sh em{font-style:italic;color:var(--red)}
+.sh.wh{color:var(--ivory)}
+.sh.gd em{color:var(--gold2)}
+
+/* ── INTRO ── */
+#intro{min-height:280vh;background:var(--ivory)}
+.intro-pin{height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:0 60px;gap:72px;background:var(--ivory)}
+.intro-img{position:relative;overflow:hidden;aspect-ratio:4/5}
+.intro-img img{transition:transform 9s var(--ease-expo)}
+.intro-img:hover img{transform:scale(1.04)}
+.intro-img-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(24,19,14,.55) 0%,transparent 55%)}
+.intro-img-cap{position:absolute;bottom:20px;left:22px;font-family:var(--ff-m);font-size:8px;letter-spacing:3px;text-transform:uppercase;color:rgba(245,240,232,.55)}
+.img-wipe{position:absolute;inset:0;background:var(--ivory);transform-origin:left;z-index:2}
+.intro-lead{font-family:var(--ff-s);font-size:clamp(17px,2vw,24px);font-style:italic;color:var(--muted);line-height:1.78;margin-top:22px}
+.intro-body{font-family:var(--ff-m);font-size:12.5px;color:var(--muted);line-height:2;margin-top:18px}
+.i-stats{display:flex;margin-top:40px;border-top:1px solid var(--border)}
+.ist{flex:1;padding:22px 28px 0 0;border-right:1px solid var(--border);margin-right:28px}
+.ist:last-child{border-right:none;padding-right:0;margin-right:0}
+.ist-n{font-family:var(--ff-d);font-size:40px;font-weight:800;color:var(--ink);letter-spacing:-2px;line-height:1}
+.ist-l{font-family:var(--ff-m);font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:5px}
+.tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:28px}
+.tag{font-family:var(--ff-m);font-size:8px;letter-spacing:2px;text-transform:uppercase;padding:7px 13px;border:1px solid var(--border);color:var(--muted);background:var(--cream);transition:all .3s var(--ease-expo);cursor:none}
+.tag:hover{border-color:var(--red);color:var(--red);background:rgba(184,50,40,.04);transform:translateY(-2px)}
+.intro-carousel-space{min-height:160vh;position:relative;overflow:hidden;padding:18vh 0;background:radial-gradient(circle at 50% 42%,rgba(200,154,20,.13) 0%,rgba(245,240,232,0) 42%),var(--ivory)}
+.intro-carousel-space::before{content:'';position:absolute;top:0;left:50%;width:1px;height:100%;background:linear-gradient(to bottom,transparent,rgba(184,50,40,.18),transparent)}
+.intro-carousel-sticky{position:sticky;top:10vh;height:80vh;display:grid;place-items:center;perspective:1600px}
+.intro-carousel-hint{position:absolute;bottom:46px;left:50%;transform:translateX(-50%);font-family:var(--ff-m);font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(24,19,14,.36);text-align:center;line-height:1.8;pointer-events:none}
+.intro-carousel-container{width:min(400px,72vw);height:min(260px,46vw);position:relative;transform-style:preserve-3d}
+.intro-carousel{width:100%;height:100%;position:relative;transform-style:preserve-3d;will-change:transform}
+.intro-panel{position:absolute;inset:0;overflow:hidden;border:1px solid rgba(24,19,14,.12);box-shadow:0 18px 42px rgba(24,19,14,.22);background-size:cover;background-position:center;pointer-events:none;transition:opacity .25s ease,filter .25s ease;backface-visibility:visible}
+.intro-panel::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(24,19,14,.22),transparent 55%)}
+.intro-panel:nth-child(1){transform:rotateY(0deg) translateZ(600px)}
+.intro-panel:nth-child(2){transform:rotateY(45deg) translateZ(600px)}
+.intro-panel:nth-child(3){transform:rotateY(90deg) translateZ(600px)}
+.intro-panel:nth-child(4){transform:rotateY(135deg) translateZ(600px)}
+.intro-panel:nth-child(5){transform:rotateY(180deg) translateZ(600px)}
+.intro-panel:nth-child(6){transform:rotateY(225deg) translateZ(600px)}
+.intro-panel:nth-child(7){transform:rotateY(270deg) translateZ(600px)}
+.intro-panel:nth-child(8){transform:rotateY(315deg) translateZ(600px)}
+.intro-panel-1{background-image:url('images/hohangkiem.jpg')}
+.intro-panel-2{background-image:url('images/phocohanoi2.jpg')}
+.intro-panel-3{background-image:url('images/hotay2.jpg')}
+.intro-panel-4{background-image:url('images/thanglong.jpg')}
+.intro-panel-5{background-image:url('images/vanmieutugiam2.jpg')}
+.intro-panel-6{background-image:url('images/caulongbien.jpg')}
+.intro-panel-7{background-image:url('images/caphetrung.jpg')}
+.intro-panel-8{background-image:url('images/binhminhhanoi.jpg')}
+
+/* ── BENTO ── */
+#places{--places-shine:-120%;padding:130px 60px;background:radial-gradient(circle at 18% 8%,rgba(196,154,20,.1),transparent 34%),var(--ink);overflow:hidden}
+#places::before{content:'';position:absolute;inset:0;background:linear-gradient(110deg,transparent 0%,rgba(245,240,232,.055) 45%,transparent 70%);transform:translateX(var(--places-shine));pointer-events:none}
+.pl-head{margin-bottom:64px;display:flex;justify-content:space-between;align-items:flex-end}
+.pl-note{font-family:var(--ff-m);font-size:10px;color:rgba(245,240,232,.3);max-width:260px;line-height:1.8;text-align:right}
+.bento{display:grid;grid-template-columns:repeat(12,1fr);gap:3px}
+.bc{position:relative;overflow:hidden;cursor:none;background:var(--ink2);transition:box-shadow .4s;clip-path:inset(0 0 0 0)}
+.bc::after{content:'';position:absolute;inset:-1px;z-index:6;pointer-events:none;box-shadow:inset 0 0 0 1px transparent;transition:box-shadow .45s}
+.bc:hover::after{box-shadow:inset 0 0 0 1px rgba(228,184,32,.4),0 0 50px rgba(228,184,32,.08)}
+.bc-lg{grid-column:span 5;grid-row:span 2;min-height:500px}
+.bc-md{grid-column:span 4;min-height:290px}
+.bc-sm{grid-column:span 3;min-height:230px}
+.bc-wd{grid-column:span 7;min-height:270px}
+.bc-tl{grid-column:span 3;grid-row:span 2;min-height:490px}
+.bc-img{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform 9s var(--ease-expo)}
+.bc:hover .bc-img{transform:scale(1.07)}
+.bc-dim{position:absolute;inset:0;background:linear-gradient(to top,rgba(24,19,14,.97) 0%,rgba(24,19,14,.08) 58%);transition:opacity .4s}
+.bc:hover .bc-dim{opacity:.65}
+.bc-body{position:absolute;bottom:0;left:0;right:0;padding:26px 22px;z-index:4;transition:transform .4s var(--ease-expo)}
+.bc:hover .bc-body{transform:translateY(-5px)}
+.bc-n{font-family:var(--ff-d);font-size:48px;font-weight:800;color:rgba(245,240,232,.05);line-height:1;margin-bottom:5px}
+.bc-c{font-family:var(--ff-m);font-size:7.5px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:9px}
+.bc-nm{font-family:var(--ff-s);font-size:clamp(17px,2.4vw,28px);font-weight:700;color:var(--ivory);line-height:1.15}
+.bc-d{font-family:var(--ff-m);font-size:10.5px;color:rgba(245,240,232,.4);line-height:1.75;margin-top:9px;max-height:0;overflow:hidden;transition:max-height .5s var(--ease-expo)}
+.bc:hover .bc-d{max-height:90px}
+
+/* ── 3D FLIP CARDS ── */
+.flip-sec{padding:100px 60px;background:var(--cream)}
+.flip-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:60px}
+.flip-wrap{perspective:1100px;height:400px;cursor:none}
+.flip-card{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .85s var(--ease-expo)}
+.flip-wrap:hover .flip-card{transform:rotateY(180deg)}
+.flip-f,.flip-b{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden}
+.flip-b{transform:rotateY(180deg);background:var(--ink);padding:36px 28px;display:flex;flex-direction:column;justify-content:center}
+.flip-f img{transition:transform 1.2s var(--ease-expo)}
+.flip-wrap:hover .flip-f img{transform:scale(1.06)}
+.flip-f-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(24,19,14,.88) 0%,transparent 55%)}
+.flip-f-body{position:absolute;bottom:0;left:0;right:0;padding:26px 22px}
+.flip-cat{font-family:var(--ff-m);font-size:7.5px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:9px}
+.flip-nm{font-family:var(--ff-s);font-size:24px;font-weight:700;color:var(--ivory);line-height:1.2}
+.flip-hint{font-family:var(--ff-m);font-size:7.5px;letter-spacing:2px;text-transform:uppercase;color:rgba(245,240,232,.25);margin-top:10px}
+.flip-b-title{font-family:var(--ff-s);font-size:26px;font-weight:700;color:var(--ivory);margin-bottom:14px;line-height:1.2}
+.flip-b-txt{font-family:var(--ff-m);font-size:11.5px;color:rgba(245,240,232,.5);line-height:1.9}
+.flip-b-stats{margin-top:20px;display:flex;gap:22px}
+.fbs-n{font-family:var(--ff-d);font-size:26px;font-weight:800;color:var(--ivory);letter-spacing:-1px;line-height:1}
+.fbs-l{font-family:var(--ff-m);font-size:7.5px;letter-spacing:2px;text-transform:uppercase;color:rgba(245,240,232,.28);margin-top:4px}
+.flip-b-tag{display:inline-block;font-family:var(--ff-m);font-size:7.5px;letter-spacing:2px;text-transform:uppercase;padding:6px 12px;border:1px solid rgba(200,154,20,.3);color:var(--gold);margin-top:20px}
+
+/* ── STATEMENT ── */
+#statement{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:150px 60px;background:var(--ivory);overflow:hidden;position:relative}
+.stmt-bg-txt{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-10deg);font-family:var(--ff-d);font-size:clamp(140px,25vw,360px);font-weight:800;color:transparent;-webkit-text-stroke:1px rgba(24,19,14,.035);pointer-events:none;white-space:nowrap;letter-spacing:-8px;user-select:none}
+.stmt-content{max-width:860px;position:relative;z-index:2}
+.stmt-q{font-family:var(--ff-s);font-size:clamp(30px,4.5vw,62px);font-weight:400;font-style:italic;color:var(--ink);line-height:1.28}
+.stmt-q strong{color:var(--red);font-style:normal;font-weight:900}
+.stmt-auth{font-family:var(--ff-m);font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--muted);margin-top:32px;display:flex;align-items:center;gap:14px}
+.stmt-auth::before{content:'';width:36px;height:1px;background:var(--muted)}
+.stmt-ring{position:absolute;right:80px;top:50%;transform:translateY(-50%);width:280px;height:280px;border-radius:50%;border:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;animation:rotateSlow 32s linear infinite}
+.stmt-ring::before{content:'';position:absolute;inset:18px;border-radius:50%;border:1px solid var(--border)}
+.stmt-ring-n{font-family:var(--ff-d);font-size:56px;font-weight:800;color:var(--ink);letter-spacing:-2px;line-height:1;text-align:center}
+.stmt-ring-l{font-family:var(--ff-m);font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-top:7px}
+@keyframes rotateSlow{to{transform:translateY(-50%) rotate(360deg)}}
+
+/* ── HISTORY ── */
+#history{--hist-line:0;--hist-sweep:-140%;background:radial-gradient(circle at 16% 18%,rgba(184,50,40,.08),transparent 34%),linear-gradient(180deg,var(--cream),var(--ivory));padding:130px 60px;overflow:hidden}
+#history::before{content:'';position:absolute;left:60px;top:190px;bottom:120px;width:1px;background:linear-gradient(to bottom,var(--red),rgba(184,50,40,.08));transform:scaleY(var(--hist-line));transform-origin:top;pointer-events:none}
+#history::after{content:'';position:absolute;inset:0;background:linear-gradient(105deg,transparent 0%,rgba(184,50,40,.08) 42%,rgba(232,184,32,.1) 50%,transparent 64%);transform:translateX(var(--hist-sweep));pointer-events:none;mix-blend-mode:multiply}
+.hist-grid{display:grid;grid-template-columns:.9fr 1.45fr;gap:96px;margin-top:72px;align-items:center;perspective:1600px}
+.hist-sticky{position:sticky;top:110px;align-self:start}
+.hist-photo{aspect-ratio:1;overflow:hidden;position:relative;border:1px solid rgba(184,50,40,.18);box-shadow:0 28px 90px rgba(24,19,14,.12);transform-style:preserve-3d;border-radius:0 0 72% 0;clip-path:circle(104% at 0 0);cursor:grab}
+.hist-photo:active{cursor:grabbing}
+.hist-photo::before{content:'';position:absolute;inset:0;z-index:4;background:linear-gradient(110deg,rgba(184,50,40,.9),rgba(232,184,32,.72),rgba(245,240,232,.2));transform:translateX(-115%);pointer-events:none;mix-blend-mode:multiply}
+.hist-photo::after{content:'';position:absolute;inset:14px;z-index:5;border:1px solid rgba(245,240,232,.28);pointer-events:none;opacity:.65}
+.hist-photo.is-changing::before{animation:histWipe .72s var(--ease-expo)}
+.hist-photo img{transition:transform 1.2s var(--ease-expo),filter .7s var(--ease-expo)}
+.hist-photo:hover img{transform:scale(1.04)}
+.hist-photo-cap{position:absolute;bottom:0;left:0;right:0;padding:20px 18px;background:linear-gradient(to top,rgba(24,19,14,.72) 0%,transparent);font-family:var(--ff-m);font-size:8px;letter-spacing:2px;text-transform:uppercase;color:rgba(245,240,232,.55)}
+.hist-photo-orbit{display:none}
+#histList{position:relative;min-height:520px;perspective:1400px;transform-style:preserve-3d}
+.hi{position:absolute;top:50%;left:0;right:0;padding:42px 34px 42px 28px;border-top:1px solid rgba(24,19,14,.08);display:grid;grid-template-columns:104px 1fr;gap:32px;opacity:0;transition:opacity .65s var(--ease-expo),border-color .45s var(--ease-expo),background .45s var(--ease-expo),transform .7s var(--ease-expo),filter .65s var(--ease-expo);cursor:none;overflow:hidden;transform:translate3d(180px,-50%,-360px) rotateY(-28deg) scale(.82);filter:blur(8px);pointer-events:none}
+.hi::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(184,50,40,.08),transparent 62%);transform:scaleX(0);transform-origin:left;transition:transform .65s var(--ease-expo)}
+.hi::after{content:'';position:absolute;left:0;top:50%;width:8px;height:8px;border-radius:50%;background:var(--red);transform:translate(-50%,-50%) scale(.3);opacity:0;transition:all .55s var(--ease-expo)}
+.hi.active{opacity:1;border-color:rgba(184,50,40,.42);background:rgba(245,240,232,.42);transform:translate3d(0,-50%,80px) rotateY(0deg) scale(1);filter:blur(0);pointer-events:auto}
+.hi.prev{opacity:.22;transform:translate3d(84px,-124%,-160px) rotateY(-16deg) scale(.9);filter:blur(3px)}
+.hi.next{opacity:.22;transform:translate3d(84px,24%,-160px) rotateY(-16deg) scale(.9);filter:blur(3px)}
+.hi.active::before{transform:scaleX(1)}
+.hi.active::after{opacity:1;transform:translate(-50%,-50%) scale(1);box-shadow:0 0 0 10px rgba(184,50,40,.08)}
+.hi:hover{opacity:.82}
+.hi-yr{position:relative;z-index:1;font-family:var(--ff-d);font-size:32px;font-weight:800;color:var(--red);line-height:1;letter-spacing:-1px}
+.hi-ev{position:relative;z-index:1;font-family:var(--ff-s);font-size:21px;font-weight:800;color:var(--ink);line-height:1.3}
+.hi-de{position:relative;z-index:1;font-family:var(--ff-m);font-size:11.5px;color:var(--muted);line-height:1.9;margin-top:8px}
+@keyframes histWipe{0%{transform:translateX(-115%)}52%{transform:translateX(0)}100%{transform:translateX(115%)}}
+
+/* ── PARALLAX SCENE ── */
+#scene{position:relative;height:100vh;overflow:hidden}
+.scene-bg{position:absolute;inset:-22%;background:url('https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=1920&q=85') center/cover no-repeat;will-change:transform}
+.scene-ov{position:absolute;inset:0;z-index:2;background:linear-gradient(to bottom,rgba(24,19,14,.32) 0%,rgba(24,19,14,.08) 28%,rgba(24,19,14,.75) 100%)}
+.scene-body{position:absolute;bottom:0;left:0;right:0;z-index:10;padding:60px}
+.scene-ey{font-family:var(--ff-m);font-size:8.5px;letter-spacing:4px;text-transform:uppercase;color:var(--gold2)}
+.scene-t{font-family:var(--ff-s);font-size:clamp(72px,12vw,170px);font-weight:900;color:var(--ivory);line-height:.88;letter-spacing:-4px}
+.scene-s{font-family:var(--ff-m);font-size:12.5px;color:rgba(245,240,232,.5);max-width:400px;line-height:1.8;margin-top:14px}
+
+/* ── SCENE 2: CẦU LONG BIÊN ── */
+#scene2{position:relative;height:100vh;overflow:hidden}
+.scene2-bg{position:absolute;inset:-22%;
+  /* Cầu Long Biên — ảnh thật từ Unsplash photo by Teodor Kuduschiev: Long Bien Bridge tunnel */
+  background:url('images/caulongbien.jpg') center/cover no-repeat;
+  will-change:transform}
+.scene2-ov{position:absolute;inset:0;z-index:2;background:linear-gradient(135deg,rgba(24,19,14,.8) 0%,rgba(24,19,14,.3) 50%,rgba(24,19,14,.7) 100%)}
+.scene2-body{position:absolute;top:50%;right:10%;transform:translateY(-50%);z-index:10;text-align:right;max-width:520px}
+.scene2-t{font-family:var(--ff-s);font-size:clamp(60px,10vw,140px);font-weight:900;color:var(--ivory);line-height:.9;letter-spacing:-3px}
+.scene2-t em{font-style:italic;color:var(--gold2)}
+.scene2-s{font-family:var(--ff-m);font-size:12px;color:rgba(245,240,232,.48);line-height:1.85;margin-top:16px}
+.scene2-badge{display:inline-block;font-family:var(--ff-m);font-size:8px;letter-spacing:3px;text-transform:uppercase;padding:9px 20px;border:1px solid rgba(200,154,20,.3);color:var(--gold);margin-top:20px}
+
+/* ── FOOD ── */
+#food{padding:130px 60px;background:var(--ivory)}
+.food-layout{display:grid;grid-template-columns:repeat(12,1fr);gap:3px;margin-top:72px}
+.food-hero{grid-column:span 7;position:relative;overflow:hidden;min-height:560px;cursor:none}
+.food-hero img{transition:transform 9s var(--ease-expo)}
+.food-hero:hover img{transform:scale(1.04)}
+.fh-cap{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(24,19,14,.94) 0%,transparent 62%);padding:36px 32px}
+.fh-name{font-family:var(--ff-s);font-size:clamp(26px,3.8vw,50px);font-weight:900;color:var(--ivory);line-height:1.1}
+.fh-desc{font-family:var(--ff-m);font-size:10.5px;color:rgba(245,240,232,.48);line-height:1.85;margin-top:11px;max-width:400px}
+.food-right{grid-column:span 5;display:grid;grid-template-columns:1fr 1fr;gap:3px}
+.fc{position:relative;overflow:hidden;min-height:185px;cursor:none}
+.fc img{transition:transform .9s var(--ease-expo)}
+.fc:hover img{transform:scale(1.1)}
+.fc-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(24,19,14,.9) 0%,transparent 58%)}
+.fc-body{position:absolute;bottom:0;left:0;right:0;padding:14px 15px 17px}
+.fc-nm{font-family:var(--ff-s);font-size:17px;color:var(--ivory);line-height:1.15}
+.fc-t{font-family:var(--ff-m);font-size:7.5px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:5px}
+
+/* ── FOOD DEEP ── */
+.food-deep{padding:90px 60px;background:var(--ink)}
+.fd-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:56px}
+.fdc{position:relative;overflow:hidden;min-height:440px;cursor:none}
+.fdc img{transition:transform 9s var(--ease-expo)}
+.fdc:hover img{transform:scale(1.06)}
+.fdc-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(24,19,14,.96) 0%,rgba(24,19,14,.08) 56%)}
+.fdc-body{position:absolute;bottom:0;left:0;right:0;padding:30px 26px}
+.fdc-n{font-family:var(--ff-d);font-size:46px;font-weight:800;color:rgba(245,240,232,.05);line-height:1;margin-bottom:7px}
+.fdc-sub{font-family:var(--ff-m);font-size:7.5px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:9px}
+.fdc-name{font-family:var(--ff-s);font-size:23px;font-weight:700;color:var(--ivory);line-height:1.2}
+.fdc-desc{font-family:var(--ff-m);font-size:10.5px;color:rgba(245,240,232,.42);line-height:1.8;margin-top:9px;max-height:0;overflow:hidden;transition:max-height .5s var(--ease-expo)}
+.fdc:hover .fdc-desc{max-height:120px}
+.fdc-price{font-family:var(--ff-d);font-size:13px;font-weight:700;color:var(--gold2);margin-top:10px;opacity:0;transition:opacity .4s}
+.fdc:hover .fdc-price{opacity:1}
+
+/* ── STREETS ── */
+#streets{padding:130px 60px;background:var(--cream)}
+.st-intro{display:grid;grid-template-columns:1fr 1fr;gap:72px;margin-bottom:90px;align-items:end}
+.st-body{font-family:var(--ff-s);font-size:18px;font-style:italic;color:var(--muted);line-height:1.85}
+.st-masonry{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.sti{position:relative;overflow:hidden;cursor:none;transform-style:preserve-3d;perspective:800px}
+.sti:nth-child(2){margin-top:56px}.sti:nth-child(4){margin-top:-36px}.sti:nth-child(5){margin-top:36px}
+.sti img{aspect-ratio:3/4;transition:transform .8s var(--ease-expo)}
+.sti:hover img{transform:scale(1.05)}
+.sti-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(24,19,14,.93) 0%,transparent 56%);transition:opacity .4s}
+.sti:hover .sti-ov{opacity:.65}
+.sti-body{position:absolute;bottom:0;left:0;right:0;padding:22px 18px}
+.sti-cat{font-family:var(--ff-m);font-size:7.5px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:7px}
+.sti-nm{font-family:var(--ff-s);font-size:21px;color:var(--ivory);line-height:1.2}
+.sti-desc{font-family:var(--ff-m);font-size:10.5px;color:rgba(245,240,232,.42);line-height:1.75;margin-top:7px;max-height:0;overflow:hidden;transition:max-height .4s}
+.sti:hover .sti-desc{max-height:70px}
+.sti::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:5;box-shadow:inset 0 0 0 1.5px transparent;transition:box-shadow .4s}
+.sti:hover::after{box-shadow:inset 0 0 0 1.5px rgba(200,154,20,.28),0 18px 54px rgba(24,19,14,.18)}
+
+/* ── 3D LANDMARK CAROUSEL ── */
+.lm-sec{padding:110px 60px;background:var(--ink);overflow:hidden}
+.lm-stage{position:relative;height:480px;perspective:1400px;margin-top:60px}
+.lm-track{position:relative;width:100%;height:100%;transform-style:preserve-3d}
+.lm-card{position:absolute;width:320px;height:450px;left:50%;top:50%;overflow:hidden;cursor:none;transform-style:preserve-3d;transition:all .65s var(--ease-expo)}
+.lm-card img{transition:transform 1.2s var(--ease-expo)}
+.lm-card:hover img{transform:scale(1.06)}
+.lm-dim{position:absolute;inset:0;background:linear-gradient(to top,rgba(24,19,14,.97) 0%,rgba(24,19,14,.08) 58%)}
+.lm-body{position:absolute;bottom:0;left:0;right:0;padding:28px 24px;z-index:4}
+.lm-num{position:absolute;top:16px;right:16px;font-family:var(--ff-d);font-size:72px;font-weight:800;color:rgba(245,240,232,.04);line-height:1}
+.lm-cat{font-family:var(--ff-m);font-size:7.5px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:7px}
+.lm-name{font-family:var(--ff-s);font-size:24px;font-weight:700;color:var(--ivory);line-height:1.2}
+.lm-fact{font-family:var(--ff-m);font-size:10.5px;color:rgba(245,240,232,.42);line-height:1.75;margin-top:9px}
+.lm-nav{display:flex;justify-content:center;align-items:center;gap:12px;margin-top:28px}
+.lm-btn{font-family:var(--ff-m);font-size:8.5px;letter-spacing:3px;text-transform:uppercase;padding:11px 28px;background:transparent;border:1px solid rgba(245,240,232,.12);color:rgba(245,240,232,.35);cursor:none;transition:all .3s var(--ease-expo)}
+.lm-btn:hover{border-color:var(--gold);color:var(--gold)}
+.lm-dots{display:flex;gap:7px;align-items:center}
+.lm-dot{width:5px;height:5px;border-radius:50%;background:rgba(245,240,232,.12);transition:all .3s;cursor:none}
+.lm-dot.active{background:var(--gold);transform:scale(1.4)}
+
+/* ── SCENE 3: BA ĐÌNH ── */
+#scene3{position:relative;height:80vh;overflow:hidden}
+.s3-bg{position:absolute;inset:-20%;
+  background:url('https://images.unsplash.com/photo-1569963393737-0c0eac7d8d08?w=1920&q=85') center/cover no-repeat;
+  will-change:transform}
+.s3-ov{position:absolute;inset:0;z-index:2;background:rgba(24,19,14,.6)}
+.s3-body{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px}
+.s3-eye{font-family:var(--ff-m);font-size:8.5px;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:20px}
+.s3-t{font-family:var(--ff-s);font-size:clamp(48px,9vw,128px);font-weight:900;color:var(--ivory);line-height:.9;letter-spacing:-3px}
+.s3-sub{font-family:var(--ff-m);font-size:12px;color:rgba(245,240,232,.45);line-height:1.8;max-width:520px;margin-top:20px}
+.s3-date{font-family:var(--ff-d);font-size:clamp(80px,16vw,240px);font-weight:800;color:transparent;-webkit-text-stroke:1px rgba(245,240,232,.08);pointer-events:none;position:absolute;bottom:-20px;right:-10px;letter-spacing:-8px;user-select:none}
+
+/* ── STATS ── */
+#stats{padding:0;background:var(--ink);display:grid;grid-template-columns:repeat(4,1fr)}
+.sb{padding:68px 44px;border-right:1px solid rgba(245,240,232,.05);position:relative;overflow:hidden;transition:background .4s}
+.sb:last-child{border-right:none}
+.sb::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(200,154,20,.07) 0%,transparent 68%);opacity:0;transition:opacity .4s}
+.sb:hover::before{opacity:1}
+.sb-n{font-family:var(--ff-d);font-size:clamp(42px,4.8vw,68px);font-weight:800;color:var(--ivory);line-height:1;letter-spacing:-2px}
+.sb-u{color:var(--red);font-size:.64em}
+.sb-l{font-family:var(--ff-m);font-size:8.5px;letter-spacing:3px;text-transform:uppercase;color:rgba(245,240,232,.22);margin:11px 0 14px}
+.sb-d{font-family:var(--ff-m);font-size:10.5px;color:rgba(245,240,232,.28);line-height:1.75}
+
+/* ── EXPERIENCE ── */
+.exp-sec{padding:0;background:var(--ivory)}
+.exp-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px}
+.exp-item{position:relative;overflow:hidden;min-height:520px;cursor:none}
+.exp-item img{transition:transform 9s var(--ease-expo)}
+.exp-item:hover img{transform:scale(1.05)}
+.exp-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(24,19,14,.94) 0%,rgba(24,19,14,.08) 56%)}
+.exp-body{position:absolute;bottom:0;left:0;right:0;padding:44px 40px}
+.exp-idx{font-family:var(--ff-d);font-size:68px;font-weight:800;color:rgba(245,240,232,.05);line-height:1;margin-bottom:7px}
+.exp-cat{font-family:var(--ff-m);font-size:8.5px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:11px}
+.exp-nm{font-family:var(--ff-s);font-size:clamp(26px,3.3vw,44px);font-weight:900;color:var(--ivory);line-height:1.1}
+.exp-desc{font-family:var(--ff-m);font-size:11.5px;color:rgba(245,240,232,.48);line-height:1.85;margin-top:14px;max-width:380px}
+.exp-link{display:inline-block;font-family:var(--ff-m);font-size:8.5px;letter-spacing:3px;text-transform:uppercase;padding:10px 24px;border:1px solid rgba(245,240,232,.18);color:rgba(245,240,232,.45);margin-top:22px;transition:all .3s}
+.exp-item:hover .exp-link{border-color:var(--gold);color:var(--gold)}
+
+/* ── GALLERY ── */
+#gallery{--gal-glow:0;padding:130px 60px;background:radial-gradient(circle at 82% 6%,rgba(184,50,40,var(--gal-glow)),transparent 34%),var(--cream);overflow:hidden}
+.gal-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:56px}
+.gal-sub{font-family:var(--ff-m);font-size:10.5px;color:var(--muted);max-width:280px;line-height:1.8;text-align:right}
+.gal-grid{display:grid;grid-template-columns:repeat(12,1fr);grid-auto-rows:78px;gap:3px}
+.gi{position:relative;overflow:hidden;cursor:none;transition:transform .4s var(--ease-expo),box-shadow .4s}
+.gi:hover{transform:translateY(-9px);z-index:2;box-shadow:0 22px 72px rgba(24,19,14,.17)}
+.gi img{transition:transform .9s var(--ease-expo)}
+.gi:hover img{transform:scale(1.1)}
+.gi-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(24,19,14,.88) 0%,transparent 56%);opacity:0;transition:opacity .4s}
+.gi:hover .gi-ov{opacity:1}
+.gi-lbl{position:absolute;bottom:0;left:0;right:0;padding:15px 13px;font-family:var(--ff-s);font-size:16px;color:var(--ivory);transform:translateY(8px);opacity:0;transition:all .35s var(--ease-expo)}
+.gi:hover .gi-lbl{transform:none;opacity:1}
+.gi-1{grid-column:span 5;grid-row:span 5}.gi-2{grid-column:span 4;grid-row:span 3}
+.gi-3{grid-column:span 3;grid-row:span 3}.gi-4{grid-column:span 4;grid-row:span 4}
+.gi-5{grid-column:span 3;grid-row:span 2}.gi-6{grid-column:span 5;grid-row:span 4}
+.gi-7{grid-column:span 3;grid-row:span 2}.gi-8{grid-column:span 4;grid-row:span 3}
+
+/* ── CTA ── */
+#cta{padding:180px 60px;background:var(--ink);position:relative;overflow:hidden}
+.cta-bg{position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=1920&q=85') center/cover no-repeat;opacity:.09}
+.cta-inner{position:relative;z-index:2;max-width:920px}
+.cta-ey{font-family:var(--ff-m);font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:26px;display:flex;align-items:center;gap:13px}
+.cta-ey::before{content:'';width:26px;height:1.5px;background:var(--gold)}
+.cta-h{font-family:var(--ff-s);font-size:clamp(56px,9.5vw,134px);font-weight:900;color:var(--ivory);line-height:.9;letter-spacing:-3px;margin-bottom:36px}
+.cta-h em{font-style:italic;color:var(--gold2)}
+.cta-btns{display:flex;gap:14px;flex-wrap:wrap}
+.btn-p{font-family:var(--ff-d);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:17px 44px;background:var(--ivory);color:var(--ink);position:relative;overflow:hidden;cursor:none;transition:all .4s var(--ease-expo)}
+.btn-p::before{content:'';position:absolute;inset:0;background:var(--gold2);transform:translateX(-101%);transition:transform .4s var(--ease-expo)}
+.btn-p:hover::before{transform:translateX(0)}
+.btn-p span{position:relative;z-index:1}
+.btn-s{font-family:var(--ff-d);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:17px 44px;background:transparent;color:rgba(245,240,232,.45);border:1.5px solid rgba(245,240,232,.15);cursor:none;transition:all .3s}
+.btn-s:hover{border-color:rgba(245,240,232,.45);color:var(--ivory)}
+
+/* ── FOOTER ── */
+footer{background:var(--ink);color:var(--ivory)}
+.foot-main{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:56px;padding:90px 60px 72px;border-bottom:1px solid rgba(245,240,232,.05)}
+.foot-brand{font-family:var(--ff-s);font-size:52px;font-weight:900;font-style:italic;letter-spacing:-2px;color:var(--ivory);margin-bottom:18px;line-height:.9}
+.foot-brand span{color:var(--red)}
+.foot-tag{font-family:var(--ff-m);font-size:11.5px;color:rgba(245,240,232,.28);line-height:1.88;max-width:290px}
+.fc-title{font-family:var(--ff-m);font-size:7.5px;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold);margin-bottom:22px}
+.f-links li{margin-bottom:13px}
+.f-links a{font-family:var(--ff-m);font-size:11.5px;color:rgba(245,240,232,.28);transition:color .25s}
+.f-links a:hover{color:var(--ivory)}
+.foot-bot{padding:26px 60px;display:flex;justify-content:space-between;align-items:center}
+.f-copy{font-family:var(--ff-m);font-size:9.5px;color:rgba(245,240,232,.16)}
+.f-soc{display:flex;gap:26px}
+.f-soc a{font-family:var(--ff-m);font-size:8.5px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(245,240,232,.2);transition:color .25s}
+.f-soc a:hover{color:var(--gold)}
+
+/* ── TOOLTIP ── */
+.glass-tip{position:fixed;z-index:8000;pointer-events:none;background:rgba(245,240,232,.84);backdrop-filter:blur(22px) saturate(1.5);-webkit-backdrop-filter:blur(22px) saturate(1.5);border:1px solid rgba(24,19,14,.07);padding:12px 16px;font-family:var(--ff-m);font-size:9.5px;color:var(--ink);box-shadow:0 6px 28px rgba(24,19,14,.09);opacity:0;transform:translateY(8px);transition:all .22s var(--ease-expo);max-width:190px;line-height:1.6;pointer-events:none}
+.glass-tip.show{opacity:1;transform:translateY(0)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1100px){
+  nav{padding:0 24px}.nav-links{display:none}
+  #hero .hero-inner,section,#intro .intro-pin,#places,.flip-sec,.food-deep,.lm-sec,#streets,#history,#stats,#gallery,#cta,.foot-main,.foot-bot,.exp-sec{padding-left:24px;padding-right:24px}
+  .h-badge{display:none}
+  .intro-pin{grid-template-columns:1fr;gap:40px;padding:56px 24px}
+  .intro-carousel-container{width:min(360px,68vw);height:min(234px,44vw)}
+  .intro-panel:nth-child(1){transform:rotateY(0deg) translateZ(430px)}
+  .intro-panel:nth-child(2){transform:rotateY(45deg) translateZ(430px)}
+  .intro-panel:nth-child(3){transform:rotateY(90deg) translateZ(430px)}
+  .intro-panel:nth-child(4){transform:rotateY(135deg) translateZ(430px)}
+  .intro-panel:nth-child(5){transform:rotateY(180deg) translateZ(430px)}
+  .intro-panel:nth-child(6){transform:rotateY(225deg) translateZ(430px)}
+  .intro-panel:nth-child(7){transform:rotateY(270deg) translateZ(430px)}
+  .intro-panel:nth-child(8){transform:rotateY(315deg) translateZ(430px)}
+  .bento{grid-template-columns:repeat(6,1fr)}
+  .bc-lg{grid-column:span 6;grid-row:span 1;min-height:340px}.bc-md,.bc-tl{grid-column:span 3;min-height:230px}.bc-sm{grid-column:span 3}.bc-wd{grid-column:span 6;min-height:230px}
+  .flip-grid{grid-template-columns:1fr 1fr}
+  .hist-grid{grid-template-columns:1fr}.hist-sticky{position:static}
+  .st-intro{grid-template-columns:1fr;gap:28px}.st-masonry{grid-template-columns:1fr 1fr}.sti:nth-child(n){margin-top:0}
+  #stats{grid-template-columns:repeat(2,1fr)}.sb{border-right:none;border-bottom:1px solid rgba(245,240,232,.05)}
+  .food-layout{grid-template-columns:1fr}.food-hero{grid-column:span 12}.food-right{grid-column:span 12;grid-template-columns:repeat(2,1fr)}
+  .fd-grid{grid-template-columns:1fr 1fr}
+  .gal-grid{grid-template-columns:repeat(6,1fr)}.gi-1{grid-column:span 4;grid-row:span 4}.gi-2,.gi-6{grid-column:span 3;grid-row:span 3}.gi-3,.gi-7{grid-column:span 2;grid-row:span 2}.gi-4,.gi-8{grid-column:span 3;grid-row:span 3}.gi-5{grid-column:span 2;grid-row:span 2}
+  .stmt-ring{display:none}
+  .exp-grid{grid-template-columns:1fr}
+  .foot-main{grid-template-columns:1fr 1fr;padding:56px 24px 44px}
+  .foot-bot{padding:18px 24px;flex-direction:column;gap:14px;text-align:center}
+  .scene2-body{right:5%;text-align:left}.scene2-t{font-size:clamp(44px,9vw,100px)}
+}
+@media(max-width:640px){
+  .st-masonry,.fd-grid,.flip-grid{grid-template-columns:1fr}
+  #stats{grid-template-columns:1fr}
+  .intro-carousel-space{min-height:150vh}
+  .intro-carousel-container{width:260px;height:169px}
+  .intro-panel:nth-child(1){transform:rotateY(0deg) translateZ(300px)}
+  .intro-panel:nth-child(2){transform:rotateY(45deg) translateZ(300px)}
+  .intro-panel:nth-child(3){transform:rotateY(90deg) translateZ(300px)}
+  .intro-panel:nth-child(4){transform:rotateY(135deg) translateZ(300px)}
+  .intro-panel:nth-child(5){transform:rotateY(180deg) translateZ(300px)}
+  .intro-panel:nth-child(6){transform:rotateY(225deg) translateZ(300px)}
+  .intro-panel:nth-child(7){transform:rotateY(270deg) translateZ(300px)}
+  .intro-panel:nth-child(8){transform:rotateY(315deg) translateZ(300px)}
+  .foot-main{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div id="curtain"></div><div id="curtain-txt">HÀ NỘI</div>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="ldr-rings"><span></span><span></span><span></span><span></span><span></span></div>
+  <div class="ldr-word"><span>H</span><span>À</span></div>
+  <div class="ldr-word"><span>N</span><span>Ộ</span><span>I</span></div>
+  <div class="ldr-bar"><div class="ldr-fill" id="ldrF"></div></div>
+  <div class="ldr-pct" id="ldrP">0%</div>
+</div>
+
+<div id="cursor"><div class="cur-inner"></div><div class="cur-outer"></div><div class="cur-label" id="curLbl"></div></div>
+<div class="glass-tip" id="glassTip"></div>
+<div id="spbar"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-logo"><div class="nav-dot"></div>HÀ NỘI</div>
+  <ul class="nav-links">
+    <li><a href="#places">Địa Danh</a></li>
+    <li><a href="#history">Lịch Sử</a></li>
+    <li><a href="#food">Ẩm Thực</a></li>
+    <li><a href="#streets">Phố Cổ</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+  </ul>
+  <a href="#cta" class="nav-cta"><span>Khám Phá →</span></a>
+</nav>
+
+<!-- ══ HERO: Phố Cổ Hà Nội ══ -->
+<section id="hero">
+  <div class="hero-bg" id="heroBg"></div>
+  <div class="hero-ov"></div><div class="hero-grain"></div>
+  <canvas id="glCanvas"></canvas>
+  <div class="h-badge hb1"><div class="hb-lbl">Tọa độ</div><div class="hb-val">21°N 105°E</div></div>
+  <div class="h-badge hb2"><div class="hb-lbl">Thành lập</div><div class="hb-val">1010</div></div>
+  <div class="hero-inner">
+    <div class="hero-tag" id="heroTag"><div class="hero-tag-line"></div>Thủ đô Việt Nam · Thăng Long · Đông Đô</div>
+    <div class="hero-hl">
+      <span class="hero-line" id="hl1">THÀNH</span>
+      <span class="hero-line it" id="hl2">Phố</span>
+      <span class="hero-line ou" id="hl3">Nghìn Năm</span>
+    </div>
+    <p class="hero-sub" id="heroSub">Nơi mỗi con phố kể một câu chuyện — sương mù Hồ Tây,<br>tiếng rao buổi sáng và hương cà phê trứng còn ấm.</p>
+  </div>
+  <div class="h-scroll" id="heroScroll"><div class="sc-track"><div class="sc-fill"></div></div><span>Scroll</span></div>
+</section>
+
+<!-- TICKER 1 -->
+<div class="ticker">
+  <div class="tk-track">
+    <span class="ti hi">HÀ NỘI</span><span class="ti">HỒ HOÀN KIẾM</span><span class="ti">PHỐ CỔ 36 PHƯỜNG</span><span class="ti hi">1010</span><span class="ti">VĂN MIẾU</span><span class="ti">HỒ TÂY</span><span class="ti">CẦU LONG BIÊN</span><span class="ti hi">THĂNG LONG</span><span class="ti">BA ĐÌNH</span><span class="ti">BÚN CHẢ</span><span class="ti hi">CÀ PHÊ TRỨNG</span><span class="ti">PHỞ BÒ</span><span class="ti">HOÀNG THÀNH</span><span class="ti hi">THÁP RÙA</span><span class="ti">CHÙA TRẤN QUỐC</span><span class="ti hi">PHONG LAN</span>
+    <span class="ti hi">HÀ NỘI</span><span class="ti">HỒ HOÀN KIẾM</span><span class="ti">PHỐ CỔ 36 PHƯỜNG</span><span class="ti hi">1010</span><span class="ti">VĂN MIẾU</span><span class="ti">HỒ TÂY</span><span class="ti">CẦU LONG BIÊN</span><span class="ti hi">THĂNG LONG</span><span class="ti">BA ĐÌNH</span><span class="ti">BÚN CHẢ</span><span class="ti hi">CÀ PHÊ TRỨNG</span><span class="ti">PHỞ BÒ</span><span class="ti">HOÀNG THÀNH</span><span class="ti hi">THÁP RÙA</span><span class="ti">CHÙA TRẤN QUỐC</span><span class="ti hi">PHONG LAN</span>
+  </div>
+</div>
+
+<!-- INTRO -->
+<section id="intro">
+  <div class="intro-pin" id="introPin">
+    <div class="intro-img">
+      <div class="img-wipe" id="imgWipe"></div>
+      <!-- Hồ Hoàn Kiếm — ảnh từ Unsplash -->
+      <img src="images/hohangkiem.jpg" alt="Hồ Hoàn Kiếm Hà Nội" loading="lazy">
+      <div class="intro-img-ov"></div>
+      <div class="intro-img-cap">Hồ Hoàn Kiếm — Trái Tim Hà Nội</div>
+    </div>
+    <div class="intro-copy">
+      <div class="stag">01 / 07 · Giới Thiệu</div>
+      <h2 class="sh">THÀNH PHỐ<br><em>Nghìn Năm</em></h2>
+      <p class="intro-lead">Hà Nội — nơi mỗi viên gạch phố cổ đều giữ một câu chuyện, mỗi mặt hồ phản chiếu bóng ngàn năm văn hiến.</p>
+      <p class="intro-body">Năm 1010, vua Lý Thái Tổ dời đô từ Hoa Lư về Đại La, đặt tên Thăng Long — "Rồng Bay Lên". Truyền thuyết kể khi thuyền ngự vừa đến, một con rồng vàng vươn mình bay lên bầu trời — điềm lành cho triều đại mới. Hơn một nghìn năm sau, Hà Nội vẫn giữ nguyên hồn cốt đó: những con phố cổ kính, hồ nước trong xanh và ẩm thực phong phú không đâu sánh được.</p>
+      <div class="i-stats">
+        <div class="ist"><div class="ist-n" data-to="1010">0</div><div class="ist-l">Năm Lịch Sử</div></div>
+        <div class="ist"><div class="ist-n" data-to="8">0</div><div class="ist-l">Triệu Dân</div></div>
+        <div class="ist"><div class="ist-n" data-to="36">0</div><div class="ist-l">Phố Cổ</div></div>
+      </div>
+      <div class="tags">
+        <span class="tag">Phở Bắc</span><span class="tag">Phố Cổ</span><span class="tag">Hồ Tây</span>
+        <span class="tag">Văn Miếu</span><span class="tag">Cà Phê Trứng</span><span class="tag">Sương Mù</span>
+        <span class="tag">Chùa Trấn Quốc</span><span class="tag">Long Biên</span><span class="tag">Hoàng Thành</span>
+      </div>
+    </div>
+  </div>
+  <div class="intro-carousel-space" id="introCarouselSpace">
+    <div class="intro-carousel-sticky">
+      <div class="intro-carousel-hint">SCROLL / DRAG TO SPIN</div>
+      <div class="intro-carousel-container">
+        <div class="intro-carousel" id="introCarousel">
+          <div class="intro-panel intro-panel-1"></div>
+          <div class="intro-panel intro-panel-2"></div>
+          <div class="intro-panel intro-panel-3"></div>
+          <div class="intro-panel intro-panel-4"></div>
+          <div class="intro-panel intro-panel-5"></div>
+          <div class="intro-panel intro-panel-6"></div>
+          <div class="intro-panel intro-panel-7"></div>
+          <div class="intro-panel intro-panel-8"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER 2 -->
+<div class="ticker light">
+  <div class="tk-track rev">
+    <span class="ti hi">THĂNG LONG</span><span class="ti">ĐÔNG ĐÔ</span><span class="ti">ĐÔNG KINH</span><span class="ti hi">HÀ NỘI</span><span class="ti">LÝ THÁI TỔ</span><span class="ti">NĂM 1010</span><span class="ti hi">KINH ĐÔ</span><span class="ti">VĂN HIẾN</span><span class="ti">SÔI ĐỘNG</span><span class="ti hi">DI SẢN</span><span class="ti">HOÀNG THÀNH THĂNG LONG</span><span class="ti hi">THÁP RÙA</span>
+    <span class="ti hi">THĂNG LONG</span><span class="ti">ĐÔNG ĐÔ</span><span class="ti">ĐÔNG KINH</span><span class="ti hi">HÀ NỘI</span><span class="ti">LÝ THÁI TỔ</span><span class="ti">NĂM 1010</span><span class="ti hi">KINH ĐÔ</span><span class="ti">VĂN HIẾN</span><span class="ti">SÔI ĐỘNG</span><span class="ti hi">DI SẢN</span><span class="ti">HOÀNG THÀNH THĂNG LONG</span><span class="ti hi">THÁP RÙA</span>
+  </div>
+</div>
+
+<!-- BENTO PLACES -->
+<section id="places">
+  <div class="pl-head">
+    <div>
+      <div class="stag" style="color:var(--gold)">02 / 07 · Địa Danh</div>
+      <h2 class="sh wh gd">ĐỊA DANH<br><em>Nổi Bật</em></h2>
+    </div>
+    <p class="pl-note">Hover để khám phá từng địa danh.<br>Mỗi nơi — một linh hồn Hà Nội.</p>
+  </div>
+  <div class="bento">
+    <!-- Hồ Hoàn Kiếm với Tháp Rùa — ảnh Pexels thật -->
+    <div class="bc bc-lg" data-tip="Tháp Rùa & cầu Thê Húc đỏ son">
+      <div class="bc-img" style="background-image:url('images/hoankiem2.jpg')"></div>
+      <div class="bc-dim"></div>
+      <div class="bc-body">
+        <div class="bc-n">01</div><div class="bc-c">Trái Tim Hà Nội</div>
+        <div class="bc-nm">Hồ Hoàn Kiếm</div>
+        <div class="bc-d">Hồ gươm xanh ngọc — nơi vua Lê Lợi trả kiếm thần cho Rùa Vàng năm 1428. Tháp Rùa xây 1882 đứng giữa hồ là biểu tượng thiêng liêng nhất của Thủ đô.</div>
+      </div>
+    </div>
+    <!-- Văn Miếu -->
+    <div class="bc bc-md" data-tip="Trường đại học đầu tiên VN — 1070">
+      <div class="bc-img" style="background-image:url('images/quoctugiam.jpg')"></div>
+      <div class="bc-dim"></div>
+      <div class="bc-body">
+        <div class="bc-n">02</div><div class="bc-c">Học Vấn · 1070</div>
+        <div class="bc-nm">Văn Miếu</div>
+        <div class="bc-d">Quốc Tử Giám — đại học đầu tiên 700 năm đào tạo nhân tài. Khuê Văn Các in trên tờ 100k đồng.</div>
+      </div>
+    </div>
+    <!-- Cầu Long Biên — dùng ảnh Unsplash train/tunnel tại Long Bien -->
+    <div class="bc bc-sm" data-tip="Cầu thép Pháp 1902 — nhân chứng lịch sử">
+      <div class="bc-img" style="background-image:url('images/caulongbien.jpg?w=700&q=85')"></div>
+      <div class="bc-dim"></div>
+      <div class="bc-body">
+        <div class="bc-n">03</div><div class="bc-c">1902 · Di Sản</div>
+        <div class="bc-nm">Cầu Long Biên</div>
+        <div class="bc-d">1.682m thép bắc qua Sông Hồng, nhân chứng hai cuộc kháng chiến.</div>
+      </div>
+    </div>
+    <!-- Ba Đình -->
+    <div class="bc bc-wd" data-tip="Quảng trường lịch sử — 2/9/1945">
+      <div class="bc-img" style="background-image:url('images/quantruongbadinh1.jpg')"></div>
+      <div class="bc-dim"></div>
+      <div class="bc-body">
+        <div class="bc-n">04</div><div class="bc-c">Lịch Sử · 1945</div>
+        <div class="bc-nm">Quảng Trường Ba Đình</div>
+        <div class="bc-d">Nơi Chủ tịch Hồ Chí Minh đọc Tuyên ngôn Độc lập 2/9/1945 trước 500.000 người. Trái tim lịch sử dân tộc.</div>
+      </div>
+    </div>
+    <!-- Hồ Tây & Chùa Trấn Quốc -->
+    <div class="bc bc-tl" data-tip="500 hecta sương mù, tiếng chuông chùa 1500 tuổi">
+      <div class="bc-img" style="background-image:url('https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=700&q=85');background-position:center top"></div>
+      <div class="bc-dim"></div>
+      <div class="bc-body">
+        <div class="bc-n">05</div><div class="bc-c">500 Hecta · Hồ Tây</div>
+        <div class="bc-nm">Hồ Tây & Chùa Trấn Quốc</div>
+        <div class="bc-d">Sáng sớm sương phủ mặt hồ, tiếng chuông Chùa Trấn Quốc 1500 tuổi — khoảnh khắc Hà Nội đẹp nhất trong ngày.</div>
+      </div>
+    </div>
+    <!-- Phố Cổ -->
+    <div class="bc bc-md" data-tip="Đèn lồng lung linh, mỗi phố một nghề thủ công">
+      <div class="bc-img" style="background-image:url('images/36pho.jpg')"></div>
+      <div class="bc-dim"></div>
+      <div class="bc-body">
+        <div class="bc-n">06</div><div class="bc-c">Nghìn Tuổi</div>
+        <div class="bc-nm">Phố Cổ 36 Phường</div>
+        <div class="bc-d">Hàng Bạc, Hàng Mã, Hàng Gai — mỗi phố một nghề truyền thống hơn 500 năm tuổi.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3D FLIP CARDS -->
+<section class="flip-sec">
+  <div class="stag">Di Tích Đặc Biệt</div>
+  <h2 class="sh">DI TÍCH<br><em>Lịch Sử</em></h2>
+  <div class="flip-grid">
+    <!-- Hoàng Thành Thăng Long -->
+    <div class="flip-wrap">
+      <div class="flip-card">
+        <div class="flip-f">
+          <img src="images/thanglong.jpg" alt="Hoàng Thành Thăng Long" loading="lazy">
+          <div class="flip-f-ov"></div>
+          <div class="flip-f-body"><div class="flip-cat">Di Sản UNESCO · 2010</div><div class="flip-nm">Hoàng Thành Thăng Long</div><div class="flip-hint">↻ Hover để xem thêm</div></div>
+        </div>
+        <div class="flip-b">
+          <div class="flip-b-title">Hoàng Thành Thăng Long</div>
+          <div class="flip-b-txt">Trung tâm quyền lực 13 thế kỷ của các vương triều Việt Nam. Xây từ thế kỷ 7, UNESCO công nhận Di sản Thế giới năm 2010. Hàng nghìn hiện vật khảo cổ từ thời Đại La đến Lê được tìm thấy tại đây — kho tàng lịch sử vô giá của dân tộc.</div>
+          <div class="flip-b-stats"><div><div class="fbs-n">13</div><div class="fbs-l">Thế Kỷ</div></div><div><div class="fbs-n">18</div><div class="fbs-l">Hecta</div></div></div>
+          <div class="flip-b-tag">Di Sản UNESCO 2010</div>
+        </div>
+      </div>
+    </div>
+    <!-- Tháp Rùa -->
+    <div class="flip-wrap">
+      <div class="flip-card">
+        <div class="flip-f">
+          <img src="images/hohangkiem.jpg" alt="Tháp Rùa Hồ Hoàn Kiếm" loading="lazy">
+          <div class="flip-f-ov"></div>
+          <div class="flip-f-body"><div class="flip-cat">Biểu Tượng · Hà Nội</div><div class="flip-nm">Tháp Rùa Huyền Thoại</div><div class="flip-hint">↻ Hover để xem thêm</div></div>
+        </div>
+        <div class="flip-b">
+          <div class="flip-b-title">Tháp Rùa — Linh Hồn Hà Nội</div>
+          <div class="flip-b-txt">Xây dựng năm 1882 trên đảo nhỏ giữa Hồ Hoàn Kiếm. Gắn với truyền thuyết Rùa Vàng nhận lại kiếm thần từ vua Lê Lợi sau đại thắng quân Minh năm 1428. Là hình ảnh biểu tượng nhất, thiêng liêng nhất của Hà Nội nghìn năm.</div>
+          <div class="flip-b-stats"><div><div class="fbs-n">1882</div><div class="fbs-l">Năm Xây</div></div><div><div class="fbs-n">5</div><div class="fbs-l">Tầng</div></div></div>
+          <div class="flip-b-tag">Biểu Tượng Thủ Đô</div>
+        </div>
+      </div>
+    </div>
+    <!-- Chùa Trấn Quốc -->
+    <div class="flip-wrap">
+      <div class="flip-card">
+        <div class="flip-f">
+          <img src="images/hotay.jpg" alt="Chùa Trấn Quốc Hồ Tây" loading="lazy">
+          <div class="flip-f-ov"></div>
+          <div class="flip-f-body"><div class="flip-cat">Phật Giáo · Thế Kỷ 6</div><div class="flip-nm">Chùa Trấn Quốc</div><div class="flip-hint">↻ Hover để xem thêm</div></div>
+        </div>
+        <div class="flip-b">
+          <div class="flip-b-title">Chùa Trấn Quốc</div>
+          <div class="flip-b-txt">Ngôi chùa cổ nhất Hà Nội xây từ thế kỷ 6 dưới triều Lý Nam Đế. Tọa lạc trên bán đảo nhỏ ven Hồ Tây, tháp 11 tầng soi bóng mặt hồ mỗi buổi sáng. Cây bồ đề được trồng từ nhánh của cây Bồ Đề Phật giáo gốc ở Ấn Độ.</div>
+          <div class="flip-b-stats"><div><div class="fbs-n">1500</div><div class="fbs-l">Năm Tuổi</div></div><div><div class="fbs-n">11</div><div class="fbs-l">Tầng Tháp</div></div></div>
+          <div class="flip-b-tag">Chùa Cổ Nhất Hà Nội</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATEMENT -->
+<section id="statement">
+  <div class="stmt-bg-txt">HÀ NỘI</div>
+  <div class="stmt-content">
+    <div class="stag">Cảm Nhận · Emotion</div>
+    <blockquote class="stmt-q">"Hà Nội không vội được đâu —<br>nhưng một khi đã <strong>yêu</strong>,<br>không bao giờ muốn rời đi."</blockquote>
+    <div class="stmt-auth">Người Hà Nội xưa</div>
+  </div>
+  <div class="stmt-ring">
+    <div class="stmt-ring-n" data-to="1010">0</div>
+    <div class="stmt-ring-l">Năm Lịch Sử</div>
+  </div>
+</section>
+
+<!-- HISTORY -->
+<section id="history">
+  <div class="stag">03 / 07 · Lịch Sử</div>
+  <h2 class="sh">NGHÌN NĂM<br><em>Thăng Long</em></h2>
+  <div class="hist-grid">
+    <div class="hist-sticky">
+      <div class="hist-photo">
+        <img src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=600&q=85" alt="" id="histImg" loading="lazy">
+        <div class="hist-photo-cap" id="histCap">Văn Miếu — Quốc Tử Giám</div>
+      </div>
+    </div>
+    <div id="histList">
+      <div class="hi active"  data-img="images/hoankiem2.jpg" data-cap="Hồ Hoàn Kiếm — Biểu tượng Hà Nội">
+        <div class="hi-yr">1010</div><div><div class="hi-ev">Thành lập Thăng Long</div><div class="hi-de">Vua Lý Thái Tổ dời đô từ Hoa Lư về Đại La, đặt tên Thăng Long — "Rồng Bay Lên". Truyền thuyết kể khi thuyền ngự vừa cập bờ, một con rồng vàng hiện ra bay lên bầu trời, báo hiệu vận mệnh huy hoàng của đất kinh đô mới.</div></div>
+      </div>
+      <div class="hi" data-img="images/quoctugiam.jpg">
+        <div class="hi-yr">1070</div><div><div class="hi-ev">Xây Văn Miếu — Quốc Tử Giám</div><div class="hi-de">Vua Lý Thánh Tông xây Văn Miếu thờ Khổng Tử. Năm 1076, Quốc Tử Giám được thành lập — trường đại học đầu tiên của Việt Nam, đào tạo nhân tài cho đất nước hơn 700 năm. 82 tấm bia đá lưu danh 1.307 Tiến sĩ.</div></div>
+      </div>
+      <div class="hi" data-img="images/kiemthan.jpg" data-cap="Hồ Gươm — Nơi Lê Lợi trả kiếm thần">
+        <div class="hi-yr">1428</div><div><div class="hi-ev">Triều Lê — Kiếm Thần Hoàn Kiếm</div><div class="hi-de">Lê Lợi đánh đuổi quân Minh sau 10 năm kháng chiến gian khổ. Khi dong thuyền trên hồ Tả Vọng, Rùa Vàng nổi lên đòi lại kiếm thần. Từ đó, hồ được đặt tên Hoàn Kiếm — Hồ Gươm, biểu tượng hòa bình muôn đời.</div></div>
+      </div>
+      <div class="hi" data-img="images/hanoixua.jpg" data-cap="Phố Cổ Hà Nội — 36 Phường nghề thủ công">
+        <div class="hi-yr">1831</div><div><div class="hi-ev">Đổi tên thành Hà Nội</div><div class="hi-de">Vua Minh Mạng đổi tên Thăng Long thành Hà Nội — "Thành phố trong sông". Phố Cổ 36 phường phát triển cực thịnh với mỗi phố mang tên một nghề: Hàng Bạc, Hàng Mã, Hàng Gai, Hàng Đào...</div></div>
+      </div>
+      <div class="hi" data-img="images/caulongbien.jpg" data-cap="Cầu Long Biên — Di sản 120 năm tuổi">
+        <div class="hi-yr">1902</div><div><div class="hi-ev">Cầu Long Biên hoàn thành</div><div class="hi-de">Cây cầu thép dài 1.682m do công ty Daydé & Pillé (Pháp) thiết kế, hoàn thành sau 4 năm xây dựng với hàng nghìn thợ Việt. Hà Nội thành thủ đô Đông Dương, kiến trúc Pháp in đậm khắp phố phường — Nhà hát Lớn, Nhà thờ Lớn, Phủ Chủ tịch.</div></div>
+      </div>
+      <div class="hi" data-img="images/tuyenngondoclap.jpg" data-cap="Ba Đình — Ngày 2/9/1945 lịch sử">
+        <div class="hi-yr">1945</div><div><div class="hi-ev">Tuyên ngôn Độc lập</div><div class="hi-de">Ngày 2/9 tại Quảng trường Ba Đình, Chủ tịch Hồ Chí Minh đọc Tuyên ngôn Độc lập trước 500.000 người. "Tất cả mọi người đều sinh ra có quyền bình đẳng..." — Hà Nội trở thành Thủ đô Việt Nam tự do.</div></div>
+      </div>
+      <div class="hi" data-img="images/dienbienphutrenkhong.jpg" data-cap="Hà Nội — Thành phố hòa bình của thế kỷ">
+        <div class="hi-yr">1972</div><div><div class="hi-ev">Điện Biên Phủ Trên Không</div><div class="hi-de">12 ngày đêm tháng 12/1972, quân và dân Hà Nội bắn hạ 34 máy bay B-52 Mỹ — chiến thắng chấn động thế giới. Mỹ buộc ký Hiệp định Paris 27/1/1973, rút quân khỏi Việt Nam. Hà Nội được UNESCO trao danh hiệu Thành phố Vì Hòa Bình năm 1999.</div></div>
+      </div>
+      <div class="hi" data-img="images/1000namthanglong.jpg" data-cap="1000 năm Thăng Long — Đại lễ thế kỷ">
+        <div class="hi-yr">2010</div><div><div class="hi-ev">1000 năm Thăng Long — Hà Nội</div><div class="hi-de">Đại lễ 1000 năm Thăng Long — sự kiện văn hóa lịch sử lớn nhất thế kỷ 21 của Việt Nam. Hoàng Thành Thăng Long được UNESCO công nhận Di sản Văn hóa Thế giới. Cả dân tộc hướng về Thủ đô trong niềm tự hào vô hạn.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PARALLAX SCENE 1: Hồ Tây -->
+<section id="scene">
+  <div class="scene-bg" id="sceneBg"></div>
+  <div class="scene-ov"></div>
+  <div class="scene-body">
+    <div class="scene-ey">Hồ Tây · Chùa Trấn Quốc · 500 Hecta</div>
+    <div class="scene-t">HỒ<br>TÂY</div>
+    <p class="scene-s">Buổi sáng sương phủ mặt hồ, tiếng chuông ngân xa từ Chùa Trấn Quốc 1500 tuổi — khoảnh khắc Hà Nội đẹp nhất trong ngày, không nơi nào có được.</p>
+  </div>
+</section>
+
+<!-- FOOD -->
+<section id="food">
+  <div class="stag">04 / 07 · Ẩm Thực</div>
+  <h2 class="sh">ẨM THỰC<br><em>Đặc Sắc</em></h2>
+  <div class="food-layout">
+    <div class="food-hero">
+      <!-- Phở bò Hà Nội -->
+      <img src="https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?w=900&q=85" alt="Phở Bò Hà Nội" loading="lazy">
+      <div class="fh-cap">
+        <div class="fh-name">Phở Bò Hà Nội</div>
+        <div class="fh-desc">Nước dùng trong vắt hầm xương bò 6-12 tiếng với quế, hồi, gừng nướng. Bánh phở mỏng như lụa, thịt bò tái hay chín mềm. Phở Hà Nội tinh tế — không rau giá, không tương đen, chỉ hành lá, húng Láng và ớt đỏ.</div>
+      </div>
+    </div>
+    <div class="food-right">
+      <div class="fc"><img src="images/buncha.jpg" alt="Bún chả" loading="lazy"><div class="fc-ov"></div><div class="fc-body"><div class="fc-t">Đặc Sản</div><div class="fc-nm">Bún Chả</div></div></div>
+      <div class="fc"><img src="images/caphetrung.jpg" alt="Cà phê trứng" loading="lazy"><div class="fc-ov"></div><div class="fc-body"><div class="fc-t">1946</div><div class="fc-nm">Cà Phê Trứng</div></div></div>
+      <div class="fc"><img src="images/banhcuonhanoi.jpg" alt="Bánh cuốn" loading="lazy"><div class="fc-ov"></div><div class="fc-body"><div class="fc-t">Ăn Sáng</div><div class="fc-nm">Bánh Cuốn</div></div></div>
+      <div class="fc"><img src="https://images.unsplash.com/photo-1563245372-f21724e3856d?w=600&q=85" alt="Chả cá" loading="lazy"><div class="fc-ov"></div><div class="fc-body"><div class="fc-t">Huyền Thoại</div><div class="fc-nm">Chả Cá Lã Vọng</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOD DEEP -->
+<section class="food-deep">
+  <div class="stag" style="color:var(--gold)">Ẩm Thực Sâu Hơn</div>
+  <h2 class="sh wh gd">TINH HOA<br><em>Vị Bắc</em></h2>
+  <div class="fd-grid">
+    <div class="fdc"><img src="https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?w=700&q=85" alt="Phở" loading="lazy"><div class="fdc-ov"></div><div class="fdc-body"><div class="fdc-n">01</div><div class="fdc-sub">Quốc Hồn Ẩm Thực</div><div class="fdc-name">Phở Bò</div><div class="fdc-desc">Phát sinh ở Nam Định đầu thế kỷ 20, phở Hà Nội là đỉnh cao tinh tế. Nước dùng hầm từ xương ống và gân bò cùng 5 loại gia vị đặc trưng — quế, hồi, thảo quả, đinh hương, gừng nướng. Một bát phở ngon cần đến 12 giờ chuẩn bị.</div><div class="fdc-price">30.000–80.000 VND</div></div></div>
+    <div class="fdc"><img src="images/caphetrung.jpg" alt="Cà phê trứng" loading="lazy"><div class="fdc-ov"></div><div class="fdc-body"><div class="fdc-n">02</div><div class="fdc-sub">Phát Minh 1946</div><div class="fdc-name">Cà Phê Trứng</div><div class="fdc-desc">Năm 1946, ông Nguyễn Văn Giảng phát minh ra công thức thay sữa bằng lòng đỏ trứng đánh bông khi sữa khan hiếm. Trứng gà + đường + cà phê đen nóng = hương vị không đâu có. Nơi nổi tiếng nhất: Cà Phê Giảng phố Nguyễn Hữu Huân, mở từ 1946.</div><div class="fdc-price">25.000–45.000 VND</div></div></div>
+    <div class="fdc"><img src="images/buncha.jpg" alt="Bún chả" loading="lazy"><div class="fdc-ov"></div><div class="fdc-body"><div class="fdc-n">03</div><div class="fdc-sub">Obama's Choice 2016</div><div class="fdc-name">Bún Chả</div><div class="fdc-desc">Thịt lợn nướng than hoa thơm lừng, chả viên béo ngậy, chấm nước mắm chua ngọt pha giấm. Nổi tiếng toàn cầu khi TT Obama ăn cùng Anthony Bourdain tại Hà Nội năm 2016, trước khi nhận Nobel Hòa bình. Giá chỉ 6 USD.</div><div class="fdc-price">35.000–60.000 VND</div></div></div>
+  </div>
+</section>
+
+<!-- STREETS -->
+<section id="streets">
+  <div class="st-intro">
+    <div><div class="stag">05 / 07 · Phố Cổ</div><h2 class="sh">36 PHỐ<br><em>Phường</em></h2></div>
+    <p class="st-body">Mỗi con phố mang tên một nghề thủ công — Hàng Bạc kim hoàn lấp lánh, Hàng Mã đỏ rực ngày lễ, Hàng Gai lụa tơ mềm mại. Dạo bước phố cổ là đi qua nghìn năm thủ công nghiệp Thăng Long.</p>
+  </div>
+  <div class="st-masonry">
+    <div class="sti"><img src="images/hangma.jpg" alt="Hàng Mã" loading="lazy"><div class="sti-ov"></div><div class="sti-body"><div class="sti-cat">Đồ Mã · Lễ Tết</div><div class="sti-nm">Hàng Mã</div><div class="sti-desc">Phố đỏ rực màu giấy lễ, đèn lồng, đồ trang trí — sầm uất nhất mỗi dịp Tết Nguyên Đán và Trung Thu.</div></div></div>
+    <div class="sti"><img src="images/hanggai.jpg" alt="Hàng Gai" loading="lazy"><div class="sti-ov"></div><div class="sti-body"><div class="sti-cat">Tơ Lụa · Thêu</div><div class="sti-nm">Hàng Gai</div><div class="sti-desc">Phố lụa tơ tằm mềm mại từ làng Vạn Phúc, tranh thêu tay tinh xảo — điểm mua sắm đặc sắc nhất phố cổ.</div></div></div>
+    <div class="sti"><img src="images/hangdao.jpg" alt="Hàng Đào" loading="lazy"><div class="sti-ov"></div><div class="sti-body"><div class="sti-cat">Vải · Thời Trang</div><div class="sti-nm">Hàng Đào</div><div class="sti-desc">Phố nhuộm vải hồng đào từ thế kỷ 15 — từng là trung tâm vải lụa nhộn nhịp bậc nhất kinh thành Thăng Long.</div></div></div>
+    <div class="sti"><img src="images/hangbac.jpg" alt="Hàng Bạc" loading="lazy"><div class="sti-ov"></div><div class="sti-body"><div class="sti-cat">Kim Hoàn · Bạc</div><div class="sti-nm">Hàng Bạc</div><div class="sti-desc">Chế tác và đổi bạc từ thế kỷ 15 — thợ bạc tài hoa từ làng Châu Khê, Định Công, Đồng Xâm về đây lập nghiệp.</div></div></div>
+    <div class="sti"><img src="images/hangnang.jpg" alt="Hàng Ngang" loading="lazy"><div class="sti-ov"></div><div class="sti-body"><div class="sti-cat">Vải · Thương Mại</div><div class="sti-nm">Hàng Ngang</div><div class="sti-desc">Phố thương mại sầm uất từ thế kỷ 18. Số 48 Hàng Ngang — nơi Bác Hồ viết Tuyên ngôn Độc lập năm 1945.</div></div></div>
+    <div class="sti"><img src="images/hangthiec.jpg" alt="Hàng Thiếc" loading="lazy"><div class="sti-ov"></div><div class="sti-body"><div class="sti-cat">Đồ Đồng · Thiếc</div><div class="sti-nm">Hàng Thiếc</div><div class="sti-desc">Tiếng gõ đồng thiếc vang xa — nghề chạm trổ kim loại truyền đời làm thùng, chậu thiếc thủ công.</div></div></div>
+  </div>
+</section>
+
+<!-- 3D CAROUSEL -->
+<section class="lm-sec">
+  <div class="stag" style="color:var(--gold)">06 / 07 · Trải Nghiệm</div>
+  <h2 class="sh wh gd">TRẢI NGHIỆM<br><em>Không Thể Quên</em></h2>
+  <div class="lm-stage" id="lmStage">
+    <div class="lm-track" id="lmTrack"></div>
+  </div>
+  <div class="lm-nav">
+    <button class="lm-btn" id="lmPrev">← Trước</button>
+    <div class="lm-dots" id="lmDots"></div>
+    <button class="lm-btn" id="lmNext">Tiếp →</button>
+  </div>
+</section>
+
+<!-- PARALLAX SCENE 2: Cầu Long Biên -->
+<section id="scene2">
+  <div class="scene2-bg" id="scene2Bg"></div>
+  <div class="scene2-ov"></div>
+  <div class="scene2-body">
+    <div class="scene2-t">CẦU<br>LONG<br><em>BIÊN</em></div>
+    <p class="scene2-s">1.682m thép bắc qua Sông Hồng — nhân chứng của hai cuộc kháng chiến vĩ đại. Đứng trên cầu nhìn hoàng hôn phủ mặt sông đỏ nặng phù sa — khoảnh khắc không thể quên.</p>
+    <div class="scene2-badge">1902 · Di Sản Pháp Thuộc</div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section id="stats">
+  <div class="sb"><div class="sb-n" data-to="1010">0</div><div class="sb-l">Năm Lịch Sử</div><div class="sb-d">Một trong những thủ đô lâu đời nhất Đông Nam Á, thành lập từ năm 1010 dưới triều Lý Thái Tổ.</div></div>
+  <div class="sb"><div class="sb-n">8<span class="sb-u">M</span></div><div class="sb-l">Dân Số</div><div class="sb-d">Đô thị lớn thứ nhì Việt Nam với tốc độ đô thị hóa nhanh nhất khu vực Đông Nam Á.</div></div>
+  <div class="sb"><div class="sb-n" data-to="36">0</div><div class="sb-l">Phố Cổ</div><div class="sb-d">36 phường thủ công truyền thống — mỗi phố mang tên một nghề, tồn tại hơn 500 năm.</div></div>
+  <div class="sb"><div class="sb-n">50<span class="sb-u">M+</span></div><div class="sb-l">Khách/Năm</div><div class="sb-d">Top điểm đến châu Á về ẩm thực đường phố và văn hóa bản địa phong phú.</div></div>
+</section>
+
+<!-- EXPERIENCE 2-PANEL -->
+<section class="exp-sec">
+  <div class="exp-grid">
+    <div class="exp-item">
+      <img src="images/binhminhhanoi.jpg" alt="Bình minh Hà Nội" loading="lazy">
+      <div class="exp-ov"></div>
+      <div class="exp-body">
+        <div class="exp-idx">01</div>
+        <div class="exp-cat">5:30 Sáng · Mỗi Ngày</div>
+        <div class="exp-nm">Bình Minh Phố Cổ</div>
+        <div class="exp-desc">Khi Hà Nội còn ngủ say, những người bán hàng rong đã bắt đầu hành trình. Tiếng rao "bánh mì nóng giòn", mùi cà phê rang thơm, xe phở hơi bốc nghi ngút — Hà Nội buổi sáng có vẻ đẹp không đâu sánh được.</div>
+        <div class="exp-link">Trải nghiệm →</div>
+      </div>
+    </div>
+    <div class="exp-item">
+      <img src="images/caulongbien.jpg" alt="Cầu Long Biên" loading="lazy">
+      <div class="exp-ov"></div>
+      <div class="exp-body">
+        <div class="exp-idx">02</div>
+        <div class="exp-cat">Hoàng Hôn · Cầu Long Biên</div>
+        <div class="exp-nm">Đi Bộ Trên Lịch Sử</div>
+        <div class="exp-desc">Dạo bộ trên cầu Long Biên lúc hoàng hôn — nhìn Sông Hồng đỏ nặng phù sa chảy bên dưới, nghe tiếng tàu điện vang vọng, ngắm bầu trời rực đỏ. Mỗi thanh thép là một trang sử của Hà Nội anh hùng.</div>
+        <div class="exp-link">Khám phá →</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCENE 3: Ba Đình -->
+<section id="scene3">
+  <div class="s3-bg" id="scene3Bg"></div>
+  <div class="s3-ov"></div>
+  <div class="s3-body">
+    <div class="s3-eye">2 Tháng 9 Năm 1945 · Ba Đình · Hà Nội</div>
+    <div class="s3-t">ĐỘC<br>LẬP</div>
+    <p class="s3-sub">"Tất cả mọi người đều sinh ra có quyền bình đẳng. Tạo hóa cho họ những quyền không ai có thể xâm phạm được..." — Tuyên ngôn Độc lập, 2/9/1945</p>
+  </div>
+  <div class="s3-date">1945</div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="gal-head">
+    <div><div class="stag">07 / 07 · Gallery</div><h2 class="sh">GALLERY<br><em>Ký Ức</em></h2></div>
+    <p class="gal-sub">Mỗi khung hình — một góc Hà Nội bạn sẽ nhớ mãi.</p>
+  </div>
+  <div class="gal-grid">
+    <!-- Hồ Hoàn Kiếm -->
+    <div class="gi gi-1"><img src="images/hohangkiem.jpg" alt="" loading="lazy"><div class="gi-ov"></div><div class="gi-lbl">Hồ Hoàn Kiếm</div></div>
+    <!-- Bình minh HN -->
+    <div class="gi gi-2"><img src="images/binhminhhanoi.jpg" alt="" loading="lazy"><div class="gi-ov"></div><div class="gi-lbl">Bình Minh Hà Nội</div></div>
+    <!-- Văn Miếu -->
+    <div class="gi gi-3"><img src="images/quoctugiam.jpg" alt="" loading="lazy"><div class="gi-ov"></div><div class="gi-lbl">Văn Miếu</div></div>
+    <!-- Ba Đình -->
+    <div class="gi gi-4"><img src="images/badinh.jpg" alt="" loading="lazy"><div class="gi-ov"></div><div class="gi-lbl">Ba Đình Lịch Sử</div></div>
+    <!-- Phở -->
+    <div class="gi gi-5"><img src="images/phohanoi.png" alt="" loading="lazy"><div class="gi-ov"></div><div class="gi-lbl">Phở Hà Nội</div></div>
+    <!-- Hồ Tây -->
+    <div class="gi gi-6"><img src="images/hotay2.jpg" alt="" loading="lazy"><div class="gi-ov"></div><div class="gi-lbl">Hồ Tây Sương Mù</div></div>
+    <!-- Phố cổ -->
+    <div class="gi gi-7"><img src="images/phocohanoi2.jpg" alt="" loading="lazy"><div class="gi-ov"></div><div class="gi-lbl">Phố Cổ Đêm</div></div>
+    <!-- Cầu Long Biên thật -->
+    <div class="gi gi-8"><img src="images/caulongbien.jpg" alt="" loading="lazy"><div class="gi-ov"></div><div class="gi-lbl">Cầu Long Biên</div></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="cta-bg"></div>
+  <div class="cta-inner">
+    <div class="cta-ey">Hà Nội Đang Chờ Bạn</div>
+    <div class="cta-h">KHÁM<br><em>PHÁ</em><br>HÀ NỘI</div>
+    <div class="cta-btns">
+      <button class="btn-p" onclick="document.getElementById('places').scrollIntoView({behavior:'smooth'})"><span>Bắt Đầu Hành Trình →</span></button>
+      <button class="btn-s" onclick="document.getElementById('food').scrollIntoView({behavior:'smooth'})">Khám Phá Ẩm Thực</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-main">
+    <div>
+      <div class="foot-brand">Hà<span>Nội</span></div>
+      <p class="foot-tag">Nghìn năm văn hiến — nơi sương mù Hồ Tây, đèn lồng Phố Cổ và tiếng rao đêm tạo nên một thành phố không giống bất kỳ đâu trên thế giới.</p>
+    </div>
+    <div><div class="fc-title">Khám Phá</div><ul class="f-links"><li><a href="#places">Hồ Hoàn Kiếm</a></li><li><a href="#scene">Hồ Tây</a></li><li><a href="#streets">Phố Cổ</a></li><li><a href="#places">Văn Miếu</a></li><li><a href="#history">Hoàng Thành</a></li><li><a href="#scene2">Cầu Long Biên</a></li></ul></div>
+    <div><div class="fc-title">Ẩm Thực</div><ul class="f-links"><li><a href="#food">Phở Bò Hà Nội</a></li><li><a href="#food">Bún Chả</a></li><li><a href="#food">Cà Phê Trứng</a></li><li><a href="#food">Bánh Cuốn</a></li><li><a href="#food">Chả Cá Lã Vọng</a></li><li><a href="#food">Bún Ốc</a></li></ul></div>
+    <div><div class="fc-title">Thông Tin</div><ul class="f-links"><li><a href="#">Di Chuyển</a></li><li><a href="#">Thời Tiết</a></li><li><a href="#">Lưu Trú</a></li><li><a href="#">Lễ Hội</a></li><li><a href="#">Bản Đồ Phố Cổ</a></li><li><a href="#">Liên Hệ</a></li></ul></div>
+  </div>
+  <div class="foot-bot">
+    <div class="f-copy">© 2025 Hà Nội · Ngàn Năm Văn Hiến · Thủ đô Việt Nam 🇻🇳</div>
+    <div class="f-soc"><a href="#">Instagram</a><a href="#">Facebook</a><a href="#">YouTube</a><a href="#">TikTok</a></div>
+  </div>
+</footer>
+
+<script>
+gsap.registerPlugin(ScrollTrigger);
+const reduceMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* Smooth scroll inertia: desktop only, keeps ScrollTrigger synced */
+(() => {
+  if(reduceMotion||innerWidth<900)return;
+  document.body.classList.add('is-smooth-scrolling');
+
+  let target=scrollY,current=scrollY,maxScroll=document.documentElement.scrollHeight-innerHeight;
+  let raf=0,isAnimating=false;
+  const clamp=v=>Math.max(0,Math.min(v,maxScroll));
+
+  function refreshBounds(){
+    maxScroll=document.documentElement.scrollHeight-innerHeight;
+    target=clamp(target);
+  }
+
+  function renderSmoothScroll(){
+    isAnimating=true;
+    current+=(target-current)*.105;
+    if(Math.abs(target-current)<.08)current=target;
+    scrollTo(0,current);
+    ScrollTrigger.update();
+    if(current!==target){
+      raf=requestAnimationFrame(renderSmoothScroll);
+    }else{
+      isAnimating=false;
+      raf=0;
+    }
+  }
+
+  function goTo(y){
+    refreshBounds();
+    target=clamp(y);
+    if(!raf)raf=requestAnimationFrame(renderSmoothScroll);
+  }
+
+  addEventListener('wheel',e=>{
+    if(e.ctrlKey)return;
+    e.preventDefault();
+    goTo(target+e.deltaY*1.08);
+  },{passive:false});
+
+  addEventListener('keydown',e=>{
+    const keyStep={
+      ArrowDown:120,ArrowUp:-120,PageDown:innerHeight*.86,PageUp:-innerHeight*.86,
+      Space:e.shiftKey?-innerHeight*.86:innerHeight*.86,Home:-Infinity,End:Infinity
+    }[e.code];
+    if(keyStep===undefined)return;
+    e.preventDefault();
+    goTo(keyStep===Infinity?maxScroll:keyStep===-Infinity?0:target+keyStep);
+  });
+
+  document.addEventListener('click',e=>{
+    const link=e.target.closest('a[href^="#"]');
+    if(!link)return;
+    const dest=document.querySelector(link.getAttribute('href'));
+    if(!dest)return;
+    e.preventDefault();
+    goTo(dest.getBoundingClientRect().top+target);
+  });
+
+  addEventListener('resize',refreshBounds);
+  ScrollTrigger.addEventListener('refresh',refreshBounds);
+  addEventListener('scroll',()=>{if(!isAnimating){target=current=scrollY}});
+})();
+
+/* ── LOADER ── */
+const ldrSp=document.querySelectorAll('.ldr-word span');
+gsap.set(ldrSp,{yPercent:110,opacity:0});
+gsap.to(ldrSp,{yPercent:0,opacity:1,duration:.95,stagger:.07,ease:'power4.out',delay:.2});
+let pct=0;
+const li=setInterval(()=>{
+  pct=Math.min(pct+Math.random()*14,100);
+  document.getElementById('ldrF').style.width=pct+'%';
+  document.getElementById('ldrP').textContent=Math.floor(pct)+'%';
+  if(pct>=100){clearInterval(li);setTimeout(()=>{
+    gsap.to(ldrSp,{yPercent:-110,opacity:0,duration:.5,stagger:.04,ease:'power3.in'});
+    gsap.to('#loader',{opacity:0,duration:.6,delay:.3,onComplete:()=>{
+      document.getElementById('loader').style.display='none'; initPage();
+    }});
+  },200)}
+},55);
+
+function initPage(){
+  gsap.timeline()
+    .to('#hl1',{yPercent:0,duration:1.1,ease:'power4.out'},0)
+    .to('#hl2',{yPercent:0,duration:1.1,ease:'power4.out'},.15)
+    .to('#hl3',{yPercent:0,duration:1.1,ease:'power4.out'},.3)
+    .to('#heroTag',{opacity:1,y:0,duration:.8,ease:'power3.out'},.5)
+    .to('#heroSub',{opacity:1,y:0,duration:.8,ease:'power3.out'},.65)
+    .to('#heroScroll',{opacity:1,y:0,duration:.8,ease:'power3.out'},.8)
+    .from('.h-badge',{opacity:0,y:24,duration:.7,stagger:.15,ease:'power3.out'},.4);
+}
+gsap.set(['#hl1','#hl2','#hl3'],{yPercent:110});
+gsap.set(['#heroTag','#heroSub'],{opacity:0,y:20});
+gsap.set('#heroScroll',{opacity:0,y:20});
+
+/* ── CURSOR ── */
+const curEl=document.getElementById('cursor');
+const curIn=curEl.querySelector('.cur-inner');
+const curOu=curEl.querySelector('.cur-outer');
+const curLbl=document.getElementById('curLbl');
+let cx=0,cy=0,lx=0,ly=0;
+document.addEventListener('mousemove',e=>{cx=e.clientX;cy=e.clientY});
+(function ac(){curEl.style.left=cx+'px';curEl.style.top=cy+'px';lx+=(cx-lx)*.11;ly+=(cy-ly)*.11;curOu.style.left=(lx-cx)+'px';curOu.style.top=(ly-cy)+'px';requestAnimationFrame(ac)})();
+document.querySelectorAll('a,button,.bc,.sti,.gi,.fc,.fdc,.tag,.flip-wrap,.exp-item,.lm-btn').forEach(el=>{
+  const lb=el.dataset.cursor||el.dataset.tip||'';
+  el.addEventListener('mouseenter',()=>{document.body.classList.add('cur-hover');if(lb){curLbl.textContent=lb;curLbl.style.opacity='1'}});
+  el.addEventListener('mouseleave',()=>{document.body.classList.remove('cur-hover');curLbl.style.opacity='0'});
+});
+document.querySelectorAll('img').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('cur-img'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('cur-img'));
+});
+
+/* ── SCROLL PROGRESS ── */
+window.addEventListener('scroll',()=>{
+  document.getElementById('spbar').style.width=(window.scrollY/(document.body.scrollHeight-innerHeight)*100)+'%';
+  document.getElementById('nav').classList.toggle('scrolled',scrollY>55);
+},{passive:true});
+
+/* ── THREE.JS PARTICLES ── */
+const gl=document.getElementById('glCanvas');
+const rnd=new THREE.WebGLRenderer({canvas:gl,alpha:true,antialias:true});
+rnd.setPixelRatio(Math.min(devicePixelRatio,2));rnd.setSize(innerWidth,innerHeight);
+const sc3=new THREE.Scene(),cm3=new THREE.PerspectiveCamera(58,innerWidth/innerHeight,.1,1000);
+cm3.position.z=32;
+const N=1800,pa=new Float32Array(N*3),va=new Float32Array(N*3),ph=new Float32Array(N);
+for(let i=0;i<N;i++){const i3=i*3;pa[i3]=(Math.random()-.5)*95;pa[i3+1]=(Math.random()-.5)*72;pa[i3+2]=(Math.random()-.5)*52;va[i3]=(Math.random()-.5)*.007;va[i3+1]=(Math.random()-.5)*.005;va[i3+2]=(Math.random()-.5)*.003;ph[i]=Math.random()*Math.PI*2}
+const g1=new THREE.BufferGeometry();g1.setAttribute('position',new THREE.BufferAttribute(pa,3));
+const pts=new THREE.Points(g1,new THREE.PointsMaterial({color:0xC8960C,size:.15,transparent:true,opacity:.42,depthWrite:false,blending:THREE.AdditiveBlending,sizeAttenuation:true}));
+sc3.add(pts);
+const N2=700,pa2=new Float32Array(N2*3);
+for(let i=0;i<N2;i++){const i3=i*3;pa2[i3]=(Math.random()-.5)*115;pa2[i3+1]=(Math.random()-.5)*92;pa2[i3+2]=(Math.random()-.5)*62}
+const g2=new THREE.BufferGeometry();g2.setAttribute('position',new THREE.BufferAttribute(pa2,3));
+sc3.add(new THREE.Points(g2,new THREE.PointsMaterial({color:0xB83228,size:.07,transparent:true,opacity:.22,depthWrite:false,blending:THREE.AdditiveBlending})));
+let mx=0,my=0;document.addEventListener('mousemove',e=>{mx=(e.clientX/innerWidth-.5)*2;my=(e.clientY/innerHeight-.5)*2});
+const clk=new THREE.Clock();
+(function r3(){requestAnimationFrame(r3);const t=clk.getElapsedTime(),a=g1.attributes.position.array;
+for(let i=0;i<N;i++){const i3=i*3;a[i3]+=va[i3]+Math.sin(t*.27+ph[i])*.003;a[i3+1]+=va[i3+1]+Math.cos(t*.21+ph[i])*.002;a[i3+2]+=va[i3+2];if(a[i3]>47)a[i3]=-47;if(a[i3]<-47)a[i3]=47;if(a[i3+1]>36)a[i3+1]=-36;if(a[i3+1]<-36)a[i3+1]=36;if(a[i3+2]>26)a[i3+2]=-26;if(a[i3+2]<-26)a[i3+2]=26}
+g1.attributes.position.needsUpdate=true;cm3.position.x+=(mx*5-cm3.position.x)*.04;cm3.position.y+=(-my*3-cm3.position.y)*.04;cm3.lookAt(0,0,0);pts.rotation.y=t*.021;pts.rotation.x=t*.01;rnd.render(sc3,cm3)})();
+window.addEventListener('resize',()=>{cm3.aspect=innerWidth/innerHeight;cm3.updateProjectionMatrix();rnd.setSize(innerWidth,innerHeight)});
+
+/* ── HERO PARALLAX ── */
+gsap.to('#heroBg',{yPercent:28,ease:'none',scrollTrigger:{trigger:'#hero',start:'top top',end:'bottom top',scrub:true}});
+gsap.to('.hero-hl',{y:-55,ease:'none',scrollTrigger:{trigger:'#hero',start:'top top',end:'bottom top',scrub:1.5}});
+gsap.to('.hero-inner > *:not(.hero-hl)',{y:-38,opacity:0,ease:'none',scrollTrigger:{trigger:'#hero',start:'18% top',end:'78% top',scrub:1}});
+gsap.to('.hb1',{y:-48,ease:'none',scrollTrigger:{trigger:'#hero',start:'top top',end:'bottom top',scrub:2}});
+gsap.to('.hb2',{y:-76,ease:'none',scrollTrigger:{trigger:'#hero',start:'top top',end:'bottom top',scrub:2.5}});
+
+/* ── SCENE PARALLAXES ── */
+gsap.to('#sceneBg',{yPercent:24,ease:'none',scrollTrigger:{trigger:'#scene',start:'top bottom',end:'bottom top',scrub:true}});
+gsap.to('#scene2Bg',{yPercent:22,ease:'none',scrollTrigger:{trigger:'#scene2',start:'top bottom',end:'bottom top',scrub:true}});
+gsap.to('#scene3Bg',{yPercent:20,ease:'none',scrollTrigger:{trigger:'#scene3',start:'top bottom',end:'bottom top',scrub:true}});
+
+/* Scene text parallax */
+gsap.to('.scene-body',{y:-40,ease:'none',scrollTrigger:{trigger:'#scene',start:'top bottom',end:'bottom top',scrub:1.5}});
+
+/* ── IMAGE WIPE ── */
+gsap.to('#imgWipe',{scaleX:0,duration:1.2,ease:'power4.inOut',scrollTrigger:{trigger:'#intro',start:'top 72%',once:true}});
+
+/* ── SCROLL ANIMATIONS ── */
+const introCopyItems=gsap.utils.toArray('.intro-copy > *');
+gsap.set(introCopyItems,{x:220,opacity:0,filter:'blur(10px)'});
+gsap.timeline({scrollTrigger:{trigger:'.intro-pin',start:'top 62%',toggleActions:'play none none reverse'}})
+  .to(introCopyItems,{x:0,opacity:1,filter:'blur(0px)',duration:1.15,stagger:.09,ease:'power4.out',clearProps:'filter'},0);
+
+gsap.timeline({scrollTrigger:{trigger:'#places',start:'top 72%',once:true}})
+  .from('#places .stag',{x:-36,opacity:0,duration:.75,ease:'power3.out'},.05)
+  .from('#places .sh',{x:90,opacity:0,filter:'blur(8px)',duration:1.05,ease:'power4.out',clearProps:'filter'},.12)
+  .from('#places .pl-note',{x:46,opacity:0,duration:.9,ease:'power3.out'},.25);
+
+gsap.to('#places',{'--places-shine':'120%',duration:1.8,ease:'power2.out',scrollTrigger:{trigger:'#places',start:'top 76%',once:true}});
+gsap.utils.toArray('#places .bc').forEach((el,i)=>{
+  const fromX=i%3===0?-70:i%3===1?0:70;
+  gsap.from(el,{x:fromX,y:96,opacity:0,clipPath:'inset(18% 0 18% 0)',rotateX:8,scale:.96,duration:1.05,ease:'power4.out',delay:i*.075,scrollTrigger:{trigger:'.bento',start:'top 80%',once:true}});
+  gsap.from(el.querySelector('.bc-img'),{scale:1.18,duration:1.45,ease:'power3.out',delay:i*.075,scrollTrigger:{trigger:'.bento',start:'top 80%',once:true}});
+  gsap.from(el.querySelector('.bc-body'),{y:24,opacity:0,duration:.8,ease:'power3.out',delay:.22+i*.075,scrollTrigger:{trigger:'.bento',start:'top 80%',once:true}});
+});
+const prefersReduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if(!prefersReduced){
+  function sectionHeaderMotion(root,opts={}){
+    const tl=gsap.timeline({scrollTrigger:{trigger:root,start:opts.start||'top 74%',once:true}});
+    tl.from(`${root} > .stag, ${root} .st-intro .stag, ${root} .gal-head .stag`,{x:opts.stagX??-42,opacity:0,duration:.75,ease:'power3.out'},0)
+      .from(`${root} > .sh, ${root} .st-intro .sh, ${root} .gal-head .sh`,{x:opts.titleX??70,y:opts.titleY??0,opacity:0,filter:'blur(10px)',duration:1.05,ease:'power4.out',clearProps:'filter'},.08);
+    return tl;
+  }
+
+  sectionHeaderMotion('.flip-sec',{titleX:-80});
+  gsap.utils.toArray('.flip-wrap').forEach((el,i)=>{
+    gsap.from(el,{y:120,opacity:0,rotateY:i===1?0:(i===0?-22:22),rotateX:16,scale:.88,transformOrigin:'center bottom',duration:1.15,ease:'power4.out',delay:i*.12,scrollTrigger:{trigger:'.flip-grid',start:'top 80%',once:true}});
+    gsap.from(el.querySelector('img'),{scale:1.2,duration:1.45,ease:'power3.out',delay:i*.12,scrollTrigger:{trigger:'.flip-grid',start:'top 80%',once:true}});
+  });
+
+  gsap.timeline({scrollTrigger:{trigger:'#statement',start:'top 72%',once:true}})
+    .from('.stmt-bg-txt',{x:160,rotate:-18,opacity:0,duration:1.4,ease:'power4.out'},0)
+    .from('#statement .stag',{x:-42,opacity:0,duration:.7,ease:'power3.out'},.05)
+    .from('.stmt-q',{x:130,opacity:0,filter:'blur(10px)',duration:1.25,ease:'power4.out',clearProps:'filter'},.14)
+    .from('.stmt-auth',{x:54,opacity:0,duration:.8,ease:'power3.out'},.45)
+    .from('.stmt-ring',{scale:.58,opacity:0,rotate:-80,duration:1.15,ease:'back.out(1.6)'},.24);
+
+  const historyIntro=gsap.timeline({scrollTrigger:{trigger:'#history',start:'top 72%',once:true}});
+  historyIntro
+    .from('#history > .stag',{x:-54,opacity:0,duration:.75,ease:'power3.out'},0)
+    .from('#history > .sh',{x:130,opacity:0,filter:'blur(12px)',duration:1.15,ease:'power4.out',clearProps:'filter'},.08)
+    .from('.hist-photo',{x:-120,rotateY:-16,clipPath:'inset(0 100% 0 0)',opacity:0,duration:1.25,ease:'power4.out'},.18)
+    .from('.hist-photo img',{scale:1.28,filter:'saturate(1.5) contrast(1.1)',duration:1.45,ease:'power3.out',clearProps:'filter'},.2)
+    .from('.hi',{x:120,opacity:0,filter:'blur(8px)',duration:.9,stagger:.055,ease:'power4.out',clearProps:'filter'},.38);
+
+  gsap.from('.scene-ey',{x:-70,opacity:0,duration:.8,ease:'power3.out',scrollTrigger:{trigger:'#scene',start:'top 68%',once:true}});
+  gsap.from('.scene-t',{x:-140,opacity:0,filter:'blur(8px)',duration:1.2,ease:'power4.out',clearProps:'filter',scrollTrigger:{trigger:'#scene',start:'top 68%',once:true}});
+  gsap.from('.scene-s',{y:42,opacity:0,duration:.9,ease:'power3.out',delay:.2,scrollTrigger:{trigger:'#scene',start:'top 68%',once:true}});
+  gsap.to('#scene .scene-ov',{opacity:.88,ease:'none',scrollTrigger:{trigger:'#scene',start:'top bottom',end:'bottom top',scrub:true}});
+
+  sectionHeaderMotion('#food',{titleX:-90});
+  gsap.from('.food-hero',{x:-120,opacity:0,clipPath:'inset(0 28% 0 0)',duration:1.2,ease:'power4.out',scrollTrigger:{trigger:'#food',start:'top 76%',once:true}});
+  gsap.from('.food-hero img',{scale:1.22,duration:1.55,ease:'power3.out',scrollTrigger:{trigger:'#food',start:'top 76%',once:true}});
+  gsap.utils.toArray('.fc').forEach((el,i)=>{
+    gsap.from(el,{x:80,y:i%2?42:-42,opacity:0,clipPath:'inset(14% 14% 14% 14%)',duration:.95,ease:'power4.out',delay:.16+i*.08,scrollTrigger:{trigger:'#food',start:'top 76%',once:true}});
+    gsap.from(el.querySelector('img'),{scale:1.18,duration:1.2,ease:'power3.out',delay:.16+i*.08,scrollTrigger:{trigger:'#food',start:'top 76%',once:true}});
+  });
+
+  sectionHeaderMotion('.food-deep',{titleX:80});
+  gsap.utils.toArray('.fdc').forEach((el,i)=>gsap.from(el,{y:100,opacity:0,rotateY:i===0?-14:i===2?14:0,clipPath:'inset(18% 0 18% 0)',duration:1.05,ease:'power4.out',delay:i*.12,scrollTrigger:{trigger:'.fd-grid',start:'top 80%',once:true}}));
+
+  sectionHeaderMotion('#streets',{titleX:-95});
+  gsap.from('#streets .st-body',{x:84,opacity:0,filter:'blur(7px)',duration:1,ease:'power4.out',clearProps:'filter',scrollTrigger:{trigger:'#streets',start:'top 76%',once:true}});
+  gsap.utils.toArray('.sti').forEach((el,i)=>{
+    gsap.from(el,{x:i%2?-78:78,y:96,opacity:0,rotateZ:i%2?-2:2,clipPath:'inset(16% 0 16% 0)',duration:1.05,ease:'power4.out',delay:i*.075,scrollTrigger:{trigger:'.st-masonry',start:'top 80%',once:true}});
+    gsap.from(el.querySelector('img'),{scale:1.16,duration:1.35,ease:'power3.out',delay:i*.075,scrollTrigger:{trigger:'.st-masonry',start:'top 80%',once:true}});
+  });
+
+  sectionHeaderMotion('.lm-sec',{titleX:90});
+  gsap.from('.lm-stage',{y:120,opacity:0,scale:.86,rotateX:14,duration:1.15,ease:'power4.out',scrollTrigger:{trigger:'.lm-sec',start:'top 72%',once:true}});
+  gsap.from('.lm-nav',{y:34,opacity:0,duration:.8,ease:'power3.out',delay:.35,scrollTrigger:{trigger:'.lm-sec',start:'top 72%',once:true}});
+
+  gsap.from('.scene2-t',{x:150,opacity:0,filter:'blur(8px)',duration:1.2,ease:'power4.out',clearProps:'filter',scrollTrigger:{trigger:'#scene2',start:'top 66%',once:true}});
+  gsap.from('.scene2-s',{x:70,opacity:0,duration:.95,ease:'power3.out',delay:.16,scrollTrigger:{trigger:'#scene2',start:'top 66%',once:true}});
+  gsap.from('.scene2-badge',{y:34,opacity:0,duration:.8,ease:'power3.out',delay:.32,scrollTrigger:{trigger:'#scene2',start:'top 66%',once:true}});
+
+  gsap.utils.toArray('.sb').forEach((el,i)=>gsap.from(el,{y:80,opacity:0,clipPath:'inset(0 0 100% 0)',duration:.9,ease:'power4.out',delay:i*.08,scrollTrigger:{trigger:'#stats',start:'top 82%',once:true}}));
+
+  gsap.utils.toArray('.exp-item').forEach((el,i)=>{
+    gsap.from(el,{x:i===0?-130:130,opacity:0,clipPath:i===0?'inset(0 38% 0 0)':'inset(0 0 0 38%)',duration:1.15,ease:'power4.out',delay:i*.08,scrollTrigger:{trigger:'.exp-sec',start:'top 78%',once:true}});
+    gsap.from(el.querySelector('img'),{scale:1.2,duration:1.55,ease:'power3.out',delay:i*.08,scrollTrigger:{trigger:'.exp-sec',start:'top 78%',once:true}});
+  });
+
+  gsap.from('.s3-eye',{y:-34,opacity:0,duration:.75,ease:'power3.out',scrollTrigger:{trigger:'#scene3',start:'top 70%',once:true}});
+  gsap.from('.s3-t',{scale:.82,opacity:0,filter:'blur(10px)',duration:1.15,ease:'power4.out',clearProps:'filter',scrollTrigger:{trigger:'#scene3',start:'top 70%',once:true}});
+  gsap.from('.s3-sub',{y:42,opacity:0,duration:.9,ease:'power3.out',delay:.16,scrollTrigger:{trigger:'#scene3',start:'top 70%',once:true}});
+  gsap.to('.s3-date',{x:-80,ease:'none',scrollTrigger:{trigger:'#scene3',start:'top bottom',end:'bottom top',scrub:1}});
+
+  sectionHeaderMotion('#gallery',{titleX:-90});
+  gsap.from('.gal-sub',{x:60,opacity:0,duration:.85,ease:'power3.out',scrollTrigger:{trigger:'#gallery',start:'top 76%',once:true}});
+  gsap.utils.toArray('.gi').forEach((el,i)=>{
+    gsap.from(el,{y:90,opacity:0,scale:.9,clipPath:'inset(14% 14% 14% 14%)',duration:1,ease:'power4.out',delay:i*.045,scrollTrigger:{trigger:'.gal-grid',start:'top 82%',once:true}});
+    gsap.from(el.querySelector('img'),{scale:1.2,duration:1.25,ease:'power3.out',delay:i*.045,scrollTrigger:{trigger:'.gal-grid',start:'top 82%',once:true}});
+  });
+
+  gsap.from('.cta-ey',{x:-46,opacity:0,duration:.75,ease:'power3.out',scrollTrigger:{trigger:'#cta',start:'top 76%',once:true}});
+  gsap.from('.cta-h',{x:120,opacity:0,filter:'blur(10px)',duration:1.2,ease:'power4.out',clearProps:'filter',scrollTrigger:{trigger:'#cta',start:'top 76%',once:true}});
+  gsap.from('.cta-btns',{y:34,opacity:0,duration:.85,ease:'power3.out',delay:.25,scrollTrigger:{trigger:'#cta',start:'top 76%',once:true}});
+  gsap.from('.foot-brand',{y:46,opacity:0,duration:.95,ease:'power3.out',scrollTrigger:{trigger:'footer',start:'top 86%',once:true}});
+
+  /* Continuous scrub layer: keeps the lower half feeling alive while scrolling */
+  gsap.to('#history',{'--hist-line':1,'--hist-sweep':'140%',ease:'none',scrollTrigger:{trigger:'#history',start:'top 70%',end:'bottom 65%',scrub:1}});
+  gsap.to('.hist-photo',{y:-58,rotateY:5,rotateX:-3,scale:1.04,ease:'none',scrollTrigger:{trigger:'#history',start:'top bottom',end:'bottom top',scrub:1.15}});
+  gsap.to('.hist-photo img',{yPercent:-12,scale:1.12,ease:'none',scrollTrigger:{trigger:'#history',start:'top bottom',end:'bottom top',scrub:1.05}});
+  gsap.to('.hist-grid',{columnGap:120,ease:'none',scrollTrigger:{trigger:'#history',start:'top bottom',end:'bottom top',scrub:1.2}});
+
+  if(innerWidth>=1000){
+    const foodPin=gsap.timeline({scrollTrigger:{trigger:'#food',start:'top top',end:'+=145%',pin:true,scrub:1.15,anticipatePin:1,invalidateOnRefresh:true}});
+    foodPin
+      .to('#food .stag',{x:-40,opacity:.25,duration:1},0)
+      .to('#food .sh',{x:-95,scale:.92,opacity:.55,duration:1},0)
+      .to('.food-layout',{y:-110,scale:.96,duration:1},0)
+      .to('.food-hero',{x:-42,clipPath:'inset(4% 0 4% 0)',duration:1},0)
+      .to('.food-hero img',{scale:1.22,yPercent:-12,duration:1},0)
+      .to('.fh-cap',{y:-46,duration:1},.12)
+      .to('.food-right',{x:48,y:-132,duration:1},0)
+      .to('.fc:nth-child(odd)',{y:-92,rotateZ:-2.5,scale:1.06,duration:1},.04)
+      .to('.fc:nth-child(even)',{y:78,rotateZ:2.5,scale:.94,duration:1},.04)
+      .to('.fc img',{scale:1.18,yPercent:-8,duration:1},.04);
+  }else{
+    gsap.to('.food-layout',{y:-44,ease:'none',scrollTrigger:{trigger:'#food',start:'top bottom',end:'bottom top',scrub:1.15}});
+    gsap.to('.food-hero img',{scale:1.1,yPercent:-8,ease:'none',scrollTrigger:{trigger:'#food',start:'top bottom',end:'bottom top',scrub:1.2}});
+    gsap.to('.food-right',{y:54,ease:'none',scrollTrigger:{trigger:'#food',start:'top bottom',end:'bottom top',scrub:1.2}});
+  }
+
+  gsap.to('.fdc:nth-child(1)',{y:-70,rotateZ:-1.4,ease:'none',scrollTrigger:{trigger:'.food-deep',start:'top bottom',end:'bottom top',scrub:1}});
+  gsap.to('.fdc:nth-child(2)',{y:42,scale:1.035,ease:'none',scrollTrigger:{trigger:'.food-deep',start:'top bottom',end:'bottom top',scrub:1}});
+  gsap.to('.fdc:nth-child(3)',{y:-54,rotateZ:1.4,ease:'none',scrollTrigger:{trigger:'.food-deep',start:'top bottom',end:'bottom top',scrub:1}});
+
+  gsap.to('.st-masonry',{y:-86,ease:'none',scrollTrigger:{trigger:'#streets',start:'top bottom',end:'bottom top',scrub:1.05}});
+  gsap.utils.toArray('.sti').forEach((el,i)=>gsap.to(el,{y:i%2?58:-58,rotateZ:i%2?1.2:-1.2,ease:'none',scrollTrigger:{trigger:'#streets',start:'top bottom',end:'bottom top',scrub:1.2}}));
+
+  gsap.to('.lm-stage',{rotateY:-8,rotateX:5,scale:1.06,ease:'none',scrollTrigger:{trigger:'.lm-sec',start:'top bottom',end:'bottom top',scrub:1.1}});
+  gsap.to('.lm-nav',{y:-28,ease:'none',scrollTrigger:{trigger:'.lm-sec',start:'top bottom',end:'bottom top',scrub:1}});
+
+  gsap.to('.sb:nth-child(odd)',{y:-42,ease:'none',scrollTrigger:{trigger:'#stats',start:'top bottom',end:'bottom top',scrub:1}});
+  gsap.to('.sb:nth-child(even)',{y:42,ease:'none',scrollTrigger:{trigger:'#stats',start:'top bottom',end:'bottom top',scrub:1}});
+
+  gsap.to('.exp-item:first-child img',{scale:1.12,xPercent:4,ease:'none',scrollTrigger:{trigger:'.exp-sec',start:'top bottom',end:'bottom top',scrub:1.1}});
+  gsap.to('.exp-item:last-child img',{scale:1.12,xPercent:-4,ease:'none',scrollTrigger:{trigger:'.exp-sec',start:'top bottom',end:'bottom top',scrub:1.1}});
+  gsap.to('.exp-item:first-child .exp-body',{y:-34,ease:'none',scrollTrigger:{trigger:'.exp-sec',start:'top bottom',end:'bottom top',scrub:1}});
+  gsap.to('.exp-item:last-child .exp-body',{y:34,ease:'none',scrollTrigger:{trigger:'.exp-sec',start:'top bottom',end:'bottom top',scrub:1}});
+
+  if(innerWidth>=1000){
+    const galleryPin=gsap.timeline({scrollTrigger:{trigger:'#gallery',start:'top top',end:'+=165%',pin:true,scrub:1.1,anticipatePin:1,invalidateOnRefresh:true}});
+    galleryPin
+      .to('#gallery',{'--gal-glow':.16,duration:1},0)
+      .to('.gal-head',{y:-82,opacity:.55,duration:1},0)
+      .to('.gal-grid',{y:-96,scale:1.1,duration:1},0)
+      .to('.gi:nth-child(3n+1)',{x:-86,y:-74,rotateZ:-3.2,scale:1.04,duration:1},0)
+      .to('.gi:nth-child(3n+2)',{x:78,y:62,rotateZ:2.6,scale:.96,duration:1},0)
+      .to('.gi:nth-child(3n)',{x:28,y:-112,rotateZ:1.4,scale:1.08,duration:1},0)
+      .to('.gi img',{scale:1.22,yPercent:-10,duration:1},0);
+
+    const ctaPin=gsap.timeline({scrollTrigger:{trigger:'#cta',start:'top top',end:'+=120%',pin:true,scrub:1.05,anticipatePin:1,invalidateOnRefresh:true}});
+    ctaPin
+      .to('.cta-bg',{scale:1.36,yPercent:-14,opacity:.18,duration:1},0)
+      .to('.cta-inner',{y:-118,scale:1.035,duration:1},0)
+      .to('.cta-ey',{x:-36,opacity:.48,duration:1},0)
+      .to('.cta-h',{x:-72,letterSpacing:'1px',duration:1},0)
+      .to('.cta-btns',{x:74,y:16,duration:1},.12);
+  }else{
+    gsap.to('#gallery',{'--gal-glow':.12,ease:'none',scrollTrigger:{trigger:'#gallery',start:'top 80%',end:'bottom 30%',scrub:1}});
+    gsap.to('.gi:nth-child(odd)',{y:-64,scale:1.025,ease:'none',scrollTrigger:{trigger:'#gallery',start:'top bottom',end:'bottom top',scrub:1.05}});
+    gsap.to('.gi:nth-child(even)',{y:56,scale:.985,ease:'none',scrollTrigger:{trigger:'#gallery',start:'top bottom',end:'bottom top',scrub:1.05}});
+    gsap.to('.gi img',{yPercent:-7,ease:'none',scrollTrigger:{trigger:'#gallery',start:'top bottom',end:'bottom top',scrub:1.1}});
+
+    gsap.to('.cta-bg',{scale:1.18,yPercent:-10,ease:'none',scrollTrigger:{trigger:'#cta',start:'top bottom',end:'bottom top',scrub:1.2}});
+    gsap.to('.cta-inner',{y:-60,ease:'none',scrollTrigger:{trigger:'#cta',start:'top bottom',end:'bottom top',scrub:1}});
+  }
+}
+gsap.utils.toArray('.tag').filter(el=>!el.closest('.intro-copy')).forEach((el,i)=>gsap.from(el,{y:18,opacity:0,duration:.5,ease:'power3.out',delay:i*.04,scrollTrigger:{trigger:'.tags',start:'top 92%'}}));
+
+/* 3D tilt */
+document.querySelectorAll('.bc,.sti,.gi,.food-hero,.fc,.fdc,.exp-item').forEach(c=>{
+  c.addEventListener('mousemove',e=>{
+    const r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
+    gsap.to(c,{rotateY:x*14,rotateX:-y*12,scale:1.02,duration:.14,ease:'power1.out',transformPerspective:900,transformOrigin:'center'});
+    const b=c.querySelector('.bc-body,.sti-body,.gi-lbl,.fh-cap,.fc-body,.fdc-body,.exp-body');
+    if(b)gsap.to(b,{x:x*10,y:y*7,duration:.14});
+  });
+  c.addEventListener('mouseleave',()=>{
+    gsap.to(c,{rotateY:0,rotateX:0,scale:1,duration:.7,ease:'elastic.out(1,.4)'});
+    const b=c.querySelector('.bc-body,.sti-body,.gi-lbl,.fh-cap,.fc-body,.fdc-body,.exp-body');
+    if(b)gsap.to(b,{x:0,y:0,duration:.7,ease:'elastic.out(1,.4)'});
+  });
+});
+/* Tilt streets */
+document.querySelectorAll('.sti').forEach(c=>{
+  c.addEventListener('mousemove',e=>{const r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;gsap.to(c,{rotateY:x*9,rotateX:-y*7,duration:.2,ease:'power1.out',transformPerspective:800})});
+  c.addEventListener('mouseleave',()=>gsap.to(c,{rotateY:0,rotateX:0,duration:.8,ease:'elastic.out(1,.4)'}));
+});
+
+/* Magnetic */
+document.querySelectorAll('.btn-p,.btn-s,.nav-cta,.tag,.lm-btn').forEach(b=>{
+  b.addEventListener('mousemove',e=>{const r=b.getBoundingClientRect(),x=(e.clientX-r.left-r.width/2)*.28,y=(e.clientY-r.top-r.height/2)*.28;gsap.to(b,{x,y,duration:.4,ease:'power3.out'})});
+  b.addEventListener('mouseleave',()=>gsap.to(b,{x:0,y:0,duration:.7,ease:'elastic.out(1,.5)'}));
+});
+
+/* Tooltip */
+const tip=document.getElementById('glassTip');
+document.querySelectorAll('[data-tip]').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{tip.textContent=el.dataset.tip;tip.classList.add('show')});
+  el.addEventListener('mousemove',e=>{tip.style.left=(e.clientX+18)+'px';tip.style.top=(e.clientY-22)+'px'});
+  el.addEventListener('mouseleave',()=>tip.classList.remove('show'));
+});
+
+/* Counters */
+function cnt(el,to){let s=null;(function r(ts){if(!s)s=ts;const p=Math.min((ts-s)/2300,1),e=1-Math.pow(1-p,3);el.textContent=Math.floor(e*to);if(p<1)requestAnimationFrame(r)})(performance.now())}
+ScrollTrigger.create({trigger:'#intro',start:'top 76%',once:true,onEnter:()=>document.querySelectorAll('.ist-n[data-to]').forEach(el=>cnt(el,+el.dataset.to))});
+ScrollTrigger.create({trigger:'#statement',start:'top 76%',once:true,onEnter:()=>document.querySelectorAll('.stmt-ring-n[data-to]').forEach(el=>cnt(el,+el.dataset.to))});
+ScrollTrigger.create({trigger:'#stats',start:'top 82%',once:true,onEnter:()=>document.querySelectorAll('.sb-n[data-to]').forEach(el=>cnt(el,+el.dataset.to))});
+
+/* History image swap */
+const hiItems=document.querySelectorAll('.hi');
+const hiImg=document.getElementById('histImg'),hiCap=document.getElementById('histCap');
+const histPhoto=document.querySelector('.hist-photo');
+let currentHistImg=hiImg?.getAttribute('src')||'';
+function activateHistoryItem(el){
+  if(!el||!hiImg)return;
+  hiItems.forEach(i=>i.classList.remove('active'));
+  el.classList.add('active');
+
+  const img=el.dataset.img;
+  const cap=el.dataset.cap||el.querySelector('.hi-ev')?.textContent||'';
+  if(!img||img===currentHistImg){
+    hiCap.textContent=cap;
+    return;
+  }
+
+  currentHistImg=img;
+  histPhoto?.classList.remove('is-changing');
+  void histPhoto?.offsetWidth;
+  histPhoto?.classList.add('is-changing');
+
+  gsap.timeline()
+    .to(hiImg,{scale:1.16,opacity:.22,filter:'blur(10px) saturate(1.35)',duration:.28,ease:'power2.in'})
+    .call(()=>{hiImg.src=img;hiCap.textContent=cap})
+    .fromTo(hiImg,{scale:1.04,opacity:.18,filter:'blur(10px) saturate(1.25)'},{scale:1,opacity:1,filter:'blur(0px) saturate(1)',duration:.72,ease:'power4.out'});
+}
+
+hiItems.forEach((el,i)=>{
+  ScrollTrigger.create({
+    trigger:el,
+    start:'top 58%',
+    end:'bottom 42%',
+    onEnter:()=>activateHistoryItem(el),
+    onEnterBack:()=>activateHistoryItem(el)
+  });
+  gsap.to(el,{x:i%2?-18:-34,ease:'none',scrollTrigger:{trigger:el,start:'top bottom',end:'bottom top',scrub:.9}});
+});
+activateHistoryItem(document.querySelector('.hi.active')||hiItems[0]);
+
+/* Page transition */
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    const t=document.querySelector(a.getAttribute('href'));if(!t)return;e.preventDefault();
+    gsap.timeline()
+      .set('#curtain-txt',{textContent:a.textContent.trim().toUpperCase().slice(0,14)})
+      .to('#curtain',{scaleY:1,duration:.5,ease:'power4.inOut',transformOrigin:'bottom'})
+      .to('#curtain-txt',{opacity:1,duration:.28},.14)
+      .call(()=>t.scrollIntoView())
+      .to('#curtain-txt',{opacity:0,duration:.22},.62)
+      .to('#curtain',{scaleY:0,duration:.5,ease:'power4.inOut',transformOrigin:'top'},.68);
+  });
+});
+
+/* Bento neon glow */
+document.querySelectorAll('.bc').forEach(c=>{
+  c.addEventListener('mousemove',e=>{const r=c.getBoundingClientRect(),x=((e.clientX-r.left)/r.width*100).toFixed(1),y=((e.clientY-r.top)/r.height*100).toFixed(1);c.style.background=`radial-gradient(circle at ${x}% ${y}%,rgba(200,154,20,.15) 0%,transparent 52%),var(--ink2)`});
+  c.addEventListener('mouseleave',()=>c.style.background='var(--ink2)');
+});
+
+/* Cursor inversion for dark sections */
+['#places','.food-deep','.lm-sec','#stats','#cta','footer'].forEach(sel=>{
+  const el=document.querySelector(sel);if(!el)return;
+  ScrollTrigger.create({trigger:el,start:'top center',end:'bottom center',
+    onEnter:()=>document.body.classList.add('cur-inv'),onLeave:()=>document.body.classList.remove('cur-inv'),
+    onEnterBack:()=>document.body.classList.add('cur-inv'),onLeaveBack:()=>document.body.classList.remove('cur-inv')});
+});
+
+/* Hero text color shift */
+gsap.to('#hl2',{color:'var(--red)',ease:'none',scrollTrigger:{trigger:'#intro',start:'top 72%',end:'top 32%',scrub:true}});
+
+/* ── 3D LANDMARK CAROUSEL ── */
+const lmData=[
+  {name:'Hồ Hoàn Kiếm',cat:'Biểu Tượng Thủ Đô',img:'images/hohangkiem.jpg',fact:'Hồ gươm xanh ngọc — nơi vua Lê Lợi trả kiếm thần cho Rùa Vàng năm 1428 sau đại thắng quân Minh. Tháp Rùa xây năm 1882 soi bóng mặt hồ, là biểu tượng thiêng liêng nhất Thủ đô.'},
+  {name:'Cầu Long Biên',cat:'Di Sản 1902',img:'images/longbine2.jpg',fact:'Cầu thép dài 1.682m bắc qua Sông Hồng, hoàn thành năm 1902. Nhân chứng của hai cuộc kháng chiến — bị bom B-52 tàn phá nhưng vẫn kiên cường đứng vững. Đứng trên cầu ngắm hoàng hôn là trải nghiệm không thể quên.'},
+  {name:'Văn Miếu',cat:'Học Vấn · 1070',img:'images/vanmieutugiam2.jpg',fact:'Xây năm 1070, trường đại học đầu tiên Việt Nam suốt 700 năm. Khuê Văn Các in trên tờ 100.000 đồng. 82 tấm bia đá khắc tên 1.307 Tiến sĩ triều đại phong kiến.'},
+  {name:'Hoàng Thành Thăng Long',cat:'UNESCO · 2010',img:'images/thanhlapthanglong.jpg',fact:'Trung tâm quyền lực 13 thế kỷ của các vương triều Việt Nam. Di sản thế giới UNESCO từ 2010. Hàng nghìn hiện vật khảo cổ từ thế kỷ 7–20 được khai quật tại đây.'},
+  {name:'Hồ Tây',cat:'500 Hecta · Sương Mù',img:'images/hotay2.jpg',fact:'Hồ nước ngọt lớn nhất Hà Nội rộng 500ha. Chùa Trấn Quốc 1.500 tuổi ven hồ. Buổi sáng sương mù trên Hồ Tây — khoảnh khắc đẹp nhất Hà Nội.'},
+  {name:'Ba Đình Lịch Sử',cat:'Lịch Sử · 1945',img:'images/badinh.jpg',fact:'Nơi Chủ tịch Hồ Chí Minh đọc Tuyên ngôn Độc lập 2/9/1945 trước 500.000 người. Lăng Bác, Cột cờ Hà Nội và Phủ Chủ tịch tọa lạc tại quảng trường lịch sử này.'},
+];
+let lmIdx=0;
+const lmTrack=document.getElementById('lmTrack'),lmDots=document.getElementById('lmDots');
+lmData.forEach((d,i)=>{
+  const el=document.createElement('div');el.className='lm-card';
+  el.innerHTML=`<img src="${d.img}" alt="${d.name}" loading="lazy"><div class="lm-dim"></div><div class="lm-num">${String(i+1).padStart(2,'0')}</div><div class="lm-body"><div class="lm-cat">${d.cat}</div><div class="lm-name">${d.name}</div><div class="lm-fact">${d.fact}</div></div>`;
+  lmTrack.appendChild(el);
+  const dot=document.createElement('div');dot.className='lm-dot'+(i===0?' active':'');dot.onclick=()=>setLm(i);lmDots.appendChild(dot);
+});
+function setLm(idx){
+  lmIdx=idx;document.querySelectorAll('.lm-dot').forEach((d,i)=>d.classList.toggle('active',i===idx));
+  document.querySelectorAll('.lm-card').forEach((el,i)=>{
+    const off=i-idx,abs=Math.abs(off);
+    gsap.to(el,{x:off*340-160,y:-225,z:-abs*160,rotateY:off*-18,opacity:Math.max(0,1-abs*.38),scale:1-abs*.07,zIndex:100-abs,duration:.65,ease:'power3.inOut'});
+  });
+}
+document.getElementById('lmPrev').onclick=()=>setLm((lmIdx-1+lmData.length)%lmData.length);
+document.getElementById('lmNext').onclick=()=>setLm((lmIdx+1)%lmData.length);
+ScrollTrigger.create({trigger:'.lm-sec',start:'top 82%',once:true,onEnter:()=>setLm(0)});
+
+(() => {
+  const root=document.getElementById('introCarouselSpace');
+  const carousel=document.getElementById('introCarousel');
+  if(!root||!carousel)return;
+
+  const panels=root.querySelectorAll('.intro-panel');
+  const tiltX=-15,tiltZ=-18,idleSpeedY=.04;
+  let currentY=0,lastProgress=0,isDragging=false,startX=0,dragVelocity=0;
+
+  function getProgress(){
+    const rect=root.getBoundingClientRect();
+    const max=root.offsetHeight-window.innerHeight;
+    if(max<=0)return 0;
+    return Math.min(1,Math.max(0,-rect.top/max));
+  }
+
+  function updatePanelFocus(){
+    panels.forEach((panel,index)=>{
+      const baseAngle=index*45;
+      const totalAngle=(baseAngle+currentY)%360;
+      let angle=totalAngle;
+      if(angle>180)angle-=360;
+      if(angle<-180)angle+=360;
+
+      const absAngle=Math.abs(angle);
+      if(absAngle<80){
+        panel.style.opacity='1';
+        panel.style.filter='blur(0px)';
+      }else if(absAngle>125){
+        panel.style.opacity='.1';
+        panel.style.filter='blur(5px)';
+      }else{
+        const factor=(125-absAngle)/(125-80);
+        panel.style.opacity=String(.1+factor*.9);
+        panel.style.filter=`blur(${(1-factor)*5}px)`;
+      }
+    });
+  }
+
+  function renderIntroCarousel(){
+    const progress=getProgress();
+    currentY-=(progress-lastProgress)*260;
+    lastProgress=progress;
+
+    if(isDragging){
+      dragVelocity*=.95;
+    }else{
+      currentY+=dragVelocity;
+      dragVelocity*=.92;
+      if(Math.abs(dragVelocity)<.01)currentY-=idleSpeedY;
+    }
+
+    carousel.style.transform=`rotateX(${tiltX}deg) rotateZ(${tiltZ}deg) rotateY(${currentY}deg)`;
+    updatePanelFocus();
+    requestAnimationFrame(renderIntroCarousel);
+  }
+
+  root.addEventListener('pointerdown',e=>{
+    isDragging=true;
+    startX=e.clientX;
+    dragVelocity=0;
+    root.setPointerCapture?.(e.pointerId);
+  });
+
+  root.addEventListener('pointermove',e=>{
+    if(!isDragging)return;
+    const angleDelta=(e.clientX-startX)*.25;
+    currentY+=angleDelta;
+    dragVelocity=angleDelta;
+    startX=e.clientX;
+  });
+
+  root.addEventListener('pointerup',()=>{isDragging=false});
+  root.addEventListener('pointercancel',()=>{isDragging=false});
+  root.addEventListener('mouseleave',()=>{isDragging=false});
+
+  lastProgress=getProgress();
+  requestAnimationFrame(renderIntroCarousel);
+})();
+
+requestAnimationFrame(()=>ScrollTrigger.refresh());
+
+console.log('%cHÀ NỘI — Ngàn Năm Văn Hiến 🇻🇳','font-size:20px;font-weight:bold;color:#C49A14;background:#18130E;padding:12px 20px;border-radius:4px');
+</script>
+</body>
+</html>

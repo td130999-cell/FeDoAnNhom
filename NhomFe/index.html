@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Discover the soul of Vietnam — culture, people, food and stories. Explore Saigon, Ha Long Bay, Hoi An and beyond.">
+  <title>Vietnam — More Than A Destination</title>
+
+  <!-- ── Google Fonts ── -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Bebas+Neue&display=swap" rel="stylesheet">
+
+  <!-- ── CSS ── -->
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/sections.css">
+
+  <!-- ── External Libraries (CDN) ── -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"    defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
+</head>
+<body>
+
+<!-- ═══════ PAGE TRANSITION ═══════ -->
+<div class="page-overlay"></div>
+
+<!-- ═══════ CURSOR ═══════ -->
+<div class="cursor"          id="cursor"></div>
+<div class="cursor-follower" id="cursorFollower"></div>
+
+<!-- ═══════ SCROLL PROGRESS ═══════ -->
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- ═══════════════════════════════
+     NAVBAR
+════════════════════════════════ -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">VIỆT<span>NAM</span></a>
+
+  <ul class="nav-links">
+    <li><a href="#saigon">Sài Gòn</a></li>
+    <li><a href="#regions">Vùng Miền</a></li>
+    <li><a href="#food">Ẩm Thực</a></li>
+    <li><a href="#people">Con Người</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+  </ul>
+
+  <a href="#saigon" class="nav-cta">Explore Now</a>
+</nav>
+
+<!-- ═══════════════════════════════
+     HERO SECTION
+════════════════════════════════ -->
+<section id="hero">
+  <!-- Three.js canvas -->
+  <canvas id="three-canvas"></canvas>
+
+  <!-- Background slides -->
+  <div class="hero-slides">
+    <div class="hero-slide slide-1 active"></div>
+    <div class="hero-slide slide-2"></div>
+    <div class="hero-slide slide-3"></div>
+  </div>
+
+  <!-- City grid overlay -->
+  <div class="city-grid"></div>
+
+  <!-- Floating particles -->
+  <div class="particles-container" id="particles"></div>
+
+  <!-- Gradient overlay -->
+  <div class="hero-overlay"></div>
+
+  <!-- Main content -->
+  <div class="hero-content">
+    <div class="hero-tag">Khám phá Việt Nam</div>
+
+    <h1 class="hero-title">
+      <span class="hero-title-line">VIETNAM</span>
+      <span class="hero-title-line">MORE</span>
+      <span class="hero-title-line">THAN A</span>
+    </h1>
+
+    <p class="hero-subtitle">
+      Discover the soul of a nation — where ancient traditions meet the electric pulse of modern life
+    </p>
+
+    <div class="hero-buttons">
+      <button class="btn-primary"    onclick="scrollToSection('saigon')">Explore Saigon</button>
+      <button class="btn-secondary"  onclick="scrollToSection('regions')">Discover Vietnam</button>
+    </div>
+  </div>
+
+  <!-- Stats bar -->
+  <div class="hero-bottom">
+    <div class="hero-stats">
+      <div>
+        <div class="hero-stat-num"   id="stat1">0</div>
+        <div class="hero-stat-label">Tỉnh Thành</div>
+      </div>
+      <div>
+        <div class="hero-stat-num"   id="stat2">0</div>
+        <div class="hero-stat-label">Di Sản UNESCO</div>
+      </div>
+      <div>
+        <div class="hero-stat-num"   id="stat3">0</div>
+        <div class="hero-stat-label">Triệu Du Khách / Năm</div>
+      </div>
+    </div>
+
+    <div class="hero-scroll">
+      <div class="scroll-line"></div>
+      Scroll
+    </div>
+  </div>
+
+  <!-- Slide indicators -->
+  <div class="hero-indicators">
+    <div class="hero-indicator active" data-label="Skyline"  data-slide="0"></div>
+    <div class="hero-indicator"        data-label="Culture"  data-slide="1"></div>
+    <div class="hero-indicator"        data-label="Street"   data-slide="2"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════
+     INTRO — VIETNAM STORY
+════════════════════════════════ -->
+<section id="intro">
+  <div class="intro-inner">
+
+    <!-- Visual / Map -->
+    <div class="intro-visual gsap-reveal-left">
+      <div class="intro-card-main">
+        <div class="intro-card-overlay"></div>
+
+        <!-- Vietnam shape SVG -->
+        <svg class="vn-map-svg" viewBox="0 0 200 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M120,10 C140,15 155,25 158,40 C162,55 150,70 155,85 C160,100 170,110 165,125
+                   C158,140 145,150 150,165 C155,180 165,190 160,210 C155,230 140,240 135,260
+                   C130,280 140,295 135,315 C128,335 110,345 105,365 C100,385 110,400 108,420
+                   C106,440 95,455 88,470 C82,485 75,495 70,500 C65,498 58,492 55,480
+                   C50,465 58,450 55,430 C50,410 38,400 40,380 C42,360 55,348 50,328
+                   C45,308 30,298 32,278 C34,258 50,248 48,228 C46,208 30,198 35,178
+                   C40,158 58,150 55,132 C52,114 38,105 42,88 C46,71 62,65 65,48
+                   C68,31 55,20 60,10 C70,2 85,-2 95,2 C105,6 110,8 120,10 Z"
+            fill="rgba(212,168,67,0.15)"
+            stroke="rgba(212,168,67,0.3)"
+            stroke-width="1"/>
+        </svg>
+
+        <!-- Animated map dots -->
+        <div class="map-dots">
+          <div class="map-dot dot-hanoi"></div>
+          <div class="map-dot dot-hcm"></div>
+          <div class="map-dot dot-danang"></div>
+          <div class="map-dot dot-halong"></div>
+          <div class="map-dot dot-hoi"></div>
+        </div>
+
+        <!-- City labels -->
+        <span style="position:absolute;top:16%;left:50%;font-size:10px;letter-spacing:2px;color:rgba(212,168,67,0.8);transform:translateX(-50%);">HÀ NỘI</span>
+        <span style="position:absolute;top:46%;left:46%;font-size:10px;letter-spacing:2px;color:rgba(212,168,67,0.6);transform:translateX(-50%);">ĐÀ NẴNG</span>
+        <span style="position:absolute;bottom:20%;left:44%;font-size:10px;letter-spacing:2px;color:rgba(200,16,46,0.9);transform:translateX(-50%);">HỒ CHÍ MINH</span>
+      </div>
+
+      <!-- Floating stat card -->
+      <div class="intro-stat-float gsap-scale">
+        <div class="n">96M</div>
+        <div class="l">Dân Số</div>
+      </div>
+
+      <!-- Accent card -->
+      <div class="intro-card-small">
+        <div class="intro-card-small-inner">
+          <div class="num">54</div>
+          <div class="label">Dân Tộc Anh Em</div>
+        </div>
+      </div>
+
+      <!-- Rotating shape -->
+      <div class="intro-shape"></div>
+    </div>
+
+    <!-- Text -->
+    <div class="intro-text">
+      <div class="section-tag gsap-reveal">Đất Nước Hình Chữ S</div>
+      <h2 class="section-title gsap-reveal">
+        Nơi <em>Hội Tụ</em><br>Ngàn Nền Văn Hóa
+      </h2>
+
+      <p class="intro-lead gsap-reveal" style="margin-top:32px;">
+        Vietnam — a land where the past breathes through ancient temples,
+        and the future blazes across neon-lit skylines.
+      </p>
+
+      <p class="intro-body gsap-reveal">
+        Trải dài hơn 3.000 km từ Bắc xuống Nam, Việt Nam là nơi giao thoa của 54 dân tộc
+        anh em với những nét văn hóa phong phú và đặc sắc. Ba miền Bắc – Trung – Nam mỗi
+        vùng mang một bản sắc riêng biệt, từ vẻ trầm mặc nghìn năm văn hiến của Hà Nội,
+        nét cổ kính của Cố đô Huế, đến nhịp sống sôi động bất tận của Sài Gòn.
+      </p>
+
+      <div class="intro-pills gsap-reveal">
+        <span class="pill">Ẩm Thực</span>
+        <span class="pill">Lịch Sử</span>
+        <span class="pill">Thiên Nhiên</span>
+        <span class="pill">Con Người</span>
+        <span class="pill">Văn Hóa</span>
+        <span class="pill">Hiện Đại</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════
+     SAIGON SECTION
+════════════════════════════════ -->
+<section id="saigon">
+
+  <div class="saigon-header">
+    <div>
+      <div class="section-tag gsap-reveal">Trái Tim Phương Nam</div>
+      <h2 class="saigon-title gsap-reveal">SÀI GÒN</h2>
+    </div>
+    <p class="saigon-desc gsap-reveal-right">
+      Thành phố không bao giờ ngủ. Nơi xe máy hòa thành dòng sông ánh sáng,
+      café vỉa hè kể những câu chuyện chưa bao giờ hết hay,
+      và mỗi góc phố đều mang một linh hồn riêng.
+    </p>
+  </div>
+
+  <!-- Horizontal drag scroll cards -->
+  <div class="saigon-scroll-container" id="saigonScroll">
+    <div class="saigon-cards">
+
+      <!-- Card 1: Landmark 81 -->
+      <div class="saigon-card sg-1">
+        <div class="saigon-card-bg">
+          <svg style="position:absolute;inset:0;width:100%;height:100%;" viewBox="0 0 340 480" xmlns="http://www.w3.org/2000/svg">
+            <rect x="10"  y="200" width="30"  height="280" fill="rgba(255,107,53,0.15)"/>
+            <rect x="50"  y="150" width="25"  height="330" fill="rgba(255,107,53,0.2)"/>
+            <rect x="120" y="50"  width="20"  height="430" fill="rgba(255,107,53,0.3)"/>
+            <rect x="85"  y="120" width="28"  height="360" fill="rgba(255,107,53,0.18)"/>
+            <rect x="155" y="180" width="22"  height="300" fill="rgba(255,107,53,0.12)"/>
+            <rect x="190" y="140" width="35"  height="340" fill="rgba(255,107,53,0.2)"/>
+            <rect x="240" y="170" width="28"  height="310" fill="rgba(255,107,53,0.15)"/>
+            <rect x="280" y="200" width="40"  height="280" fill="rgba(255,107,53,0.12)"/>
+            <line x1="130" y1="50" x2="130" y2="10" stroke="rgba(255,107,53,0.5)" stroke-width="2"/>
+            <circle cx="130" cy="8" r="3" fill="rgba(200,16,46,0.8)">
+              <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/>
+            </circle>
+            <g fill="rgba(255,200,100,0.4)">
+              <rect x="125" y="60" width="4" height="4"/><rect x="133" y="60" width="4" height="4"/>
+              <rect x="125" y="72" width="4" height="4"/><rect x="133" y="72" width="4" height="4"/>
+              <rect x="125" y="84" width="4" height="4"/><rect x="133" y="84" width="4" height="4"/>
+              <rect x="125" y="96" width="4" height="4"/><rect x="133" y="96" width="4" height="4"/>
+            </g>
+            <ellipse cx="170" cy="480" rx="200" ry="40" fill="rgba(255,107,53,0.15)"/>
+            <g fill="rgba(255,255,255,0.6)">
+              <circle cx="20" cy="30" r="1"/><circle cx="60" cy="15" r="1.5"/>
+              <circle cx="200" cy="25" r="1"/><circle cx="280" cy="10" r="1.5"/>
+            </g>
+          </svg>
+        </div>
+        <div class="saigon-card-overlay"></div>
+        <div class="saigon-card-content">
+          <div class="card-num">01</div>
+          <div class="card-tag">Biểu Tượng</div>
+          <div class="card-title">Landmark 81</div>
+          <div class="card-desc">Tòa nhà cao nhất Việt Nam với 81 tầng, 461m. Biểu tượng của Sài Gòn hiện đại, nhìn thấy từ khắp thành phố.</div>
+        </div>
+      </div>
+
+      <!-- Card 2: Chợ Bến Thành -->
+      <div class="saigon-card sg-2" style="width:280px;">
+        <div class="saigon-card-bg">
+          <svg style="position:absolute;inset:0;width:100%;height:100%;" viewBox="0 0 280 480" xmlns="http://www.w3.org/2000/svg">
+            <rect x="40" y="180" width="200" height="200" fill="rgba(212,168,67,0.1)" stroke="rgba(212,168,67,0.3)" stroke-width="1"/>
+            <polygon points="140,100 240,180 40,180" fill="rgba(200,16,46,0.2)" stroke="rgba(200,16,46,0.4)" stroke-width="1"/>
+            <rect x="115" y="140" width="50"  height="80"  fill="rgba(212,168,67,0.15)"/>
+            <circle cx="140" cy="160" r="18" fill="none" stroke="rgba(212,168,67,0.5)" stroke-width="2"/>
+            <line x1="140" y1="160" x2="140" y2="148" stroke="rgba(212,168,67,0.8)" stroke-width="2"/>
+            <line x1="140" y1="160" x2="150" y2="160" stroke="rgba(212,168,67,0.8)" stroke-width="1.5"/>
+            <path d="M60,180 Q80,150 100,180"  fill="none" stroke="rgba(212,168,67,0.3)" stroke-width="1"/>
+            <path d="M110,180 Q130,150 150,180" fill="none" stroke="rgba(212,168,67,0.3)" stroke-width="1"/>
+            <path d="M160,180 Q180,150 200,180" fill="none" stroke="rgba(212,168,67,0.3)" stroke-width="1"/>
+            <g fill="rgba(255,220,100,0.6)">
+              <circle cx="60"  cy="175" r="3"/><circle cx="100" cy="175" r="3"/>
+              <circle cx="140" cy="175" r="3"/><circle cx="180" cy="175" r="3"/>
+              <circle cx="220" cy="175" r="3"/>
+            </g>
+          </svg>
+        </div>
+        <div class="saigon-card-overlay"></div>
+        <div class="saigon-card-content">
+          <div class="card-num">02</div>
+          <div class="card-tag">Chợ Truyền Thống</div>
+          <div class="card-title">Chợ Bến Thành</div>
+          <div class="card-desc">Biểu tượng 100 năm của Sài Gòn — nơi giao thoa của ẩm thực, văn hóa và cuộc sống đường phố.</div>
+        </div>
+      </div>
+
+      <!-- Card 3: Nhà Thờ Đức Bà -->
+      <div class="saigon-card sg-3">
+        <div class="saigon-card-bg">
+          <svg style="position:absolute;inset:0;width:100%;height:100%;" viewBox="0 0 340 480" xmlns="http://www.w3.org/2000/svg">
+            <rect x="110" y="150" width="120" height="280" fill="rgba(26,122,110,0.15)" stroke="rgba(26,122,110,0.3)" stroke-width="1"/>
+            <rect x="110" y="80"  width="40"  height="200" fill="rgba(26,122,110,0.2)"/>
+            <rect x="190" y="80"  width="40"  height="200" fill="rgba(26,122,110,0.2)"/>
+            <polygon points="130,20 110,80 150,80" fill="rgba(26,122,110,0.3)"/>
+            <polygon points="210,20 190,80 230,80" fill="rgba(26,122,110,0.3)"/>
+            <circle cx="170" cy="180" r="25" fill="none" stroke="rgba(26,122,110,0.5)" stroke-width="2"/>
+            <circle cx="170" cy="180" r="15" fill="none" stroke="rgba(26,122,110,0.4)" stroke-width="1"/>
+            <circle cx="170" cy="180" r="5"  fill="rgba(26,122,110,0.6)"/>
+            <path d="M120,220 Q130,200 140,220 L140,260 L120,260 Z" fill="rgba(26,122,110,0.2)"/>
+            <path d="M155,220 Q165,200 175,220 L175,260 L155,260 Z" fill="rgba(26,122,110,0.2)"/>
+            <path d="M190,220 Q200,200 210,220 L210,260 L190,260 Z" fill="rgba(26,122,110,0.2)"/>
+            <line x1="130" y1="2"  x2="130" y2="20" stroke="rgba(212,168,67,0.6)" stroke-width="2"/>
+            <line x1="124" y1="10" x2="136" y2="10" stroke="rgba(212,168,67,0.6)" stroke-width="2"/>
+            <line x1="210" y1="2"  x2="210" y2="20" stroke="rgba(212,168,67,0.6)" stroke-width="2"/>
+            <line x1="204" y1="10" x2="216" y2="10" stroke="rgba(212,168,67,0.6)" stroke-width="2"/>
+          </svg>
+        </div>
+        <div class="saigon-card-overlay"></div>
+        <div class="saigon-card-content">
+          <div class="card-num">03</div>
+          <div class="card-tag">Di Tích Lịch Sử</div>
+          <div class="card-title">Nhà Thờ Đức Bà</div>
+          <div class="card-desc">Công trình kiến trúc Pháp hơn 140 năm tuổi — trái tim của Quận 1, chứng nhân lịch sử Sài Gòn.</div>
+        </div>
+      </div>
+
+      <!-- Card 4: Nguyễn Huệ -->
+      <div class="saigon-card sg-4" style="width:260px;">
+        <div class="saigon-card-bg">
+          <svg style="position:absolute;inset:0;width:100%;height:100%;" viewBox="0 0 260 480" xmlns="http://www.w3.org/2000/svg">
+            <line x1="130" y1="100" x2="20"  y2="480" stroke="rgba(212,168,67,0.2)" stroke-width="1"/>
+            <line x1="130" y1="100" x2="240" y2="480" stroke="rgba(212,168,67,0.2)" stroke-width="1"/>
+            <line x1="130" y1="100" x2="50"  y2="480" stroke="rgba(212,168,67,0.1)" stroke-width="1"/>
+            <line x1="130" y1="100" x2="210" y2="480" stroke="rgba(212,168,67,0.1)" stroke-width="1"/>
+            <rect x="120" y="130" width="20" height="50" fill="rgba(212,168,67,0.3)"/>
+            <circle cx="130" cy="120" r="12" fill="rgba(212,168,67,0.3)"/>
+            <rect x="0"   y="200" width="30"  height="280" fill="rgba(212,168,67,0.1)"/>
+            <rect x="230" y="200" width="30"  height="280" fill="rgba(212,168,67,0.1)"/>
+            <g fill="rgba(255,220,100,0.7)">
+              <circle cx="50"  cy="250" r="3"/><circle cx="210" cy="250" r="3"/>
+              <circle cx="70"  cy="300" r="3"/><circle cx="190" cy="300" r="3"/>
+              <circle cx="85"  cy="350" r="3"/><circle cx="175" cy="350" r="3"/>
+              <circle cx="95"  cy="400" r="3"/><circle cx="165" cy="400" r="3"/>
+            </g>
+            <ellipse cx="130" cy="100" rx="60" ry="20" fill="rgba(212,168,67,0.2)"/>
+          </svg>
+        </div>
+        <div class="saigon-card-overlay"></div>
+        <div class="saigon-card-content">
+          <div class="card-num">04</div>
+          <div class="card-tag">Phố Đi Bộ</div>
+          <div class="card-title">Nguyễn Huệ</div>
+          <div class="card-desc">Con đường huyền thoại của Sài Gòn — nơi hàng triệu bước chân viết nên câu chuyện thành phố.</div>
+        </div>
+      </div>
+
+      <!-- Card 5: Sông Sài Gòn -->
+      <div class="saigon-card sg-5" style="width:380px;">
+        <div class="saigon-card-bg">
+          <svg style="position:absolute;inset:0;width:100%;height:100%;" viewBox="0 0 380 480" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0" y="0"   width="380" height="280" fill="rgba(200,16,46,0.05)"/>
+            <rect x="0" y="280" width="380" height="200" fill="rgba(255,107,53,0.08)"/>
+            <rect x="20"  y="180" width="20"  height="100" fill="rgba(200,16,46,0.2)"/>
+            <rect x="50"  y="160" width="15"  height="120" fill="rgba(200,16,46,0.25)"/>
+            <rect x="75"  y="130" width="12"  height="150" fill="rgba(200,16,46,0.3)"/>
+            <rect x="100" y="100" width="18"  height="180" fill="rgba(200,16,46,0.35)"/>
+            <rect x="130" y="140" width="22"  height="140" fill="rgba(200,16,46,0.25)"/>
+            <rect x="165" y="160" width="16"  height="120" fill="rgba(200,16,46,0.2)"/>
+            <rect x="195" y="145" width="24"  height="135" fill="rgba(200,16,46,0.28)"/>
+            <rect x="235" y="165" width="20"  height="115" fill="rgba(200,16,46,0.2)"/>
+            <rect x="270" y="180" width="30"  height="100" fill="rgba(200,16,46,0.18)"/>
+            <rect x="315" y="170" width="25"  height="110" fill="rgba(200,16,46,0.22)"/>
+            <ellipse cx="109" cy="97" rx="12" ry="5" fill="rgba(200,16,46,0.4)"/>
+            <g opacity="0.3">
+              <ellipse cx="190" cy="320" rx="150" ry="15" fill="none" stroke="rgba(255,107,53,0.4)" stroke-width="1"/>
+              <ellipse cx="190" cy="350" rx="120" ry="12" fill="none" stroke="rgba(255,107,53,0.3)" stroke-width="1"/>
+              <ellipse cx="190" cy="375" rx="90"  ry="10" fill="none" stroke="rgba(255,107,53,0.25)" stroke-width="1"/>
+            </g>
+            <circle cx="320" cy="50" r="20" fill="rgba(212,168,67,0.15)" stroke="rgba(212,168,67,0.3)" stroke-width="1"/>
+            <g fill="rgba(255,255,255,0.5)">
+              <circle cx="40"  cy="30" r="1"/><circle cx="80"  cy="20" r="1.5"/>
+              <circle cx="200" cy="35" r="1"/><circle cx="250" cy="15" r="1"/>
+            </g>
+          </svg>
+        </div>
+        <div class="saigon-card-overlay"></div>
+        <div class="saigon-card-content">
+          <div class="card-num">05</div>
+          <div class="card-tag">Cảnh Quan</div>
+          <div class="card-title">Sông Sài Gòn</div>
+          <div class="card-desc">Dòng sông chứng nhân lịch sử — ánh đèn thành phố tan vào mặt nước trong những đêm Sài Gòn bất tận.</div>
+        </div>
+      </div>
+
+      <!-- Card 6: Địa Đạo Củ Chi -->
+      <div class="saigon-card sg-6">
+        <div class="saigon-card-bg">
+          <svg style="position:absolute;inset:0;width:100%;height:100%;" viewBox="0 0 340 480" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0" y="200" width="340" height="280" fill="rgba(139,94,60,0.15)"/>
+            <path d="M50,240 Q170,220 290,240 L290,280 Q170,300 50,280 Z"   fill="rgba(139,94,60,0.25)" stroke="rgba(139,94,60,0.4)" stroke-width="1"/>
+            <path d="M80,290 Q170,275 260,290 L260,320 Q170,335 80,320 Z"   fill="rgba(139,94,60,0.2)"  stroke="rgba(139,94,60,0.3)" stroke-width="1"/>
+            <path d="M100,330 Q170,320 240,330 L240,355 Q170,365 100,355 Z" fill="rgba(139,94,60,0.18)"/>
+            <rect x="150" y="195" width="40" height="10" rx="2" fill="rgba(139,94,60,0.5)" stroke="rgba(212,168,67,0.3)" stroke-width="1"/>
+            <line x1="30" y1="240" x2="30" y2="355" stroke="rgba(212,168,67,0.2)" stroke-width="1" stroke-dasharray="4,4"/>
+            <text x="8" y="248" fill="rgba(212,168,67,0.5)" font-size="9">3m</text>
+            <text x="8" y="300" fill="rgba(212,168,67,0.5)" font-size="9">6m</text>
+            <text x="8" y="345" fill="rgba(212,168,67,0.5)" font-size="9">9m</text>
+            <g fill="rgba(26,122,110,0.3)">
+              <circle cx="60"  cy="185" r="18"/>
+              <circle cx="120" cy="180" r="22"/>
+              <circle cx="200" cy="183" r="20"/>
+              <circle cx="270" cy="178" r="25"/>
+            </g>
+            <line x1="0" y1="200" x2="340" y2="200" stroke="rgba(139,94,60,0.5)" stroke-width="1"/>
+          </svg>
+        </div>
+        <div class="saigon-card-overlay"></div>
+        <div class="saigon-card-content">
+          <div class="card-num">06</div>
+          <div class="card-tag">Di Tích Lịch Sử</div>
+          <div class="card-title">Địa Đạo Củ Chi</div>
+          <div class="card-desc">Hệ thống đường hầm huyền thoại dài hơn 200km — biểu tượng của ý chí kiên cường Việt Nam.</div>
+        </div>
+      </div>
+
+    </div><!-- /saigon-cards -->
+  </div><!-- /saigon-scroll-container -->
+
+  <!-- Saigon Timeline -->
+  <div class="saigon-timeline">
+    <h3 class="timeline-title gsap-reveal">
+      Hành Trình <em style="color:var(--gold);">300 Năm</em> Sài Gòn
+    </h3>
+    <div class="timeline-track">
+      <div class="timeline-item"><div class="timeline-dot"></div>
+        <div class="timeline-year">1698</div>
+        <div class="timeline-event">Nguyễn Hữu Cảnh xác lập vùng đất Sài Gòn – Gia Định, đặt nền móng cho thành phố phương Nam.</div>
+      </div>
+      <div class="timeline-item"><div class="timeline-dot" style="background:var(--red)"></div>
+        <div class="timeline-year">1859</div>
+        <div class="timeline-event">Pháp chiếm thành Gia Định, mở ra thời kỳ Sài Gòn trở thành "Hòn Ngọc Viễn Đông".</div>
+      </div>
+      <div class="timeline-item"><div class="timeline-dot" style="background:var(--teal)"></div>
+        <div class="timeline-year">1975</div>
+        <div class="timeline-event">Giải phóng miền Nam, thống nhất đất nước. Sài Gòn đổi tên thành Thành phố Hồ Chí Minh.</div>
+      </div>
+      <div class="timeline-item"><div class="timeline-dot"></div>
+        <div class="timeline-year">1986</div>
+        <div class="timeline-event">Đổi Mới — cuộc cải cách kinh tế lịch sử đưa TP.HCM bước vào kỷ nguyên phát triển vượt bậc.</div>
+      </div>
+      <div class="timeline-item"><div class="timeline-dot" style="background:var(--night)"></div>
+        <div class="timeline-year">2010</div>
+        <div class="timeline-event">TP.HCM kỷ niệm 300 năm Sài Gòn – Gia Định và đón nhận nhiều dự án hạ tầng quy mô lớn.</div>
+      </div>
+      <div class="timeline-item"><div class="timeline-dot" style="background:var(--gold)"></div>
+        <div class="timeline-year">2018</div>
+        <div class="timeline-event">Landmark 81 hoàn thành — tòa nhà cao nhất Đông Nam Á, biểu tượng khát vọng của Sài Gòn.</div>
+      </div>
+      <div class="timeline-item"><div class="timeline-dot" style="background:var(--red)"></div>
+        <div class="timeline-year">2024</div>
+        <div class="timeline-event">TP.HCM tiếp tục là đầu tàu kinh tế, thu hút FDI và du lịch quốc tế hàng đầu Việt Nam.</div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ═══════════════════════════════
+     REGIONS
+════════════════════════════════ -->
+<section id="regions">
+  <div class="section-tag gsap-reveal">Ba Miền</div>
+  <h2 class="section-title gsap-reveal">Khám Phá <em>Việt Nam</em><br>Từng Vùng Đất</h2>
+
+  <div class="regions-grid">
+
+    <!-- Miền Bắc -->
+    <div class="region-panel">
+      <div class="region-bg north-bg">
+        <svg style="position:absolute;inset:0;width:100%;height:100%;" viewBox="0 0 400 600" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0" y="380" width="400" height="220" fill="rgba(26,122,110,0.2)"/>
+          <path d="M-10,380 Q20,200 50,380"   fill="rgba(26,122,110,0.3)"/>
+          <path d="M40,380 Q80,150 120,380"    fill="rgba(26,122,110,0.35)"/>
+          <path d="M100,380 Q130,220 160,380"  fill="rgba(26,122,110,0.28)"/>
+          <path d="M150,380 Q200,100 240,380"  fill="rgba(26,122,110,0.4)"/>
+          <path d="M220,380 Q255,180 280,380"  fill="rgba(26,122,110,0.32)"/>
+          <path d="M265,380 Q300,240 330,380"  fill="rgba(26,122,110,0.28)"/>
+          <path d="M320,380 Q360,200 400,380"  fill="rgba(26,122,110,0.3)"/>
+          <rect x="0" y="340" width="400" height="50" fill="rgba(255,255,255,0.04)"/>
+          <rect x="0" y="360" width="400" height="30" fill="rgba(255,255,255,0.06)"/>
+          <path d="M0,400 Q200,390 400,400"    fill="none" stroke="rgba(26,122,110,0.3)" stroke-width="1"/>
+          <path d="M160,430 Q190,425 220,430 L215,445 L165,445 Z" fill="rgba(212,168,67,0.2)"/>
+          <g fill="rgba(255,255,255,0.4)">
+            <circle cx="50" cy="40" r="1"/><circle cx="120" cy="20" r="1.5"/>
+            <circle cx="250" cy="60" r="1"/><circle cx="350" cy="30" r="1.5"/>
+          </g>
+        </svg>
+      </div>
+      <div class="region-overlay"></div>
+      <div class="region-content">
+        <div class="region-label">Miền Bắc</div>
+        <div class="region-name" > <a href="index2.html">Hà Nội &<br>Vịnh Hạ Long</a></div>
+        <div class="region-spots">
+          <div class="region-spot">Hồ Hoàn Kiếm</div>
+          <div class="region-spot">Phố Cổ Hà Nội</div>
+          <div class="region-spot">Vịnh Hạ Long</div>
+          <div class="region-spot">Sa Pa</div>
+          <div class="region-spot">Ninh Bình</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Miền Trung -->
+    <div class="region-panel">
+      <div class="region-bg central-bg">
+        <svg style="position:absolute;inset:0;width:100%;height:100%;" viewBox="0 0 400 600" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0" y="0"   width="400" height="350" fill="rgba(20,14,5,0.5)"/>
+          <rect x="0" y="440" width="400" height="160" fill="rgba(20,12,5,0.4)"/>
+          <rect x="20"  y="280" width="60"  height="160" fill="rgba(212,168,67,0.12)"/>
+          <rect x="90"  y="260" width="70"  height="180" fill="rgba(212,168,67,0.15)"/>
+          <rect x="170" y="270" width="55"  height="170" fill="rgba(212,168,67,0.12)"/>
+          <rect x="235" y="255" width="80"  height="185" fill="rgba(212,168,67,0.18)"/>
+          <rect x="325" y="275" width="75"  height="165" fill="rgba(212,168,67,0.12)"/>
+          <polygon points="20,280 50,255 80,280"   fill="rgba(212,168,67,0.2)"/>
+          <polygon points="90,260 125,232 160,260"  fill="rgba(212,168,67,0.25)"/>
+          <polygon points="170,270 197,245 225,270" fill="rgba(212,168,67,0.2)"/>
+          <polygon points="235,255 275,225 315,255" fill="rgba(212,168,67,0.3)"/>
+          <!-- Lanterns -->
+          <line x1="60"  y1="160" x2="60"  y2="195" stroke="rgba(212,168,67,0.3)" stroke-width="1"/>
+          <ellipse cx="60"  cy="210" rx="12" ry="16" fill="rgba(200,16,46,0.6)"/>
+          <line x1="130" y1="140" x2="130" y2="178" stroke="rgba(212,168,67,0.3)" stroke-width="1"/>
+          <ellipse cx="130" cy="193" rx="14" ry="18" fill="rgba(212,168,67,0.7)"/>
+          <line x1="200" y1="150" x2="200" y2="185" stroke="rgba(212,168,67,0.3)" stroke-width="1"/>
+          <ellipse cx="200" cy="200" rx="11" ry="15" fill="rgba(255,107,53,0.6)"/>
+          <line x1="270" y1="130" x2="270" y2="170" stroke="rgba(212,168,67,0.3)" stroke-width="1"/>
+          <ellipse cx="270" cy="186" rx="15" ry="20" fill="rgba(200,16,46,0.55)"/>
+          <path d="M40,160 Q130,130 200,150 Q270,120 360,155" fill="none" stroke="rgba(212,168,67,0.2)" stroke-width="1"/>
+        </svg>
+      </div>
+      <div class="region-overlay"></div>
+      <div class="region-content">
+        <div class="region-label">Miền Trung</div>
+        <div class="region-name">Hội An &<br>Đà Nẵng</div>
+        <div class="region-spots">
+          <div class="region-spot">Phố Cổ Hội An</div>
+          <div class="region-spot">Cầu Vàng</div>
+          <div class="region-spot">Cố Đô Huế</div>
+          <div class="region-spot">Mỹ Sơn</div>
+          <div class="region-spot">Phong Nha</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Miền Nam -->
+    <div class="region-panel">
+      <div class="region-bg south-bg">
+        <svg style="position:absolute;inset:0;width:100%;height:100%;" viewBox="0 0 400 600" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0" y="0" width="400" height="600" fill="rgba(255,107,53,0.05)"/>
+          <path d="M0,350 Q100,330 200,345 Q300,360 400,340 L400,600 L0,600 Z" fill="rgba(200,16,46,0.1)"/>
+          <line x1="50"  y1="350" x2="60"  y2="180" stroke="rgba(139,94,60,0.4)" stroke-width="3"/>
+          <circle cx="55"  cy="175" r="30" fill="rgba(26,122,110,0.25)"/>
+          <line x1="300" y1="340" x2="290" y2="160" stroke="rgba(139,94,60,0.4)" stroke-width="3"/>
+          <circle cx="295" cy="155" r="35" fill="rgba(26,122,110,0.25)"/>
+          <path d="M80,380 Q120,370 160,380 L155,410 L85,410 Z"   fill="rgba(200,16,46,0.25)"/>
+          <path d="M180,395 Q210,385 240,395 L236,420 L184,420 Z" fill="rgba(212,168,67,0.25)"/>
+          <path d="M250,375 Q290,365 330,375 L325,405 L255,405 Z" fill="rgba(200,16,46,0.2)"/>
+          <g>
+            <circle cx="100" cy="375" r="5" fill="rgba(255,150,50,0.6)"/>
+            <circle cx="115" cy="372" r="5" fill="rgba(200,16,46,0.5)"/>
+            <circle cx="130" cy="374" r="5" fill="rgba(255,220,50,0.6)"/>
+            <circle cx="200" cy="390" r="4" fill="rgba(255,150,50,0.5)"/>
+            <circle cx="215" cy="388" r="4" fill="rgba(255,80,80,0.5)"/>
+          </g>
+          <circle cx="350" cy="80" r="45" fill="rgba(255,107,53,0.2)"/>
+        </svg>
+      </div>
+      <div class="region-overlay"></div>
+      <div class="region-content">
+        <div class="region-label">Miền Nam</div>
+        <div class="region-name">Mekong &<br>Phú Quốc</div>
+        <div class="region-spots">
+          <div class="region-spot">TP. Hồ Chí Minh</div>
+          <div class="region-spot">Đồng Bằng Sông Cửu Long</div>
+          <div class="region-spot">Phú Quốc</div>
+          <div class="region-spot">Cần Thơ</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════
+     FOOD
+════════════════════════════════ -->
+<section id="food">
+  <div class="section-tag gsap-reveal">Ẩm Thực Việt Nam</div>
+  <h2 class="section-title gsap-reveal">Vị Giác <em>Không Quên</em></h2>
+
+  <div class="food-grid">
+    <!-- Phở — featured -->
+    <div class="food-card featured gsap-scale">
+      <div class="food-card-art">
+        <svg class="food-illustration" viewBox="0 0 700 360" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="350" cy="200" rx="220" ry="60" fill="rgba(212,168,67,0.08)" stroke="rgba(212,168,67,0.2)" stroke-width="2"/>
+          <path d="M130,200 Q130,320 350,340 Q570,320 570,200" fill="rgba(212,168,67,0.06)" stroke="rgba(212,168,67,0.15)" stroke-width="1"/>
+          <ellipse cx="350" cy="195" rx="200" ry="50" fill="rgba(255,107,53,0.2)"/>
+          <path d="M200,190 Q280,175 350,185 Q420,195 500,178" fill="none" stroke="rgba(250,246,239,0.5)" stroke-width="3" stroke-linecap="round"/>
+          <path d="M180,200 Q260,188 340,198 Q430,208 510,190" fill="none" stroke="rgba(250,246,239,0.4)" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M210,208 Q290,198 370,206 Q450,214 520,200" fill="none" stroke="rgba(250,246,239,0.35)" stroke-width="2" stroke-linecap="round"/>
+          <ellipse cx="280" cy="175" rx="30" ry="12" fill="rgba(139,50,30,0.5)" transform="rotate(-15,280,175)"/>
+          <ellipse cx="420" cy="180" rx="28" ry="10" fill="rgba(139,50,30,0.5)" transform="rotate(10,420,180)"/>
+          <circle cx="250" cy="168" r="6" fill="rgba(50,150,50,0.6)"/>
+          <circle cx="265" cy="162" r="5" fill="rgba(50,150,50,0.5)"/>
+          <circle cx="460" cy="170" r="6" fill="rgba(50,150,50,0.6)"/>
+          <line x1="490" y1="100" x2="440" y2="220" stroke="rgba(139,94,60,0.7)" stroke-width="4" stroke-linecap="round"/>
+          <line x1="510" y1="100" x2="455" y2="215" stroke="rgba(139,94,60,0.7)" stroke-width="4" stroke-linecap="round"/>
+          <g opacity="0.5">
+            <path d="M300,160 Q295,140 305,120 Q315,100 310,80" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-linecap="round">
+              <animate attributeName="opacity" values="0;0.5;0" dur="2s"   repeatCount="indefinite"/>
+            </path>
+            <path d="M350,155 Q345,132 358,112 Q368,92 362,72" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-linecap="round">
+              <animate attributeName="opacity" values="0;0.5;0" dur="2.5s" begin="0.5s" repeatCount="indefinite"/>
+            </path>
+            <path d="M400,158 Q398,138 408,118 Q418,98 412,78" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-linecap="round">
+              <animate attributeName="opacity" values="0;0.5;0" dur="2.2s" begin="1s"   repeatCount="indefinite"/>
+            </path>
+          </g>
+        </svg>
+      </div>
+      <div class="food-card-info">
+        <div class="food-origin">Hà Nội · Toàn Quốc</div>
+        <div class="food-name">Phở Bò</div>
+        <div class="food-desc">Linh hồn ẩm thực Việt — nước dùng ninh xương bò nhiều giờ, bánh phở mềm, thịt thái mỏng, rau thơm và những giọt hạnh phúc đầu sáng.</div>
+      </div>
+    </div>
+
+    <!-- Bánh Mì -->
+    <div class="food-card gsap-reveal">
+      <div class="food-card-art">
+        <svg class="food-illustration" viewBox="0 0 340 280" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="170" cy="140" rx="145" ry="35" fill="rgba(212,168,67,0.2)" stroke="rgba(212,168,67,0.4)" stroke-width="2"/>
+          <path d="M25,140 Q170,105 315,140" fill="rgba(212,168,67,0.3)"/>
+          <line x1="80"  y1="115" x2="90"  y2="132" stroke="rgba(255,200,100,0.4)" stroke-width="1.5"/>
+          <line x1="130" y1="110" x2="140" y2="127" stroke="rgba(255,200,100,0.4)" stroke-width="1.5"/>
+          <line x1="180" y1="108" x2="190" y2="125" stroke="rgba(255,200,100,0.4)" stroke-width="1.5"/>
+          <line x1="230" y1="110" x2="240" y2="127" stroke="rgba(255,200,100,0.4)" stroke-width="1.5"/>
+          <ellipse cx="170" cy="148" rx="120" ry="20" fill="rgba(200,80,50,0.3)"/>
+          <path d="M100,143 Q130,138 155,142" fill="none" stroke="rgba(50,150,50,0.6)" stroke-width="4"/>
+          <path d="M185,140 Q210,136 235,141" fill="none" stroke="rgba(50,150,50,0.6)" stroke-width="4"/>
+          <rect x="120" y="144" width="50" height="8" rx="2" fill="rgba(100,60,30,0.4)"/>
+          <ellipse cx="260" cy="138" rx="12" ry="5" fill="rgba(200,16,46,0.5)" transform="rotate(-30,260,138)"/>
+        </svg>
+      </div>
+      <div class="food-card-info">
+        <div class="food-origin">Toàn Quốc</div>
+        <div class="food-name">Bánh Mì</div>
+        <div class="food-desc">Di sản ẩm thực thế giới — ổ bánh mì giòn rụm nhân thịt nguội, pâté, rau thơm. Nhanh, ngon, đậm chất Việt.</div>
+      </div>
+    </div>
+
+    <!-- Cơm Tấm -->
+    <div class="food-card gsap-reveal" style="animation-delay:0.2s">
+      <div class="food-card-art">
+        <svg class="food-illustration" viewBox="0 0 340 280" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="170" cy="160" rx="150" ry="100" fill="rgba(212,168,67,0.05)" stroke="rgba(212,168,67,0.2)" stroke-width="2"/>
+          <ellipse cx="170" cy="158" rx="130" ry="85"  fill="rgba(212,168,67,0.04)"/>
+          <g fill="rgba(250,246,239,0.4)">
+            <ellipse cx="150" cy="175" rx="40" ry="30"/>
+            <rect x="130" y="157" width="3" height="2" rx="1"/>
+            <rect x="140" y="155" width="3" height="2" rx="1"/>
+            <rect x="150" y="162" width="3" height="2" rx="1"/>
+            <rect x="160" y="157" width="3" height="2" rx="1"/>
+          </g>
+          <ellipse cx="240" cy="150" rx="55" ry="45" fill="rgba(139,50,30,0.35)" stroke="rgba(200,100,50,0.4)" stroke-width="1"/>
+          <line x1="210" y1="130" x2="270" y2="140" stroke="rgba(60,20,10,0.5)" stroke-width="3" stroke-linecap="round"/>
+          <line x1="208" y1="148" x2="268" y2="158" stroke="rgba(60,20,10,0.5)" stroke-width="3" stroke-linecap="round"/>
+          <ellipse cx="170" cy="120" rx="35" ry="25" fill="rgba(255,200,50,0.35)"/>
+          <circle cx="170" cy="118" r="12" fill="rgba(255,150,30,0.5)"/>
+          <circle cx="100" cy="130" r="14" fill="rgba(50,150,50,0.3)" stroke="rgba(50,150,50,0.4)" stroke-width="1"/>
+          <circle cx="80"  cy="140" r="12" fill="rgba(50,150,50,0.3)" stroke="rgba(50,150,50,0.4)" stroke-width="1"/>
+        </svg>
+      </div>
+      <div class="food-card-info">
+        <div class="food-origin">TP. Hồ Chí Minh</div>
+        <div class="food-name">Cơm Tấm</div>
+        <div class="food-desc">Linh hồn bữa sáng Sài Gòn — cơm tấm thơm dẻo, sườn nướng vàng óng, chả trứng và mỡ hành xanh mướt.</div>
+      </div>
+    </div>
+
+    <!-- Cà Phê Sữa Đá -->
+    <div class="food-card gsap-reveal" style="animation-delay:0.3s">
+      <div class="food-card-art">
+        <svg class="food-illustration" viewBox="0 0 340 280" xmlns="http://www.w3.org/2000/svg">
+          <path d="M130,60 L110,240 L230,240 L210,60 Z" fill="rgba(200,16,46,0.06)" stroke="rgba(212,168,67,0.3)" stroke-width="2"/>
+          <rect x="140" y="70"  width="25" height="25" rx="3" fill="rgba(180,220,255,0.2)" stroke="rgba(180,220,255,0.3)" stroke-width="1"/>
+          <rect x="168" y="75"  width="22" height="22" rx="3" fill="rgba(180,220,255,0.18)"/>
+          <rect x="115" y="150" width="110" height="80" rx="2" fill="rgba(80,40,10,0.4)"/>
+          <rect x="115" y="130" width="110" height="20" rx="2" fill="rgba(250,220,150,0.4)"/>
+          <path d="M155,115 Q155,130 150,145" fill="none" stroke="rgba(255,230,150,0.5)" stroke-width="3"/>
+          <rect x="140" y="50"  width="60" height="15" rx="3" fill="rgba(139,94,60,0.4)"/>
+          <rect x="148" y="35"  width="44" height="15" rx="2" fill="rgba(139,94,60,0.35)"/>
+          <line x1="210" y1="60" x2="195" y2="240" stroke="rgba(200,16,46,0.4)" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="163" cy="138" r="3" fill="rgba(80,40,10,0.6)">
+            <animate attributeName="cy"      values="125;145" dur="1.5s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0;1;0"   dur="1.5s" repeatCount="indefinite"/>
+          </circle>
+        </svg>
+      </div>
+      <div class="food-card-info">
+        <div class="food-origin">Toàn Quốc</div>
+        <div class="food-name">Cà Phê Sữa Đá</div>
+        <div class="food-desc">Văn hóa cafe đặc trưng — phin nhỏ giọt chậm rãi, sữa đặc ngọt ngào, đá lạnh tan dần. Một buổi sáng trọn vẹn.</div>
+      </div>
+    </div>
+
+    <!-- Gỏi Cuốn -->
+    <div class="food-card gsap-reveal" style="animation-delay:0.4s">
+      <div class="food-card-art">
+        <svg class="food-illustration" viewBox="0 0 340 280" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="170" cy="140" rx="90" ry="50" fill="rgba(250,246,239,0.12)" stroke="rgba(250,246,239,0.2)" stroke-width="1.5"/>
+          <ellipse cx="145" cy="135" rx="18" ry="10" fill="rgba(255,150,120,0.45)" transform="rotate(-20,145,135)"/>
+          <ellipse cx="195" cy="132" rx="16" ry="9"  fill="rgba(255,150,120,0.4)"  transform="rotate(15,195,132)"/>
+          <rect x="148" y="140" width="45" height="12" rx="2" fill="rgba(250,200,180,0.35)"/>
+          <g fill="rgba(50,150,80,0.4)">
+            <circle cx="130" cy="148" r="6"/><circle cx="155" cy="152" r="5"/>
+            <circle cx="185" cy="150" r="6"/><circle cx="210" cy="145" r="5"/>
+          </g>
+          <path d="M152,144 Q168,140 185,145" fill="none" stroke="rgba(250,246,239,0.4)" stroke-width="1.5"/>
+          <ellipse cx="310" cy="200" rx="25" ry="12" fill="rgba(200,16,46,0.25)" stroke="rgba(200,16,46,0.4)" stroke-width="1"/>
+          <path d="M285,200 Q285,225 310,230 Q335,225 335,200" fill="rgba(200,16,46,0.2)"/>
+          <circle cx="305" cy="195" r="3" fill="rgba(212,168,67,0.5)"/>
+          <circle cx="315" cy="197" r="3" fill="rgba(212,168,67,0.5)"/>
+          <ellipse cx="170" cy="195" rx="85" ry="30" fill="rgba(250,246,239,0.08)" stroke="rgba(250,246,239,0.15)" stroke-width="1"/>
+        </svg>
+      </div>
+      <div class="food-card-info">
+        <div class="food-origin">Miền Nam</div>
+        <div class="food-name">Gỏi Cuốn</div>
+        <div class="food-desc">Trong lành và tươi mát — tôm, thịt, bún, rau thơm cuộn trong bánh tráng mỏng, chấm tương đậu phộng béo ngậy.</div>
+      </div>
+    </div>
+
+  </div><!-- /food-grid -->
+</section>
+
+<!-- ═══════════════════════════════
+     PEOPLE
+════════════════════════════════ -->
+<section id="people">
+  <div class="section-tag gsap-reveal">Con Người Việt Nam</div>
+  <h2 class="section-title gsap-reveal"><em>Trái Tim</em> Của<br>Mọi Hành Trình</h2>
+
+  <div class="people-masonry">
+
+    <div class="people-card tall gsap-scale">
+      <div class="people-card-bg" style="background:linear-gradient(160deg,rgba(26,122,110,0.3),rgba(10,8,6,0.9));position:absolute;inset:0;">
+        <svg style="position:absolute;inset:0;width:100%;height:100%;" viewBox="0 0 200 400" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="100" cy="100" r="30" fill="rgba(212,168,67,0.15)"/>
+          <rect   cx="80"  cy="130" width="40" height="80" rx="5" fill="rgba(212,168,67,0.1)"/>
+          <path d="M60,90 Q100,55 140,90" fill="rgba(212,168,67,0.25)" stroke="rgba(212,168,67,0.4)" stroke-width="1.5"/>
+          <line x1="20"  y1="165" x2="180" y2="165" stroke="rgba(139,94,60,0.4)" stroke-width="2.5"/>
+          <line x1="20"  y1="165" x2="20"  y2="210" stroke="rgba(139,94,60,0.3)" stroke-width="1.5"/>
+          <line x1="180" y1="165" x2="180" y2="215" stroke="rgba(139,94,60,0.3)" stroke-width="1.5"/>
+          <ellipse cx="20"  cy="220" rx="22" ry="14" fill="rgba(139,94,60,0.3)" stroke="rgba(212,168,67,0.3)" stroke-width="1"/>
+          <ellipse cx="180" cy="225" rx="22" ry="14" fill="rgba(139,94,60,0.3)" stroke="rgba(212,168,67,0.3)" stroke-width="1"/>
+          <circle cx="12" cy="215" r="5" fill="rgba(255,150,50,0.5)"/>
+          <circle cx="22" cy="213" r="6" fill="rgba(200,16,46,0.5)"/>
+          <circle cx="32" cy="215" r="5" fill="rgba(255,220,50,0.5)"/>
+        </svg>
+      </div>
+      <div class="people-card-overlay"></div>
+      <div class="people-card-label">Người Bán Hàng Rong</div>
+    </div>
+
+    <div class="people-card gsap-scale" style="animation-delay:0.1s">
+      <div class="people-card-bg" style="background:linear-gradient(160deg,rgba(200,16,46,0.2),rgba(10,8,6,0.9));position:absolute;inset:0;">
+        <svg style="position:absolute;inset:0;width:100%;height:100%;" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <g fill="rgba(255,200,50,0.15)">
+            <circle cx="30" cy="40" r="20"/><circle cx="80" cy="20" r="15"/>
+            <circle cx="150" cy="30" r="25"/><circle cx="180" cy="60" r="18"/>
+          </g>
+          <ellipse cx="100" cy="160" rx="70" ry="20" fill="rgba(139,94,60,0.3)"/>
+          <rect x="70" y="130" width="24" height="18" rx="3" fill="rgba(80,40,10,0.6)" stroke="rgba(212,168,67,0.3)" stroke-width="1"/>
+          <ellipse cx="82" cy="130" rx="12" ry="4" fill="rgba(212,168,67,0.2)"/>
+          <circle cx="100" cy="65"  r="25" fill="rgba(212,168,67,0.12)"/>
+          <rect   x="78"  cy="90"  width="44" height="60" rx="8" fill="rgba(212,168,67,0.1)"/>
+        </svg>
+      </div>
+      <div class="people-card-overlay"></div>
+      <div class="people-card-label">Văn Hóa Cafe</div>
+    </div>
+
+    <div class="people-card gsap-scale" style="animation-delay:0.2s">
+      <div class="people-card-bg" style="background:linear-gradient(160deg,rgba(255,107,53,0.2),rgba(10,8,6,0.9));position:absolute;inset:0;">
+        <svg style="position:absolute;inset:0;width:100%;height:100%;" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="55"  cy="155" r="30" fill="none" stroke="rgba(212,168,67,0.3)" stroke-width="3"/>
+          <circle cx="55"  cy="155" r="18" fill="none" stroke="rgba(212,168,67,0.2)" stroke-width="2"/>
+          <circle cx="55"  cy="155" r="5"  fill="rgba(212,168,67,0.4)"/>
+          <circle cx="155" cy="155" r="30" fill="none" stroke="rgba(212,168,67,0.3)" stroke-width="3"/>
+          <circle cx="155" cy="155" r="18" fill="none" stroke="rgba(212,168,67,0.2)" stroke-width="2"/>
+          <circle cx="155" cy="155" r="5"  fill="rgba(212,168,67,0.4)"/>
+          <path d="M55,125 L100,100 L155,125" fill="none" stroke="rgba(212,168,67,0.25)" stroke-width="3"/>
+          <line x1="55" y1="125" x2="155" y2="125" stroke="rgba(212,168,67,0.2)" stroke-width="2"/>
+          <circle cx="100" cy="75" r="20" fill="rgba(212,168,67,0.12)"/>
+          <path d="M82,72 Q100,55 118,72 Q118,88 100,90 Q82,88 82,72 Z" fill="rgba(200,16,46,0.25)"/>
+          <g stroke="rgba(255,107,53,0.2)" stroke-width="1" stroke-linecap="round">
+            <line x1="0" y1="140" x2="30" y2="138"/>
+            <line x1="0" y1="150" x2="25" y2="148"/>
+            <line x1="0" y1="160" x2="20" y2="158"/>
+          </g>
+        </svg>
+      </div>
+      <div class="people-card-overlay"></div>
+      <div class="people-card-label">Xe Máy Sài Gòn</div>
+    </div>
+
+    <div class="people-card wide gsap-scale" style="animation-delay:0.3s">
+      <div class="people-card-bg" style="background:linear-gradient(160deg,rgba(212,168,67,0.15),rgba(10,8,6,0.9));position:absolute;inset:0;">
+        <svg style="position:absolute;inset:0;width:100%;height:100%;" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="200" cy="165" rx="160" ry="30" fill="rgba(139,94,60,0.2)"/>
+          <circle cx="80"  cy="100" r="22" fill="rgba(212,168,67,0.12)"/>
+          <circle cx="140" cy="95"  r="22" fill="rgba(212,168,67,0.12)"/>
+          <circle cx="200" cy="90"  r="24" fill="rgba(200,16,46,0.15)"/>
+          <circle cx="260" cy="95"  r="22" fill="rgba(212,168,67,0.12)"/>
+          <circle cx="320" cy="110" r="18" fill="rgba(255,150,50,0.15)"/>
+          <circle cx="200" cy="40"  r="25" fill="rgba(212,168,67,0.1)" stroke="rgba(212,168,67,0.2)" stroke-width="1"/>
+          <circle cx="160" cy="158" r="15" fill="rgba(255,150,50,0.2)"/>
+          <circle cx="200" cy="155" r="18" fill="rgba(200,16,46,0.15)"/>
+          <circle cx="240" cy="158" r="15" fill="rgba(50,150,50,0.15)"/>
+        </svg>
+      </div>
+      <div class="people-card-overlay"></div>
+      <div class="people-card-label">Gia Đình Việt Nam</div>
+    </div>
+
+    <div class="people-card tall gsap-scale" style="animation-delay:0.4s">
+      <div class="people-card-bg" style="background:linear-gradient(160deg,rgba(26,122,110,0.25),rgba(10,8,6,0.9));position:absolute;inset:0;">
+        <svg style="position:absolute;inset:0;width:100%;height:100%;" viewBox="0 0 200 400" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="100" cy="90" r="28" fill="rgba(26,122,110,0.2)"/>
+          <rect   x="76"  y="118" width="48" height="90" rx="8" fill="rgba(26,122,110,0.15)"/>
+          <path d="M40,180 Q100,160 160,180" fill="none" stroke="rgba(212,168,67,0.4)" stroke-width="3"/>
+          <line x1="40"  y1="180" x2="40"  y2="220" stroke="rgba(139,94,60,0.4)" stroke-width="2"/>
+          <line x1="160" y1="180" x2="160" y2="220" stroke="rgba(139,94,60,0.4)" stroke-width="2"/>
+          <g fill="rgba(212,168,67,0.5)" font-size="18">
+            <text x="140" y="140">♪</text>
+            <text x="55"  y="125" font-size="14">♫</text>
+            <text x="160" y="110" font-size="12">♩</text>
+          </g>
+        </svg>
+      </div>
+      <div class="people-card-overlay"></div>
+      <div class="people-card-label">Nghệ Sĩ Đường Phố</div>
+    </div>
+
+    <div class="people-card wide gsap-scale" style="animation-delay:0.5s">
+      <div class="people-card-bg" style="background:linear-gradient(160deg,rgba(200,16,46,0.15),rgba(10,8,6,0.9));position:absolute;inset:0;">
+        <svg style="position:absolute;inset:0;width:100%;height:100%;" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+          <rect x="20"  y="60"  width="40"  height="140" fill="rgba(200,16,46,0.08)"/>
+          <rect x="70"  y="40"  width="30"  height="160" fill="rgba(200,16,46,0.1)"/>
+          <rect x="310" y="50"  width="50"  height="150" fill="rgba(200,16,46,0.08)"/>
+          <rect x="350" y="65"  width="40"  height="135" fill="rgba(200,16,46,0.1)"/>
+          <circle cx="120" cy="110" r="20" fill="rgba(212,168,67,0.15)"/>
+          <circle cx="200" cy="105" r="22" fill="rgba(200,16,46,0.15)"/>
+          <circle cx="280" cy="112" r="20" fill="rgba(212,168,67,0.15)"/>
+          <rect x="108" y="148" width="24" height="16" rx="2" fill="rgba(26,122,110,0.3)"/>
+          <rect x="360" y="30" width="30" height="20" fill="rgba(200,16,46,0.15)" stroke="rgba(200,16,46,0.3)" stroke-width="1"/>
+          <polygon points="375,34 380,40 375,46 370,40" fill="rgba(212,168,67,0.4)"/>
+        </svg>
+      </div>
+      <div class="people-card-overlay"></div>
+      <div class="people-card-label">Thế Hệ Trẻ Sáng Tạo</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════
+     QUOTE
+════════════════════════════════ -->
+<section id="quote-section">
+  <div class="quote-bg-text">VIỆT NAM</div>
+  <blockquote class="quote-text gsap-reveal">
+    "Vietnam is a country, not a war — and its people hold within them the deepest warmth you will ever find on this Earth."
+  </blockquote>
+  <div class="quote-author gsap-reveal">— Hành trình Khám Phá</div>
+</section>
+
+<!-- ═══════════════════════════════
+     INTERACTIVE MAP
+════════════════════════════════ -->
+<section id="map-section">
+  <div class="section-tag gsap-reveal">Địa Điểm Nổi Bật</div>
+  <h2 class="section-title gsap-reveal">Khám Phá <em>Sài Gòn</em></h2>
+
+  <div class="map-container">
+    <div class="map-sidebar">
+      <div class="map-place-list" id="placeList">
+        <div class="map-place-item active" data-place="0"><div class="map-place-dot"></div><div><div class="map-place-name">Landmark 81</div><div class="map-place-type">Kiến Trúc</div></div></div>
+        <div class="map-place-item"        data-place="1"><div class="map-place-dot"></div><div><div class="map-place-name">Chợ Bến Thành</div><div class="map-place-type">Chợ Truyền Thống</div></div></div>
+        <div class="map-place-item"        data-place="2"><div class="map-place-dot"></div><div><div class="map-place-name">Nhà Thờ Đức Bà</div><div class="map-place-type">Di Tích Lịch Sử</div></div></div>
+        <div class="map-place-item"        data-place="3"><div class="map-place-dot"></div><div><div class="map-place-name">Phố Đi Bộ Nguyễn Huệ</div><div class="map-place-type">Phố Đi Bộ</div></div></div>
+        <div class="map-place-item"        data-place="4"><div class="map-place-dot"></div><div><div class="map-place-name">Bưu Điện Thành Phố</div><div class="map-place-type">Kiến Trúc Cổ</div></div></div>
+        <div class="map-place-item"        data-place="5"><div class="map-place-dot"></div><div><div class="map-place-name">Địa Đạo Củ Chi</div><div class="map-place-type">Di Tích Chiến Tranh</div></div></div>
+        <div class="map-place-item"        data-place="6"><div class="map-place-dot"></div><div><div class="map-place-name">Bến Bạch Đằng</div><div class="map-place-type">Cảnh Quan Sông</div></div></div>
+        <div class="map-place-item"        data-place="7"><div class="map-place-dot"></div><div><div class="map-place-name">Thảo Điền</div><div class="map-place-type">Khu Sáng Tạo</div></div></div>
+      </div>
+    </div>
+
+    <div class="map-visual">
+      <svg style="position:absolute;inset:0;width:100%;height:100%;opacity:0.12;" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
+        <g stroke="rgba(212,168,67,0.5)" stroke-width="1" fill="none">
+          <line x1="0" y1="150" x2="600" y2="150"/><line x1="0" y1="200" x2="600" y2="200"/>
+          <line x1="0" y1="250" x2="600" y2="250"/><line x1="0" y1="300" x2="600" y2="300"/>
+          <line x1="0" y1="350" x2="600" y2="350"/><line x1="0" y1="400" x2="600" y2="400"/>
+          <line x1="150" y1="0" x2="150" y2="600"/><line x1="220" y1="0" x2="220" y2="600"/>
+          <line x1="300" y1="0" x2="300" y2="600"/><line x1="380" y1="0" x2="380" y2="600"/>
+          <line x1="450" y1="0" x2="450" y2="600"/>
+        </g>
+        <path d="M450,0 Q480,100 470,200 Q460,300 490,400 Q510,480 500,600" stroke="rgba(26,122,110,0.6)" stroke-width="12" fill="none"/>
+        <rect x="200" y="200" width="180" height="150" fill="rgba(200,16,46,0.05)" stroke="rgba(200,16,46,0.2)" stroke-width="1"/>
+        <text x="270" y="280" fill="rgba(212,168,67,0.5)" font-size="12" text-anchor="middle">Q.1</text>
+      </svg>
+
+      <div class="map-visual-inner">
+        <div class="map-info" id="mapInfo">
+          <div class="map-info-name" id="mapName">Landmark 81</div>
+          <div class="map-info-desc" id="mapDesc">Tòa nhà cao nhất Việt Nam, 81 tầng, 461.3m, tại Bình Thạnh. Biểu tượng khát vọng hiện đại của TP.HCM với đài quan sát SkyView trên tầng 79.</div>
+          <div class="map-info-tag"  id="mapType">Kiến Trúc Hiện Đại</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════
+     GALLERY
+════════════════════════════════ -->
+<section id="gallery">
+  <div class="section-tag gsap-reveal">Bộ Sưu Tập</div>
+  <h2 class="section-title gsap-reveal">Việt Nam Qua <em>Từng Khoảnh Khắc</em></h2>
+
+  <div class="gallery-masonry">
+
+    <div class="gallery-item gsap-reveal">
+      <svg class="gallery-img" style="height:280px;background:linear-gradient(160deg,#0d2018,#061410);" viewBox="0 0 300 280" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0,180 Q30,120 60,180"   fill="rgba(26,122,110,0.35)"/>
+        <path d="M50,180 Q90,90 130,180"  fill="rgba(26,122,110,0.4)"/>
+        <path d="M120,180 Q155,100 185,180" fill="rgba(26,122,110,0.3)"/>
+        <path d="M175,180 Q220,80 260,180" fill="rgba(26,122,110,0.45)"/>
+        <path d="M250,180 Q285,120 300,180" fill="rgba(26,122,110,0.3)"/>
+        <rect x="0" y="180" width="300" height="60" fill="rgba(26,122,110,0.2)"/>
+        <ellipse cx="220" cy="60" rx="40" ry="30" fill="rgba(255,107,53,0.2)"/>
+        <text x="150" y="260" fill="rgba(212,168,67,0.6)" font-size="11" text-anchor="middle" font-family="'DM Sans'" letter-spacing="3">VỊNH HẠ LONG</text>
+      </svg>
+      <div class="gallery-overlay"><div class="gallery-overlay-text">Vịnh Hạ Long</div></div>
+    </div>
+
+    <div class="gallery-item gsap-reveal" style="animation-delay:0.1s">
+      <svg class="gallery-img" style="height:180px;background:linear-gradient(160deg,#1a0810,#0f0608);" viewBox="0 0 300 180" xmlns="http://www.w3.org/2000/svg">
+        <g fill="rgba(255,200,50,0.4)">
+          <rect x="20" y="30" width="2" height="2"/><rect x="50" y="40" width="3" height="3"/>
+          <rect x="90" y="35" width="2" height="2"/><rect x="130" y="45" width="2" height="2"/>
+          <rect x="170" y="38" width="3" height="3"/><rect x="215" y="30" width="2" height="2"/>
+          <rect x="255" y="40" width="2" height="2"/><rect x="275" y="32" width="2" height="2"/>
+          <rect x="0"  y="80" width="300" height="1" opacity="0.3"/>
+          <rect x="100" y="0" width="1"   height="180" opacity="0.2"/>
+          <rect x="200" y="0" width="1"   height="180" opacity="0.2"/>
+        </g>
+        <text x="150" y="165" fill="rgba(200,16,46,0.6)" font-size="10" text-anchor="middle" font-family="'DM Sans'" letter-spacing="3">TP.HCM BAN ĐÊM</text>
+      </svg>
+      <div class="gallery-overlay"><div class="gallery-overlay-text">Thành Phố Về Đêm</div></div>
+    </div>
+
+    <div class="gallery-item gsap-reveal" style="animation-delay:0.2s">
+      <svg class="gallery-img" style="height:340px;background:linear-gradient(160deg,#1a1408,#0f0c06);" viewBox="0 0 300 340" xmlns="http://www.w3.org/2000/svg">
+        <rect x="20" y="150" width="50"  height="160" fill="rgba(212,168,67,0.12)"/>
+        <rect x="80" y="130" width="60"  height="180" fill="rgba(212,168,67,0.15)"/>
+        <rect x="150" y="140" width="50" height="170" fill="rgba(212,168,67,0.12)"/>
+        <rect x="210" y="125" width="65" height="185" fill="rgba(212,168,67,0.18)"/>
+        <polygon points="20,150 45,125 70,150"   fill="rgba(212,168,67,0.25)"/>
+        <polygon points="80,130 110,100 140,130"  fill="rgba(212,168,67,0.3)"/>
+        <polygon points="150,140 175,112 200,140" fill="rgba(212,168,67,0.25)"/>
+        <polygon points="210,125 242,92 275,125"  fill="rgba(212,168,67,0.35)"/>
+        <rect x="0" y="285" width="300" height="55" fill="rgba(26,122,110,0.1)"/>
+        <ellipse cx="60"  cy="210" rx="8"  ry="11" fill="rgba(200,16,46,0.5)"/>
+        <ellipse cx="110" cy="193" rx="9"  ry="13" fill="rgba(212,168,67,0.7)"/>
+        <ellipse cx="175" cy="200" rx="8"  ry="11" fill="rgba(255,107,53,0.6)"/>
+        <ellipse cx="240" cy="186" rx="10" ry="14" fill="rgba(200,16,46,0.55)"/>
+        <path d="M20,115 Q150,90 280,110" fill="none" stroke="rgba(212,168,67,0.2)" stroke-width="1"/>
+        <text x="150" y="325" fill="rgba(212,168,67,0.6)" font-size="11" text-anchor="middle" font-family="'DM Sans'" letter-spacing="3">PHỐ CỔ HỘI AN</text>
+      </svg>
+      <div class="gallery-overlay"><div class="gallery-overlay-text">Hội An Về Đêm</div></div>
+    </div>
+
+    <div class="gallery-item gsap-reveal" style="animation-delay:0.15s">
+      <svg class="gallery-img" style="height:220px;background:linear-gradient(160deg,#0a1a14,#061010);" viewBox="0 0 300 220" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0,120 Q50,60 100,90 Q150,120 200,70 Q250,20 300,80 L300,220 L0,220 Z" fill="rgba(26,122,110,0.15)"/>
+        <g stroke="rgba(26,122,110,0.4)" stroke-width="1.5" fill="none">
+          <path d="M10,150 Q80,140 150,148 Q220,156 290,145"/>
+          <path d="M5,162 Q80,152 155,160 Q225,168 295,157"/>
+          <path d="M0,174 Q80,164 160,172 Q230,180 300,169"/>
+          <path d="M0,186 Q80,176 162,184 Q235,192 300,181"/>
+        </g>
+        <rect x="0" y="90" width="300" height="40" fill="rgba(255,255,255,0.04)"/>
+        <text x="150" y="210" fill="rgba(26,122,110,0.7)" font-size="11" text-anchor="middle" font-family="'DM Sans'" letter-spacing="3">RUỘNG BẬC THANG SA PA</text>
+      </svg>
+      <div class="gallery-overlay"><div class="gallery-overlay-text">Sa Pa</div></div>
+    </div>
+
+    <div class="gallery-item gsap-reveal" style="animation-delay:0.25s">
+      <svg class="gallery-img" style="height:200px;background:linear-gradient(160deg,#14100a,#0a0806);" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0,120 Q75,110 150,118 Q225,126 300,115 L300,200 L0,200 Z" fill="rgba(26,122,110,0.2)"/>
+        <path d="M0,125 Q50,118 100,125 Q150,132 200,122 Q250,112 300,120" fill="none" stroke="rgba(26,122,110,0.4)" stroke-width="1.5"/>
+        <path d="M0,160 Q150,150 300,155 L300,200 L0,200 Z" fill="rgba(212,168,67,0.1)"/>
+        <line x1="50" y1="160" x2="60" y2="80" stroke="rgba(139,94,60,0.4)" stroke-width="3"/>
+        <circle cx="55" cy="75" r="22" fill="rgba(26,122,110,0.2)"/>
+        <line x1="240" y1="155" x2="248" y2="85" stroke="rgba(139,94,60,0.4)" stroke-width="3"/>
+        <circle cx="244" cy="80" r="20" fill="rgba(26,122,110,0.2)"/>
+        <circle cx="150" cy="60" r="30" fill="rgba(255,107,53,0.2)"/>
+        <text x="150" y="190" fill="rgba(212,168,67,0.6)" font-size="10" text-anchor="middle" font-family="'DM Sans'" letter-spacing="3">PHÚ QUỐC</text>
+      </svg>
+      <div class="gallery-overlay"><div class="gallery-overlay-text">Đảo Ngọc Phú Quốc</div></div>
+    </div>
+
+    <div class="gallery-item gsap-reveal" style="animation-delay:0.3s">
+      <svg class="gallery-img" style="height:260px;background:linear-gradient(160deg,#0d1b2a,#080d14);" viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg">
+        <rect x="120" y="30" width="60"  height="200" fill="rgba(200,16,46,0.15)" stroke="rgba(200,16,46,0.2)" stroke-width="1"/>
+        <ellipse cx="150" cy="28" rx="35" ry="12" fill="rgba(200,16,46,0.25)" stroke="rgba(200,16,46,0.4)" stroke-width="1"/>
+        <g fill="rgba(255,200,50,0.3)">
+          <rect x="128" y="50" width="5" height="5"/><rect x="138" y="50" width="5" height="5"/>
+          <rect x="148" y="50" width="5" height="5"/><rect x="158" y="50" width="5" height="5"/>
+          <rect x="128" y="62" width="5" height="5"/><rect x="138" y="62" width="5" height="5"/>
+          <rect x="148" y="62" width="5" height="5"/><rect x="158" y="62" width="5" height="5"/>
+          <rect x="128" y="74" width="5" height="5"/><rect x="138" y="74" width="5" height="5"/>
+          <rect x="148" y="74" width="5" height="5"/><rect x="158" y="74" width="5" height="5"/>
+        </g>
+        <rect x="20"  y="120" width="35" height="140" fill="rgba(200,16,46,0.08)"/>
+        <rect x="65"  y="100" width="30" height="160" fill="rgba(200,16,46,0.1)"/>
+        <rect x="205" y="110" width="35" height="150" fill="rgba(200,16,46,0.08)"/>
+        <rect x="250" y="90"  width="40" height="170" fill="rgba(200,16,46,0.1)"/>
+        <ellipse cx="150" cy="255" rx="180" ry="20" fill="rgba(200,16,46,0.1)"/>
+        <text x="150" y="252" fill="rgba(200,16,46,0.6)" font-size="10" text-anchor="middle" font-family="'DM Sans'" letter-spacing="3">BITEXCO TOWER</text>
+      </svg>
+      <div class="gallery-overlay"><div class="gallery-overlay-text">Bitexco Financial Tower</div></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════
+     FOOTER
+════════════════════════════════ -->
+<footer>
+  <div class="footer-hero">
+    <svg class="footer-skyline" viewBox="0 0 1400 280" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax meet">
+      <rect x="50"   y="140" width="40"  height="140" fill="rgba(212,168,67,0.8)"/>
+      <rect x="100"  y="110" width="30"  height="170" fill="rgba(212,168,67,0.8)"/>
+      <rect x="140"  y="80"  width="20"  height="200" fill="rgba(212,168,67,0.8)"/>
+      <line x1="150" y1="80" x2="150" y2="45" stroke="rgba(212,168,67,0.8)" stroke-width="3"/>
+      <rect x="170"  y="120" width="25"  height="160" fill="rgba(212,168,67,0.8)"/>
+      <rect x="205"  y="100" width="35"  height="180" fill="rgba(212,168,67,0.8)"/>
+      <rect x="250"  y="130" width="28"  height="150" fill="rgba(212,168,67,0.8)"/>
+      <rect x="290"  y="90"  width="22"  height="190" fill="rgba(212,168,67,0.8)"/>
+      <ellipse cx="301" cy="87" rx="20" ry="8" fill="rgba(212,168,67,0.8)"/>
+      <rect x="325"  y="115" width="30"  height="165" fill="rgba(212,168,67,0.8)"/>
+      <rect x="365"  y="130" width="40"  height="150" fill="rgba(212,168,67,0.8)"/>
+      <rect x="415"  y="105" width="25"  height="175" fill="rgba(212,168,67,0.8)"/>
+      <rect x="450"  y="120" width="35"  height="160" fill="rgba(212,168,67,0.8)"/>
+      <rect x="500"  y="140" width="30"  height="140" fill="rgba(212,168,67,0.8)"/>
+      <rect x="545"  y="100" width="28"  height="180" fill="rgba(212,168,67,0.8)"/>
+      <rect x="585"  y="125" width="38"  height="155" fill="rgba(212,168,67,0.8)"/>
+      <rect x="635"  y="110" width="24"  height="170" fill="rgba(212,168,67,0.8)"/>
+      <rect x="670"  y="85"  width="30"  height="195" fill="rgba(212,168,67,0.8)"/>
+      <rect x="715"  y="130" width="32"  height="150" fill="rgba(212,168,67,0.8)"/>
+      <rect x="760"  y="105" width="26"  height="175" fill="rgba(212,168,67,0.8)"/>
+      <rect x="800"  y="120" width="40"  height="160" fill="rgba(212,168,67,0.8)"/>
+      <rect x="855"  y="95"  width="28"  height="185" fill="rgba(212,168,67,0.8)"/>
+      <rect x="895"  y="130" width="35"  height="150" fill="rgba(212,168,67,0.8)"/>
+      <rect x="945"  y="115" width="30"  height="165" fill="rgba(212,168,67,0.8)"/>
+      <rect x="990"  y="140" width="25"  height="140" fill="rgba(212,168,67,0.8)"/>
+      <rect x="1030" y="100" width="38"  height="180" fill="rgba(212,168,67,0.8)"/>
+      <rect x="1080" y="125" width="30"  height="155" fill="rgba(212,168,67,0.8)"/>
+      <rect x="1120" y="108" width="25"  height="172" fill="rgba(212,168,67,0.8)"/>
+      <rect x="1160" y="135" width="35"  height="145" fill="rgba(212,168,67,0.8)"/>
+      <rect x="1205" y="110" width="28"  height="170" fill="rgba(212,168,67,0.8)"/>
+      <rect x="1245" y="125" width="40"  height="155" fill="rgba(212,168,67,0.8)"/>
+      <rect x="1300" y="95"  width="32"  height="185" fill="rgba(212,168,67,0.8)"/>
+      <rect x="1345" y="130" width="38"  height="150" fill="rgba(212,168,67,0.8)"/>
+      <rect x="0"    y="280" width="1400" height="5"  fill="rgba(212,168,67,0.8)"/>
+    </svg>
+
+    <div class="footer-content">
+      <div class="footer-big-text gsap-reveal">
+        <span style="color:var(--cream);">VIỆT</span><br>
+        <span style="color:var(--red);">NAM</span>
+      </div>
+      <p style="font-family:'Cormorant Garamond',serif;font-size:22px;font-style:italic;color:rgba(250,246,239,0.5);max-width:500px;">
+        "Đến Việt Nam một lần — bạn sẽ hiểu tại sao người ta muốn quay lại mãi mãi."
+      </p>
+    </div>
+  </div>
+
+  <div class="footer-grid">
+    <div>
+      <div class="footer-logo">VIỆT<span>NAM</span></div>
+      <p class="footer-tagline">Khám phá đất nước hình chữ S — nơi lịch sử ngàn năm gặp gỡ nhịp sống hiện đại đầy sức sống.</p>
+    </div>
+    <div>
+      <div class="footer-col-title">Khám Phá</div>
+      <ul class="footer-links">
+        <li><a href="#saigon">Sài Gòn</a></li>
+        <li><a href="#regions">Hà Nội</a></li>
+        <li><a href="#regions">Hội An</a></li>
+        <li><a href="#regions">Vịnh Hạ Long</a></li>
+        <li><a href="#regions">Phú Quốc</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Văn Hóa</div>
+      <ul class="footer-links">
+        <li><a href="#food">Ẩm Thực</a></li>
+        <li><a href="#people">Con Người</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+        <li><a href="#intro">Lịch Sử</a></li>
+        <li><a href="#saigon">Timeline</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Thông Tin</div>
+      <ul class="footer-links">
+        <li><a href="#">Visa & Nhập Cảnh</a></li>
+        <li><a href="#">Thời Tiết</a></li>
+        <li><a href="#">Di Chuyển</a></li>
+        <li><a href="#">Tiền Tệ VNĐ</a></li>
+        <li><a href="#">Liên Hệ</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2025 Vietnam Travel. Made with ♥ in Sài Gòn.</div>
+    <div class="social-links">
+      <a href="#" class="social-link">ig</a>
+      <a href="#" class="social-link">fb</a>
+      <a href="#" class="social-link">yt</a>
+      <a href="#" class="social-link">tt</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════
+     SCRIPTS (deferred)
+════════════════════════════════ -->
+<script src="js/cursor.js"      defer></script>
+<script src="js/hero.js"        defer></script>
+<script src="js/three-scene.js" defer></script>
+<script src="js/animations.js"  defer></script>
+<script src="js/interactive.js" defer></script>
+
+</body>
+</html>

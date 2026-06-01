@@ -1,0 +1,76 @@
+<!--
+  sections/hero.html
+  ─────────────────
+  Hero section partial — paste inside <body> of index.html
+  hoặc dùng JS fetch/include để nhúng vào.
+-->
+<section id="hero">
+  <!-- Three.js canvas -->
+  <canvas id="three-canvas"></canvas>
+
+  <!-- Background slides -->
+  <div class="hero-slides">
+    <div class="hero-slide slide-1 active"></div>
+    <div class="hero-slide slide-2"></div>
+    <div class="hero-slide slide-3"></div>
+  </div>
+
+  <!-- City grid overlay -->
+  <div class="city-grid"></div>
+
+  <!-- Floating particles -->
+  <div class="particles-container" id="particles"></div>
+
+  <!-- Gradient overlay -->
+  <div class="hero-overlay"></div>
+
+  <!-- Main content -->
+  <div class="hero-content">
+    <div class="hero-tag">Khám phá Việt Nam</div>
+
+    <h1 class="hero-title">
+      <span class="hero-title-line">VIETNAM</span>
+      <span class="hero-title-line">MORE</span>
+      <span class="hero-title-line">THAN A</span>
+    </h1>
+
+    <p class="hero-subtitle">
+      Discover the soul of a nation — where ancient traditions meet
+      the electric pulse of modern life
+    </p>
+
+    <div class="hero-buttons">
+      <button class="btn-primary"   onclick="scrollToSection('saigon')">Explore Saigon</button>
+      <button class="btn-secondary" onclick="scrollToSection('regions')">Discover Vietnam</button>
+    </div>
+  </div>
+
+  <!-- Stats bar -->
+  <div class="hero-bottom">
+    <div class="hero-stats">
+      <div>
+        <div class="hero-stat-num"   id="stat1">0</div>
+        <div class="hero-stat-label">Tỉnh Thành</div>
+      </div>
+      <div>
+        <div class="hero-stat-num"   id="stat2">0</div>
+        <div class="hero-stat-label">Di Sản UNESCO</div>
+      </div>
+      <div>
+        <div class="hero-stat-num"   id="stat3">0</div>
+        <div class="hero-stat-label">Triệu Du Khách / Năm</div>
+      </div>
+    </div>
+    <div class="hero-scroll">
+      <div class="scroll-line"></div>
+      Scroll
+    </div>
+  </div>
+
+  <!-- Slide indicators -->
+  <div class="hero-indicators">
+    <div class="hero-indicator active" data-label="Skyline" data-slide="0"></div>
+    <div class="hero-indicator"        data-label="Culture" data-slide="1"></div>
+    <div class="hero-indicator"        data-label="Street"  data-slide="2"></div>
+  </div>
+</section>
